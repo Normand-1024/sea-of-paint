@@ -1,0 +1,156 @@
+
+
+#root {
+  /* max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center; */
+  display: block;
+  text-align: -webkit-center;
+  unicode-bidi: isolate;
+}
+
+#storyPage {
+  width: 30%;
+
+  h1 {
+    padding-bottom: 4%;
+  }
+
+  p {
+    display: inline-block;
+    width: 100%;
+    padding-bottom: 2%;
+  }
+}
+
+#machinePage {
+  width: 80%;
+  height: 95vmin;
+  display: inline-block;
+
+  #machineDisplay {
+    width: 65%;
+    height: 100%;
+    display: inline-block;
+
+    #nameCard {
+      height: 40%;
+      display: block;
+    }
+
+    #dialogueCol {
+      width: 90%;
+      height: 60%;
+      display: block;
+      overflow-y: auto;
+      /* scroll-behavior: smooth; */
+
+      #dialogue {
+        display: inline-block;
+        width: 80%;
+        padding-bottom: 4%;
+
+        .spirit-line {
+          width: 60%;
+          float:left;
+          text-align: left;
+        }
+
+        .self-speaking-line {
+          width: 60%;
+          float: right;
+          text-align: right;
+        }
+        
+        .self-thinking-line {
+          width: 45%;
+          color: gray;
+          font-style: italic;
+          float: right;
+          text-align: right;
+        }
+
+        .machine-line {
+          width: 90%;
+          text-align: center;
+          display: inline-block;
+          color:chocolate;
+          font-size: smaller;
+          font-style: oblique;
+          font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+      }
+    }
+    
+    #button-container {
+      display: inline-block;
+      width: 80%;
+      padding-top: 4%;
+
+      .button-div {
+        width: 100%;
+
+        .dialogue-button {
+          display: block;
+          margin-left: auto;
+          margin-right: 0;
+          margin-bottom: 1%;
+        }
+        .continue-button {
+          display: block;
+          margin-left: auto;
+          margin-right: 0;
+          margin-bottom: 1%;
+          font-style: oblique;
+        }
+        .machine-button {
+          display: block;
+          margin-left: auto;
+          margin-right: 0;
+          margin-bottom: 1%;
+          font-style: oblique;
+        }
+      }
+    }
+  }
+
+  #machineControl {
+    width: 30%;
+    height: 100%;
+    float: right;
+
+    #candidateCol {
+      height: 90%;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+     
+    #prompt-control {
+      width: 100%;
+      padding-top: 4%;
+
+      #prompt {
+        width: 100%;
+        size: 100;
+      }
+
+      #promptSubmit {
+        float: right;  
+        margin-top: 2%;
+      }
+    }
+  }
+}
+
+
+#paintingPage {
+  width: 80%;
+  height: 95vmin;
+  display: inline-block;
+
+  .p5Container {
+    position: relative;
+    top: 13%;
+  }
+}

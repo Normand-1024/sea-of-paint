@@ -1,0 +1,113 @@
+title: Start
+position: -5,-275
+---
+
+<<set $integrity = 100>> 
+<<set $self = false>>
+<<set $machine = false>>
+<<set $follow = false>>
+<<set $generate = false>>
+<<set $name = "Ivan">>
+<<set $daugherName = "Alex">>
+
+
+...Hello?
+
+-> Hello, {$name}.
+
+What is this? Why is it so dark here?
+
+-> I'm sorry to say that you were gone, {$name}. I'm talking to you through the Machine.
+
+    ...gone? I don't...what happened?
+
+    -> I believe it was a car accident. Again, I'm really sorry {$name}.
+    
+        ...a car accident? Which day did I die?
+
+        -> I believe it was a Wednesday.
+        
+        That makes sense. Andrew is supposed to give me a ride back those days. The kid drives like he got insurance fraud on his mind.
+ 
+        <<set $machine = true>> 
+
+        -> ...the machine whirls...
+
+        As {$name} remi​nisces, the Machine's whirring gets sharper. An image appears, but barely. It's a scene of people drinking together. They find solace in each other. There's a felt comfort here, just knowing that none of them knows the answer to the bigger questions, but at least this occasion may have provided the shape of an answer, however short-lived. 
+        
+        <<set $machine = false>>  
+
+        -> Do you like your co-worker? Andrew sounds very young.
+
+        Twenty years younger, in fact. And yes. We have people from many walks of lives in our place. And we always help each other out, otherwise old people like me wouldn't survive there.
+
+        -> Did you need a lot of help?
+
+        The manager would raise the bottom line. It felt like a subtle way to force us out. But the youngsters would have more energy to work overtime for us.
+
+        We would get divided into groups so it felt like we were competing. But we never saw each other that way.
+
+        Wait...Is Andrew okay? How is he now?
+
+        -> I'm really sorry, but neither of you survived the crash. I believe your family and his communicated. I'm sure they all miss you very much.
+
+    -> I don't think it is a good idea to talk about it, {$name}. I just want to assure you that your family is okay and they miss you very much.
+
+-> It's okay, You were brough back through the Machine. I'm talking to you upon your family's request.
+
+My family? Where are they? Are they here?
+
+-> Unfortunately no, I believe they talked to another instance of you through another service.
+
+...so what are you then?
+
+-> I'm with the memoriabilia services. I'm here to make some pictures to remember you by.
+
+That sounds ridiculous. I've never thought people would use the Machine this way. Aren't there pictures of me? Why can't you just talk to them?
+
+-> It would be more authentic this way. What you would've remembered about yourself. Perhaps your family were curious about it after we reached out to them.
+
+    You reached out to my family after my death? To use your service? What the fuck is wrong with you?
+
+    <<set $self = true>> 
+    {$name} sounds irritated, I need to be careful with what I say. The Sea will claim him if he loses the will to stay together.
+    <<set $integrity = $integrity - 20>>
+    <<set $self = false>>  
+
+    Some dialogues
+
+    <<set $machine = true>> 
+    The machine shows
+    <<set $machine = false>>  
+
+-> We want to understand what you would've remembered about yourself. It feels incomplete to remember someone without talking to you.
+
+    oh okay
+
+<<set $self = true>> 
+<<set $generate = true>>
+The tension is a little high now. I think it is a good time to pause and create some pictures based on what the Machine got back. It will make him a little calmer too and reset the conversation.
+<<set $self = false>> 
+<<set $generate = false>>
+
+<<jump SecondSection>>
+
+===
+
+title: SecondSection
+position: 1,339
+---  
+
+...What just happened?
+
+-> It's okay. I just used the Machine to create some images. How are you feeling?
+
+It's strange...I feel like something was sucked out of me in the blink of an eye.
+
+Oh you can see the imageries in my mind? ...could you see xxx?
+
+-> yes
+
+I guess in that case, the darkness helps then. So I could concentrate more on the imageries in my mind.
+
+===
