@@ -3,7 +3,7 @@ import p5 from 'P5';
 import React, {createRef} from 'react';
 
 import Candidate from './candidate';
-import {normalBlend, overlayBlend} from '../functions/blending.tsx';
+import {normalBlend, overlayBlend, hardlightBlend} from '../functions/blending.tsx';
 
 import '../App.css';
 
@@ -37,8 +37,15 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 		p5.preload = () => {
 			// Loading all raw assets
-			this.rawImg['1'] = p5.loadImage("public/assets/images/1.png");
-			this.rawImg['2'] = p5.loadImage("public/assets/images/2.png");
+			// this.rawImg['1'] = p5.loadImage("public/assets/images/1.png");
+			// this.rawImg['2'] = p5.loadImage("public/assets/images/2.png");
+
+			// *************************************
+			// Importing new images for masking -KK
+			// *************************************
+			this.rawImg['1'] = p5.loadImage("/assets/images/cat_base.png");
+			this.rawImg['2'] = p5.loadImage("/assets/images/tiger.png");
+			this.rawImg['3'] = p5.loadImage("/assets/images/cat_mask.png");
 		}
 
 		p5.setup = () => {
@@ -72,10 +79,13 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 			let raw1 : p5.Image = this.rawImg['1'];
 			let raw2 : p5.Image = this.rawImg['2']; // raw2 is over raw1
+			let raw1_mask : p5.Image = this.rawImg['3']; 
 			raw1.loadPixels();
 			raw2.loadPixels();
+			raw1_mask.loadPixels();
 
-			overlayBlend(raw1, raw2, img);
+			hardlightBlend(raw1, raw2, img, 0.5);	// hard light blends raw2 over raw1
+			normalBlend(img, raw1_mask, img);		// normal blends mask over img
 
 			p5.image(img, 0, 0);
 
