@@ -55,6 +55,8 @@ What is this? Why is it so dark here?
 
 -> It's okay, You were brough back through the Machine. I'm talking to you upon your family's request.
 
+<<set $integrity = 50>> 
+
 My family? Where are they? Are they here?
 
 -> Unfortunately no, I believe they talked to another instance of you through another service.
