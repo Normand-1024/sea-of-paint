@@ -4,7 +4,7 @@ import React, {createRef} from 'react';
 
 import Candidate from './candidate';
 import SentenceTransformer from '../functions/sentenceTransformer.tsx';
-import {normalBlend, overlayBlend} from '../functions/blending.tsx';
+import {normalBlend, overlayBlend, hardlightBlend} from '../functions/blending.tsx';
 
 import '../App.css';
 
@@ -38,11 +38,10 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 	private imgData: { [id: string] : any; } = {}; // [image descriptions, [3 keywords], questions]
 	private imgEmbed: { [id: string] : any; } = {}; // Embeddings for each image
 
-    Sketch = (p5:any) => {
+  Sketch = (p5:any) => {
 
 		p5.preload = async () => {
 			for (var imgd of IMAGE_DATA) {
-				
 				let name = imgd["name"];
 
 				// Loading raw assets and populate image data by name
@@ -50,6 +49,13 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				this.imgData[name] = imgd;
 				this.imgEmbed[name] = await this.st.embed(imgd["descp"]);
 			}
+
+      // *************************************
+      // Importing new images for masking -KK
+      // *************************************
+      this.rawImg['1'] = p5.loadImage("/assets/images/cat_base.png");
+      this.rawImg['2'] = p5.loadImage("/assets/images/tiger.png");
+      this.rawImg['3'] = p5.loadImage("/assets/images/cat_mask.png");
 		}
 
 		p5.setup = () => {
@@ -88,10 +94,13 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 			let raw1 : p5.Image = this.rawImg['1'];
 			let raw2 : p5.Image = this.rawImg['2']; // raw2 is over raw1
+			let raw1_mask : p5.Image = this.rawImg['3']; 
 			raw1.loadPixels();
 			raw2.loadPixels();
+			raw1_mask.loadPixels();
 
-			overlayBlend(raw1, raw2, img);
+			hardlightBlend(raw1, raw2, img, 0.5);	// hard light blends raw2 over raw1
+			normalBlend(img, raw1_mask, img);		// normal blends mask over img
 
 			p5.image(img, 0, 0);
 
