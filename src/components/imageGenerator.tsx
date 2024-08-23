@@ -3,12 +3,13 @@ import p5 from 'P5';
 import React, {createRef} from 'react';
 
 import Candidate from './candidate';
+import SentenceTransformer from '../functions/sentenceTransformer.tsx';
 import {normalBlend, overlayBlend, hardlightBlend} from '../functions/blending.tsx';
 
 import '../App.css';
 
-
 import {IMAGE_DIM} from '../constants.tsx';
+import { IMAGE_DATA } from '../../public/assets/images/imageData.tsx';
 
 type ImageGeneratorProps = {
 	prompts: Array<string>;
@@ -24,28 +25,37 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
     state: ImageGeneratorState = {
         mainP5: undefined,
 		images: [],
-		currentP5Index: -1
+		currentP5Index: -1,
     };
 
     private p5Ref = createRef<HTMLDivElement>();
 	private p5Canvas : any;
     private candidateEndRef = createRef<HTMLDivElement>();
 
+	private st = new SentenceTransformer();
+
 	private rawImg : { [id: string] : any; } = {};
+	private imgData: { [id: string] : any; } = {}; // [image descriptions, [3 keywords], questions]
+	private imgEmbed: { [id: string] : any; } = {}; // Embeddings for each image
 
-    Sketch = (p5:any) => {
+  Sketch = (p5:any) => {
 
-		p5.preload = () => {
-			// Loading all raw assets
-			// this.rawImg['1'] = p5.loadImage("public/assets/images/1.png");
-			// this.rawImg['2'] = p5.loadImage("public/assets/images/2.png");
+		p5.preload = async () => {
+			for (var imgd of IMAGE_DATA) {
+				let name = imgd["name"];
 
-			// *************************************
-			// Importing new images for masking -KK
-			// *************************************
-			this.rawImg['1'] = p5.loadImage("/assets/images/cat_base.png");
-			this.rawImg['2'] = p5.loadImage("/assets/images/tiger.png");
-			this.rawImg['3'] = p5.loadImage("/assets/images/cat_mask.png");
+				// Loading raw assets and populate image data by name
+				this.rawImg[name] = p5.loadImage("public/assets/images/" + name + ".png");
+				this.imgData[name] = imgd;
+				this.imgEmbed[name] = await this.st.embed(imgd["descp"]);
+			}
+
+      // *************************************
+      // Importing new images for masking -KK
+      // *************************************
+      this.rawImg['1'] = p5.loadImage("/assets/images/cat_base.png");
+      this.rawImg['2'] = p5.loadImage("/assets/images/tiger.png");
+      this.rawImg['3'] = p5.loadImage("/assets/images/cat_mask.png");
 		}
 
 		p5.setup = () => {
@@ -54,12 +64,17 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 			p5.noStroke();
 		}
    
-		p5.draw = () => {
+		p5.draw = async () => {
 			// Save image if the prompt list is updated
 			if (this.props.prompts.length > 0 &&
 				this.props.prompts.length-1 != this.state.currentP5Index) {
 
 				this.state.currentP5Index = this.props.prompts.length-1; //locking
+
+				let prompt = this.props.prompts[this.state.currentP5Index];
+				let prompt_embed = await this.st.embed(prompt);
+
+				console.log(this.st.cosineSimilarity(prompt_embed, this.imgEmbed["1"]));
 
 				p5.generateImage();
 				this.setState((state) => ({
@@ -71,7 +86,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 		// ********************************
 		// Actual image generation function
 		// ********************************
-		p5.generateImage = () => {
+		p5.generateImage = async () => {
 			p5.background('white');
 
 			let img : p5.Image = p5.createImage(500, 500);
@@ -107,7 +122,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
         if (prevState.images.length != this.state.images.length) {
             setTimeout(
 				() => {this.candidateEndRef.current?.scrollIntoView(true)}
-				, 0); // scroll to bottom list, setTimeOut because sometimes it does scroll to the bottom
+				, 0); // scroll to bottom list, setTimeOut because sometimes it doesn't scroll to the bottom
 		}
 	}
 
