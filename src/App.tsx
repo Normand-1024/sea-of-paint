@@ -9,7 +9,7 @@ import MachinePage from './pages/machine.tsx';
 import PaintingPage from './pages/painting.tsx';
 
 function App() {
-  const [pageState, setPageState] = useState(PAGE_STATE["intro"]);
+  const [pageState, setPageState] = useState(PAGE_STATE["machine"]);
 
   return (
     <>

@@ -94,7 +94,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             machineActive: true
         }));
 
-        this.updatePromptList(); // generate a random image
+        //this.updatePromptList(); // generate a random image
         
         this.pushSpiritDialogue(this.state.dialogueRunner.currentResult.text);
         this.state.dialogueRunner.advance();
@@ -124,9 +124,9 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         if (this.state.dialogueVar.get("generate")) {
             this.setState(() => ({ waitingToGenerate: GENERATE_WAIT_TYPE['wait_for_first'] }));
         }
-        else {
-            this.setState(() => ({ waitingToGenerate: GENERATE_WAIT_TYPE['dialogue'] }));
-        }
+        // else {
+        //     this.setState(() => ({ waitingToGenerate: GENERATE_WAIT_TYPE['dialogue'] }));
+        // }
 
         // Whether dialogueRunner.currentResult is option or text
         //  is handled in the HTML, communiated thru the option param
@@ -261,7 +261,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                     <div id="prompt-control">
                         <input type="text" id="prompt" autoComplete="off" ref={this.textPromptRef}></input>
 
-                        {this.state.waitingToGenerate  == GENERATE_WAIT_TYPE['dialogue'] ?
+                        {this.state.waitingToGenerate  == GENERATE_WAIT_TYPE['dialogue']&&false ?
                         <button type="button" id="promptSubmit" disabled>dialogue in progress</button>:
                         <button type="button" id="promptSubmit"
                              onClick = {() => this.updatePromptList()}>generate</button>}

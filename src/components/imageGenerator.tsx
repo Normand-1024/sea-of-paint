@@ -19,7 +19,6 @@ type ImageGeneratorState = {
     mainP5: any;
 	images: Array<string>;
 	currentP5Index: number;
-	similarities: Array<{name: string, score: number}>; // adding similarities to the state -KK
 }
 
 class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGeneratorState> {
@@ -27,7 +26,6 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
         mainP5: undefined,
 		images: [],
 		currentP5Index: -1,
-		similarities: []  
     };
 
     private p5Ref = createRef<HTMLDivElement>();
@@ -50,12 +48,12 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				this.rawImg[name] = p5.loadImage("/assets/images/" + name + ".png");
 				this.imgData[name] = imgd;
 				this.imgEmbed[name] = await this.st.embed(imgd["descp"]);
+				for(let i = 1; i <= imgd["masks"]; i++){
+					this.rawImg[name + "_mask_" + i] = p5.loadImage("/assets/images/" + name + "_mask_" + i + ".png");
+					console.log(name + "_mask_" + i + " is loaded.");
+				}
 			}
-			// temporary implementation, make a imageMaskData.tsx file later -KK 
 			this.rawImg["noise"] = p5.loadImage("/assets/images/noise.png");
-			this.rawImg["city_mask_1"] = p5.loadImage("/assets/images/city_mask_1.png");
-			this.rawImg["lily_mask_1"] = p5.loadImage("/assets/images/lily_mask_1.png");
-			this.rawImg["mey_sitting_2_mask_1"] = p5.loadImage("/assets/images/mey_sitting_2_mask_1.png");
 		}
 
 		p5.setup = () => {
@@ -85,16 +83,9 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 				// sort similarities in descending order -KK
 				similarities.sort((a, b) => b.score - a.score);
-				this.setState({similarities});
-				
-				// print as window alert to debug -KK
-				// let similarity_message = similarities.map(sim => `${sim.name}: ${sim.score}`).join('\n');
-				// window.alert("Sorted similarities:\n" + similarity_message);
-
 				console.log("Sorted similarities: ", similarities);
-				// console.log(this.st.cosineSimilarity(prompt_embed, this.imgEmbed["1"]));
 
-				p5.generateImage();
+				p5.generateImage(similarities);
 				this.setState((state) => ({
 					images: [...state.images, this.p5Canvas.elt.toDataURL()]
 				}));
@@ -104,7 +95,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 		// ********************************
 		// Actual image generation function
 		// ********************************
-		p5.generateImage = async () => {
+		p5.generateImage = (similarities: Array<{ name: string, score: number }>) => {
 			p5.background('white');
 
 			let img : p5.Image = p5.createImage(500, 500);
@@ -112,25 +103,27 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 			// generate image based off of similarity score -KK
 			let first = "noise"; let second = "noise"; let mask = "noise";
-			if(this.state.similarities[0].score > HIGH_BOUND && this.state.similarities[1].score > HIGH_BOUND){			
-				// good similarity, blend these two images
-				first = this.state.similarities[0].name;
-				second = this.state.similarities[1].name;
-				mask = "city_mask_1";	// adjust this to match the first image -KK
-			}
-			else if(this.state.similarities[0].score > LOW_BOUND && this.state.similarities[1].score > LOW_BOUND){	
-				// some similarity, choose random images with score above 0.2
-				let filtered = this.state.similarities.filter(sim => sim.score > 0.2);
-				
-				let x = Math.floor(Math.random() * filtered.length);
-				let y = Math.floor(Math.random() * filtered.length);
-				while (x == y){
-					y = Math.floor(Math.random() * filtered.length);
+			if(similarities.length > 0){
+				if(similarities[0].score > HIGH_BOUND && similarities[1].score > HIGH_BOUND){			
+					// good similarity, blend these two images
+					first = similarities[0].name;
+					second = similarities[1].name;
+					mask = first + "_mask_1";	// need to implement random mask selection -KK
 				}
+				else if(similarities[0].score > LOW_BOUND && similarities[1].score > LOW_BOUND){	
+					// some similarity, choose random images with score above 0.2
+					let filtered = similarities.filter(sim => sim.score > 0.2);
+					
+					let x = Math.floor(Math.random() * filtered.length);
+					let y = Math.floor(Math.random() * filtered.length);
+					while (x == y){
+						y = Math.floor(Math.random() * filtered.length);
+					}
 
-				first = filtered[x].name;
-				second = filtered[y].name;
-				mask = "city_mask_1"; 	// adjust this to match the first image -KK
+					first = filtered[x].name;
+					second = filtered[y].name;
+					mask = first + "_mask_1";
+				}
 			}
 
 			let raw1 : p5.Image = this.rawImg[first];
@@ -140,8 +133,12 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 			raw2.loadPixels();
 			raw1_mask.loadPixels();
 
-			hardlightBlend(raw1, raw2, img);		// hardlight blends raw2 over raw1
-			// make blending random (hardlight, overlay, softlight, etc)
+			// randomize blending -KK
+			let blend = Math.floor(Math.random() * 3);
+			console.log("Blending method: " + blend);
+			if(blend == 0) normalBlend(raw1, raw2, img);
+			if(blend == 1) overlayBlend(raw1, raw2, img);
+			if(blend == 2) hardlightBlend(raw1, raw2, img);
 			normalBlend(img, raw1_mask, img);		// normal blends mask over img
 
 			p5.image(img, 0, 0);
