@@ -76,9 +76,21 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				let similarities = [];
 				for (let imgd of IMAGE_DATA) {
 					let name = imgd["name"];
+					let keywords = imgd["keywords"];
+
 					// compare it to the prompt to get the similarity -KK
 					let similarity = this.st.cosineSimilarity(prompt_embed, this.imgEmbed[name]);
-					similarities.push({name: name, score: similarity});
+
+					// see if the prompt contains the keywords
+					if (similarity > HIGH_BOUND && 
+						prompt.includes(keywords[0]) && 
+						prompt.includes(keywords[1]) && 
+						prompt.includes(keywords[2])) {
+							similarities.push({name: name, score: 1.0});
+					}
+					else{
+						similarities.push({name: name, score: similarity});
+					}
 				}
 
 				// sort similarities in descending order -KK
@@ -104,15 +116,18 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 			// generate image based off of similarity score -KK
 			let first = "noise"; let second = "noise"; let mask = "noise";
 			if(similarities.length > 0){
-				if(similarities[0].score > HIGH_BOUND && similarities[1].score > HIGH_BOUND){			
+				if(similarities[0].score == 1.0){
+					mask = similarities[0].name;
+				}
+				else if(similarities[0].score > HIGH_BOUND && similarities[1].score > HIGH_BOUND){			
 					// good similarity, blend these two images
 					first = similarities[0].name;
 					second = similarities[1].name;
 					mask = first + "_mask_1";	// need to implement random mask selection -KK
 				}
 				else if(similarities[0].score > LOW_BOUND && similarities[1].score > LOW_BOUND){	
-					// some similarity, choose random images with score above 0.2
-					let filtered = similarities.filter(sim => sim.score > 0.2);
+					// some similarity, choose random images with score above the low bound -KK
+					let filtered = similarities.filter(sim => sim.score > LOW_BOUND);
 					
 					let x = Math.floor(Math.random() * filtered.length);
 					let y = Math.floor(Math.random() * filtered.length);
