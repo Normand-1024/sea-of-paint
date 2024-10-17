@@ -50,12 +50,12 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				this.imgEmbed[name] = await this.st.embed(imgd["descp"]);
 			}
 
-      // *************************************
-      // Importing new images for masking -KK
-      // *************************************
-      this.rawImg['1'] = p5.loadImage("/assets/images/cat_base.png");
-      this.rawImg['2'] = p5.loadImage("/assets/images/tiger.png");
-      this.rawImg['3'] = p5.loadImage("/assets/images/cat_mask.png");
+			// *************************************
+			// Importing new images for masking -KK
+			// *************************************
+			this.rawImg['1'] = p5.loadImage("/assets/images/cat_base.png");
+			this.rawImg['2'] = p5.loadImage("/assets/images/tiger.png");
+			this.rawImg['3'] = p5.loadImage("/assets/images/cat_mask.png");
 		}
 
 		p5.setup = () => {

@@ -4,7 +4,7 @@ export const PAGE_STATE = {
     "painting": 2
 }
 
-export const SPIRIT_NAME = "Ivan";
+export const SPIRIT_NAME = "Mey";
 
 export const MID_INTEGR_THRSH = 60;
 export const LOW_INTEGR_THRSH = 10;

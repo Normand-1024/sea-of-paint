@@ -207,7 +207,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                             <div className="button-div">
                             <button type="button" className="dialogue-button" 
                                 onClick = {this.activateMachine}>
-                                Activate Machine, Bring Back Ivan</button></div> :
+                                Activate Machine, Bring Back Mey</button></div> :
                                 
                             (   
                                 "options" in this.state.dialogueRunner.currentResult ?
@@ -216,18 +216,26 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                                     (op:any,i:number) => {                      
                                         return (
                                             
-                                            this.state.dialogueVar.get("machine") ?  
+                                            op.isAvailable ? 
+
+                                            <div className="button-div" key={i}><button key={i} 
+                                                type="button" className="dialogue-button"
+                                                onClick = {() => this.handleDialogue(i)}>
+                                                    {op.text}
+                                            </button></div> : <div></div>
+
+                                            // this.state.dialogueVar.get("machine") ?  
                                                 
-                                                <div className="button-div" key={i}><button key={i} 
-                                                    type="button" className="machine-button"
-                                                    onClick = {() => this.handleDialogue(i)}>
-                                                        {op.text}
-                                                </button></div> :
-                                                <div className="button-div" key={i}><button key={i} 
-                                                    type="button" className="dialogue-button"
-                                                    onClick = {() => this.handleDialogue(i)}>
-                                                        {op.text}
-                                                </button></div>
+                                            //     <div className="button-div" key={i}><button key={i} 
+                                            //         type="button" className="machine-button"
+                                            //         onClick = {() => this.handleDialogue(i)}>
+                                            //             {op.text}
+                                            //     </button></div> :
+                                            //     <div className="button-div" key={i}><button key={i} 
+                                            //         type="button" className="dialogue-button"
+                                            //         onClick = {() => this.handleDialogue(i)}>
+                                            //             {op.text}
+                                            //     </button></div>
                                         );
                                 }) :
 
