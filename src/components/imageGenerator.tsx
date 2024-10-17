@@ -8,7 +8,7 @@ import {normalBlend, overlayBlend, hardlightBlend} from '../functions/blending.t
 
 import '../App.css';
 
-import {IMAGE_DIM} from '../constants.tsx';
+import {IMAGE_DIM, HIGH_BOUND, LOW_BOUND} from '../constants.tsx';
 import { IMAGE_DATA } from '../../public/assets/images/imageData.tsx';
 
 type ImageGeneratorProps = {
@@ -19,6 +19,7 @@ type ImageGeneratorState = {
     mainP5: any;
 	images: Array<string>;
 	currentP5Index: number;
+	similarities: Array<{name: string, score: number}>; // adding similarities to the state -KK
 }
 
 class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGeneratorState> {
@@ -26,6 +27,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
         mainP5: undefined,
 		images: [],
 		currentP5Index: -1,
+		similarities: []  
     };
 
     private p5Ref = createRef<HTMLDivElement>();
@@ -45,7 +47,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				let name = imgd["name"];
 
 				// Loading raw assets and populate image data by name
-				this.rawImg[name] = p5.loadImage("public/assets/images/" + name + ".png");
+				this.rawImg[name] = p5.loadImage("/assets/images/" + name + ".png");
 				this.imgData[name] = imgd;
 				this.imgEmbed[name] = await this.st.embed(imgd["descp"]);
 			}
@@ -74,7 +76,25 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				let prompt = this.props.prompts[this.state.currentP5Index];
 				let prompt_embed = await this.st.embed(prompt);
 
-				console.log(this.st.cosineSimilarity(prompt_embed, this.imgEmbed["1"]));
+				// get the similarity score for each image -KK
+				let similarities = [];
+				for (let imgd of IMAGE_DATA) {
+					let name = imgd["name"];
+					// compare it to the prompt to get the similarity -KK
+					let similarity = this.st.cosineSimilarity(prompt_embed, this.imgEmbed[name]);
+					similarities.push({name: name, score: similarity});
+				}
+
+				// sort similarities in descending order -KK
+				similarities.sort((a, b) => b.score - a.score);
+				this.setState({similarities});
+				
+				// print as window alert to debug -KK
+				// let similarity_message = similarities.map(sim => `${sim.name}: ${sim.score}`).join('\n');
+				// window.alert("Sorted similarities:\n" + similarity_message);
+
+				console.log("Sorted similarities: ", similarities);
+				// console.log(this.st.cosineSimilarity(prompt_embed, this.imgEmbed["1"]));
 
 				p5.generateImage();
 				this.setState((state) => ({
@@ -92,14 +112,38 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 			let img : p5.Image = p5.createImage(500, 500);
 			img.loadPixels();
 
-			let raw1 : p5.Image = this.rawImg['1'];
-			let raw2 : p5.Image = this.rawImg['2']; // raw2 is over raw1
-			let raw1_mask : p5.Image = this.rawImg['3']; 
+			// generate image based off of similarity score -KK
+			let first = "noise"; let second = "noise"; let mask = "noise";
+			if(this.state.similarities[0].score > HIGH_BOUND && this.state.similarities[1].score > HIGH_BOUND){			
+				// good similarity, blend these two images
+				first = this.state.similarities[0].name;
+				second = this.state.similarities[1].name;
+				mask = "city_mask_1";	// adjust this to match the first image -KK
+			}
+			else if(this.state.similarities[0].score > LOW_BOUND && this.state.similarities[1].score > LOW_BOUND){	
+				// some similarity, choose random images with score above 0.2
+				let filtered = this.state.similarities.filter(sim => sim.score > 0.2);
+				
+				let x = Math.floor(Math.random() * filtered.length);
+				let y = Math.floor(Math.random() * filtered.length);
+				while (x == y){
+					y = Math.floor(Math.random() * filtered.length);
+				}
+
+				first = filtered[x].name;
+				second = filtered[y].name;
+				mask = "city_mask_1"; 	// adjust this to match the first image -KK
+			}
+
+			let raw1 : p5.Image = this.rawImg[first];
+			let raw2 : p5.Image = this.rawImg[second]; // raw2 is over raw1
+			let raw1_mask : p5.Image = this.rawImg[mask];
 			raw1.loadPixels();
 			raw2.loadPixels();
 			raw1_mask.loadPixels();
 
-			hardlightBlend(raw1, raw2, img, 0.5);	// hard light blends raw2 over raw1
+			hardlightBlend(raw1, raw2, img);		// hardlight blends raw2 over raw1
+			// make blending random (hardlight, overlay, softlight, etc)
 			normalBlend(img, raw1_mask, img);		// normal blends mask over img
 
 			p5.image(img, 0, 0);
@@ -138,7 +182,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				{this.state.images.map((url,index) => {
 					return (
 						<Candidate inprompt={this.props.prompts[index]}
-							imageurl={url} key={index}></Candidate>
+                            imageurl={url}></Candidate>
 					)
 				})}
 				
