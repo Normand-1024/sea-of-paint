@@ -46,7 +46,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
 
         // *********** Load the text into markov chain ***********
 
-        this.state.markovScrambler.initialize("public/assets/markovtext.txt");
+        this.state.markovScrambler.initialize("./assets/markovtext.txt");
 
         // *********** Load the yarn file into dialogueRunner ***********
         fetch("./texts/dialogue.yarn")
