@@ -9,7 +9,7 @@ export const IMAGE_DATA : Array<any> = [
     },
     {   
         "name": "lily",
-        "descp": "Lily walking smoking",
+        "descp": "young Lily walking smoking",
         "keywords": ["guilty", "hope", "uncertainty"],
         "info": "lily",
         "interpretations": [["This image shows Lily's self-reliance",
