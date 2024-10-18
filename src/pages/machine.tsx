@@ -49,7 +49,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         this.state.markovScrambler.initialize("public/assets/markovtext.txt");
 
         // *********** Load the yarn file into dialogueRunner ***********
-        fetch("public/texts/dialogue.yarn")
+        fetch("./texts/dialogue.yarn")
         .then((res) => res.text())
         .then((text) => {
             this.setState(() => ({
@@ -201,8 +201,8 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                 <div id="machineDisplay">
                     <img id="nameCard"
                         src={this.state.machineActive ? 
-                                "public/assets/images/mey_dialogue_1.png" 
-                                : "public/assets/images/namecard.png"}
+                                "./assets/images/mey_dialogue_1.png" 
+                                : "./assets/images/namecard.png"}
                         style={{position: this.state.machineActive ? "absolute" : "relative",
                                 right: this.state.machineActive ? "81%" : "0"}}>
                     </img>
