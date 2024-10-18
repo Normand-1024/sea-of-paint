@@ -1,5 +1,5 @@
 //@ts-ignore
-import p5 from 'P5';
+import p5 from 'p5';
 import React, {createRef} from 'react';
 
 import '../App.css';
