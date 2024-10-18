@@ -43,7 +43,7 @@ position: -47,-558
 
 -> Hello, Mey.
 
-<<jump Act_1_Lily>>
+// <<jump Act_1_Lily>>
 
 What is this? Why is it so dark here?
 
