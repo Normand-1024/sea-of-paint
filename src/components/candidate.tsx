@@ -25,7 +25,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
 
         // check if paths to unlocked the image has been traversed
         let imgName = this.props.imgName;
-        let filtered = this.props.imgData[imgName]["path"].filter((n: string) => this.props.dialogueVar.get(n) == true);
+        let filtered = imgName == "noise" ? undefined : this.props.imgData[imgName]["path"].filter((n: string) => this.props.dialogueVar.get(n) == true);
         let traversed = filtered.length > 0;
 
         return (

@@ -72,7 +72,9 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         this.state.dialogueVar.set(v, value);
 
         // Check if there's any interpretations left open
-
+        if (this.state.generateState == GENERATE_WAIT_TYPE['wait_for_lily'] &&
+            this.state.dialogueVar.get("lily") >= 0)
+            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['generated'] }));
 
         this.forceUpdate();
     }
@@ -116,9 +118,9 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         if (this.textPromptRef.current) inprompt = this.textPromptRef.current.value;
         else inprompt = "SOMETHING WENT WRONG";
         
-        if (this.state.generateState == GENERATE_WAIT_TYPE['wait_for_first'] ||
-            this.state.generateState == GENERATE_WAIT_TYPE['wait_for_lily'] )
+        if (this.state.generateState == GENERATE_WAIT_TYPE['wait_for_first'])
             this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['generated'] }));
+        else 
 
         this.setState((state) => ({
             promptList: [...state.promptList, inprompt]
@@ -200,11 +202,14 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
 
                 <div id="machineDisplay">
                     <img id="nameCard"
-                        src={this.state.machineActive ? 
-                                "./assets/images/mey_dialogue_1.png" 
-                                : "./assets/images/namecard.png"}
+                        src={!this.state.machineActive ? 
+                                "./assets/images/namecard.png" 
+                                : this.state.generateState == GENERATE_WAIT_TYPE['dialogue'] ?
+                                    "./assets/images/mey_dialogue_1.png"
+                                    : "./assets/images/mey_dialogue_2.png"
+                            }
                         style={{position: this.state.machineActive ? "absolute" : "relative",
-                                right: this.state.machineActive ? "81%" : "0"}}>
+                                right: this.state.machineActive ? "82%" : "0"}}>
                     </img>
 
                     <div id="dialogueCol"

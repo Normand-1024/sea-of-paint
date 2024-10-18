@@ -82,9 +82,22 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				let similarities = [];
 				for (let imgd of IMAGE_DATA) {
 					let name = imgd["name"];
+					let keywords = imgd["keywords"];
+
 					// compare it to the prompt to get the similarity -KK
 					let similarity = this.st.cosineSimilarity(prompt_embed, this.imgEmbed[name]);
 					similarities.push({name: name, score: similarity});
+
+					// see if the prompt contains the keywords
+					if (similarity > HIGH_BOUND && 
+						prompt.includes(keywords[0]) && 
+						prompt.includes(keywords[1]) && 
+						prompt.includes(keywords[2])) {
+							similarities.push({name: name, score: 1.0});
+					}
+					else{
+						similarities.push({name: name, score: similarity});
+					}
 				}
 
 				// sort similarities in descending order -KK
@@ -108,6 +121,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 			p5.background('white');
 
 			let img : p5.Image = p5.createImage(500, 500);
+			let unlocked = false;
 			img.loadPixels();
 
 			// console.log(similarities);
@@ -116,7 +130,11 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 			// generate image based off of similarity score -KK
 			let first = "noise"; let second = "noise"; let mask = "noise";
 
-			if(similarities[0].score > HIGH_BOUND && similarities[1].score > HIGH_BOUND){			
+			if(similarities[0].score == 1.0){
+				first = similarities[0].name;
+				unlocked = true;
+			}
+			else if(similarities[0].score > HIGH_BOUND && similarities[1].score > HIGH_BOUND){			
 				// good similarity, blend these two images
 				first = similarities[0].name;
 				second = similarities[1].name;
@@ -150,13 +168,18 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 			// make blending random (hardlight, overlay, softlight, etc)
 			normalBlend(img, raw1_mask, img);		// normal blends mask over img
 
-			p5.image(img, 0, 0);
+			if (unlocked){
+				p5.image(raw1, 0, 0);
+			}
+			else{
+				p5.image(img, 0, 0);
+			}
 
 			//p5.text(this.props.prompts[this.props.prompts.length-1], IMAGE_DIM/10, IMAGE_DIM/10);
 
 			// Check if this image has been unlocked, set the variables in yarn
 			// -2: not unlocked, -1: unlocked but waiting for interpretation
-			if(this.props.dialogueVar.get(first) == -2){
+			if(this.props.dialogueVar.get(first) == -2 && unlocked){
 				this.props.setDialogueVar(first, -1);
 			}
 
