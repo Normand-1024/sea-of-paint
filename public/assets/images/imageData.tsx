@@ -1,30 +1,39 @@
 export const IMAGE_DATA : Array<any> = [
     {   
         "name": "city",
-        "descp": "city buildings corporate job work data unfulfilled sitting desk typing computer boss",
-        "keywords": ["city", "job", "unfulfilled"],
-        "questions": "questions",
-        "unlocked": "unlockedText"
+        "descp": "city buildings",
+        "keywords": [],
+        "info": "city",
+        "interpretations": [],
+        "path": []
     },
     {   
         "name": "lily",
-        "descp": "girl red walking cigarette backpack school highschool rebellious",
-        "keywords": ["girl", "walking", "freedom"],
-        "questions": "questions",
-        "unlocked": "unlockedText"
+        "descp": "Lily walking smoking",
+        "keywords": ["guilty", "hope", "uncertainty"],
+        "info": "lily",
+        "interpretations": [["This image shows Lily's self-reliance",
+                                    "Lily's pose of walking, and the sense of speed in the movement. They show Lily's determination to face the future."
+                            ],
+                            ["This image shows Lily's loneliness and pain",
+                                    "Her expression feels detached. The external coldness of her figure hides a person bearing something difficult deep within."
+                            ]],
+        "path": ["p_lily_initial"]
     },
     {   
         "name": "mey_sitting_2",
-        "descp": "woman sitting chair desk pensive thinking bored reflecting house",
-        "keywords": ["woman", "sitting", "pensive"],
-        "questions": "questions",
-        "unlocked": "unlockedText"
+        "descp": "Mey sitting thinking home",
+        "keywords": [],
+        "info": "mey_sitting_2",
+        "interpretations": [],
+        "path": []
     },
     {   
         "name": "mey_crowd",
-        "descp": "woman crowd busy blur uncertain afraid",
-        "keywords": ["woman", "crowd", "uncertain"],
-        "questions": "questions",
-        "unlocked": "unlockedText"
+        "descp": "Mey crowd uncertain",
+        "keywords": [],
+        "info": "mey_crowd",
+        "interpretations": [],
+        "path": []
     },
 ];
