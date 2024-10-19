@@ -1,17 +1,17 @@
 export const IMAGE_DATA : Array<any> = [
     {   
         "name": "city",
-        "descp": "city buildings",
+        "descp": "distorted view of a city block",
         "keywords": [],
-        "info": "city",
+        "info": "A distorted view of a city block.",
         "interpretations": [],
         "path": []
     },
     {   
         "name": "lily",
         "descp": "young Lily walking smoking",
-        "keywords": ["guilty", "hope", "uncertainty"],
-        "info": "lily",
+        "keywords": ["guilty", "hope", "uncertainty", "mother", "daughter", "potential"],
+        "info": "The memory seems to show Lily walking and smoking.",
         "interpretations": [["This image shows Lily's self-reliance",
                                     "Lily's pose of walking, and the sense of speed in the movement. They show Lily's determination to face the future."
                             ],
@@ -22,17 +22,17 @@ export const IMAGE_DATA : Array<any> = [
     },
     {   
         "name": "mey_sitting_2",
-        "descp": "Mey sitting thinking home",
+        "descp": "older Mey sitting deep thinking in home",
         "keywords": [],
-        "info": "mey_sitting_2",
+        "info": "This memory shows an older Mey sitting in her home, deep in thoughts.",
         "interpretations": [],
         "path": []
     },
     {   
         "name": "mey_crowd",
-        "descp": "Mey crowd uncertain",
+        "descp": "young and child Mey stnading in crowd uncertain",
         "keywords": [],
-        "info": "mey_crowd",
+        "info": "This memory shows a younger Mey standing a crowd, feeling uncertain.",
         "interpretations": [],
         "path": []
     },
