@@ -77,6 +77,6 @@ export class MarkovScrambler {
         let prompt_insert = prompt;
         let prompt_after = inprompt.substring(word_pos);
         
-        return prompt_previous + prompt_insert + ' ' + prompt_after;
+        return prompt_previous + prompt_insert + ' ------ ' + prompt_after;
     }
 }

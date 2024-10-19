@@ -74,7 +74,9 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         // Check if there's any interpretations left open
         if (this.state.generateState == GENERATE_WAIT_TYPE['wait_for_lily'] &&
             this.state.dialogueVar.get("lily") >= 0)
-            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['generated'] }));
+            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['generated'] }));  
+        // else if (this.state.generateState == GENERATE_WAIT_TYPE['wait_for_lily'])
+        //     this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['generated'] }));
 
         this.forceUpdate();
     }
@@ -82,8 +84,10 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     pushSpiritDialogue = (line : string) => {
         
         // Check scrambling
-        if (this.state.dialogueVar.get("integrity") < MID_INTEGR_THRSH || this.state.dialogueVar.get("scramble"))
+        if (this.state.dialogueVar.get("integrity") < MID_INTEGR_THRSH || this.state.dialogueVar.get("scramble")){
             line = this.state.markovScrambler.markovScramble(this.state.dialogueRunner.currentResult.text);
+            line = this.state.markovScrambler.markovScramble(line);
+        }
         else if (this.state.dialogueVar.get("integrity") < LOW_INTEGR_THRSH)
             line = this.state.markovScrambler.generate();
 
@@ -209,7 +213,8 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                                     : "./assets/images/mey_dialogue_2.png"
                             }
                         style={{position: this.state.machineActive ? "absolute" : "relative",
-                                right: this.state.machineActive ? "82%" : "0"}}>
+                                right: this.state.machineActive ? "82%" : "0",
+                                height: this.state.machineActive ? "" : "40%"}}>
                     </img>
 
                     <div id="dialogueCol"

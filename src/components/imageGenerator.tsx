@@ -11,6 +11,8 @@ import '../App.css';
 import {IMAGE_DIM, HIGH_BOUND, LOW_BOUND} from '../constants.tsx';
 import { IMAGE_DATA } from '../../public/assets/images/imageData.tsx';
 
+let UNLOCK_SCORE = 1.2;
+
 type ImageGeneratorProps = {
 	prompts: Array<string>;
     dialogueVar: Map<any, any>;
@@ -75,7 +77,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 				this.state.currentP5Index = this.props.prompts.length-1; //locking
 
-				let prompt = this.props.prompts[this.state.currentP5Index];
+				let prompt = this.props.prompts[this.state.currentP5Index].toLowerCase();
 				let prompt_embed = await this.st.embed(prompt);
 
 				// get the similarity score for each image -KK
@@ -93,10 +95,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 						prompt.includes(keywords[0]) && 
 						prompt.includes(keywords[1]) && 
 						prompt.includes(keywords[2])) {
-							similarities.push({name: name, score: 1.0});
-					}
-					else{
-						similarities.push({name: name, score: similarity});
+							similarities.push({name: name, score: UNLOCK_SCORE});
 					}
 				}
 
@@ -129,30 +128,29 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 			// generate image based off of similarity score -KK
 			let first = "noise"; let second = "noise"; let mask = "noise";
+			let filtered = similarities.filter(sim => sim.score > LOW_BOUND);
 
-			if(similarities[0].score == 1.0){
+			if(similarities[0].score == UNLOCK_SCORE){
 				first = similarities[0].name;
 				unlocked = true;
 			}
-			else if(similarities[0].score > HIGH_BOUND && similarities[1].score > HIGH_BOUND){			
-				// good similarity, blend these two images
+			else if(similarities[0].score > HIGH_BOUND) {
 				first = similarities[0].name;
 				second = similarities[1].name;
-				mask = similarities[0].name + "_mask_1";	// adjust this to match the first image -KK
+				mask = first + "_mask_1";
 			}
-			else if(similarities[0].score > LOW_BOUND && similarities[1].score > LOW_BOUND){	
-				// some similarity, choose random images with score above 0.2
-				let filtered = similarities.filter(sim => sim.score > LOW_BOUND);
-				
+			else if(filtered.length > 0){
 				let x = Math.floor(Math.random() * filtered.length);
-				let y = Math.floor(Math.random() * filtered.length);
-				while (x == y){
-					y = Math.floor(Math.random() * filtered.length);
-				}
-
 				first = filtered[x].name;
-				second = filtered[y].name;
-				mask = filtered[x].name + "_mask_1"; 	// adjust this to match the first image -KK
+
+				// Just randomly pick second image
+				let y = Math.floor(Math.random() * similarities.length);
+				while (x == y){
+					y = Math.floor(Math.random() * similarities.length);
+				}
+				second = similarities[y].name;
+
+				mask = first + "_mask_1"; 	// adjust this to match the first image -KK
 			}
 
 			// console.log([first, second, mask]);

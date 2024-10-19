@@ -26,7 +26,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
         // check if paths to unlocked the image has been traversed
         let imgName = this.props.imgName;
         let filtered = imgName == "noise" ? undefined : this.props.imgData[imgName]["path"].filter((n: string) => this.props.dialogueVar.get(n) == true);
-        let traversed = filtered.length > 0;
+        let traversed = filtered && filtered.length > 0;
 
         return (
             <div className = "candidate">
@@ -41,8 +41,8 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
 
                 {  // | noise or not unlockable | not yet traversed | traversed not unlocked | interpreted | unlocked not interpreted
                     (imgName == "noise" || this.props.imgData[imgName]["path"].length == 0) ? <p style={{'display':'none'}}></p> :
-                        !traversed ? <p style={{'marginTop': 0}}>This is Mey's core memory. I don't have the words to unlock the authentic image yet.</p> :
-                            this.props.dialogueVar.get(imgName) == -2 ? <p style={{'marginTop': 0}}>This is Mey's core memory. I think I have the words for the authentic image now.</p> :
+                        !traversed ? <p style={{'marginTop': 0}}>This is Mey's core memory, but tainted by another imagery. I don't have the words to unlock the authentic image yet.</p> :
+                            this.props.dialogueVar.get(imgName) == -2 ? <p style={{'marginTop': 0}}>This is Mey's core memory, but tainted by another imagery. I should have the words to unlock it now, but it's not entered correctly. </p> :
                                 this.props.dialogueVar.get(imgName) > -1 ? <p style={{'marginTop': 0}}>{this.props.imgData[imgName]["interpretations"][this.props.dialogueVar.get(imgName)][1]}</p> :
                                     
                                 // The buttons for interpretations

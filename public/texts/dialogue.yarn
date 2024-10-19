@@ -43,7 +43,7 @@ position: -47,-558
 
 -> Hello, Mey.
 
-// <<jump Act_1_Lily>>
+//<<jump Act_1_Lily>>
 
 What is this? Why is it so dark here?
 
@@ -96,7 +96,7 @@ So my family hired you? Why aren't they with you?
 
 Wouldn't the Sea have recorded it? I don't remember anything.
 
--> (Lie)I'm not sure why. They did not inform me.
+-> (Lie) I'm not sure why. They did not inform me.
 
 I don't understand...I really want to talk to them...
 
@@ -276,7 +276,7 @@ Alright, I guess I have no choice. Go ahead then.
 
 <<set $generate_lily = true>>
 <<set $self = true>> 
-Mey's back to the Sea now. Let's try to get a clear picture of Lily. A text prompt, plus three words describing how Mey feels about Lily from our conversation.
+Mey's back to the Sea now. Let's try to get a clear picture of Lily. Some words describing a picture of Lily, plus three words describing how Mey feels about Lily from our conversation.
 <<set $self = false>>
 
 
