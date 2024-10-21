@@ -182,7 +182,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 			}
 
 			this.setState((state) => ({
-				images: [...state.images, [first, this.p5Canvas.elt.toDataURL()]]
+				images: [...state.images, [first, second, this.p5Canvas.elt.toDataURL()]]
 			}));
 		}
 
@@ -218,8 +218,9 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 					return (
 						<Candidate 
 							inprompt={this.props.prompts[index]}
-                            imageurl={img[1]} 
+                            imageurl={img[2]} 
 							imgName={img[0]}
+							imgName2={img[1]}
 							imgData={this.imgData}
 
 							dialogueVar = {this.props.dialogueVar}
