@@ -55,13 +55,6 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				this.imgEmbed[name] = await this.st.embed(imgd["descp"]);
 			}
 			this.rawImg["noise"] = p5.loadImage("./assets/images/noise.png");
-
-			// // *************************************
-			// // Importing new images for masking -KK
-			// // *************************************
-			// this.rawImg['1'] = p5.loadImage("/assets/images/cat_base.png");
-			// this.rawImg['2'] = p5.loadImage("/assets/images/tiger.png");
-			// this.rawImg['3'] = p5.loadImage("/assets/images/cat_mask.png");
 		}
 
 		p5.setup = () => {
@@ -90,24 +83,28 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 					let similarity = this.st.cosineSimilarity(prompt_embed, this.imgEmbed[name]);
 					similarities.push({name: name, score: similarity});
 
-					// see if the prompt contains the keywords
-					if (similarity > HIGH_BOUND && 
-						prompt.includes(keywords[0]) && 
-						prompt.includes(keywords[1]) && 
-						prompt.includes(keywords[2])) {
+					// check for keywords if the similarity is high enough -KK 
+					if (similarity > HIGH_BOUND){
+						let count = 0;
+						// iterate through each keyword set for the image -KK 
+						for (let word_set of keywords){
+							for (let word of word_set){
+								if(prompt.includes(word)){
+									count++;	// the prompt matches a word in the keyword set -KK
+									break;		// break to avoid accidental repetitions -KK
+								}
+							}
+						}
+						if (count >= 3){
 							similarities.push({name: name, score: UNLOCK_SCORE});
+						}
+						console.log("Count: ", count);
 					}
 				}
 
 				// sort similarities in descending order -KK
 				similarities.sort((a, b) => b.score - a.score);
-				
-				// print as window alert to debug -KK
-				// let similarity_message = similarities.map(sim => `${sim.name}: ${sim.score}`).join('\n');
-				// window.alert("Sorted similarities:\n" + similarity_message);
-
 				console.log("Sorted similarities: ", similarities);
-				// console.log(this.st.cosineSimilarity(prompt_embed, this.imgEmbed["1"]));
 
 				p5.generateImage(similarities);
 			}
@@ -122,9 +119,6 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 			let img : p5.Image = p5.createImage(500, 500);
 			let unlocked = false;
 			img.loadPixels();
-
-			// console.log(similarities);
-			// console.log(this.rawImg);
 
 			// generate image based off of similarity score -KK
 			let first = "noise"; let second = "noise"; let mask = "noise";
@@ -152,8 +146,6 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 				mask = first + "_mask_1"; 	// adjust this to match the first image -KK
 			}
-
-			// console.log([first, second, mask]);
 
 			let raw1 : p5.Image = this.rawImg[first];
 			let raw2 : p5.Image = this.rawImg[second]; // raw2 is over raw1
