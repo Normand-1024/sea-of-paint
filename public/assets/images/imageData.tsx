@@ -10,7 +10,9 @@ export const IMAGE_DATA : Array<any> = [
     {   
         "name": "lily",
         "descp": "young Lily walking smoking",
-        "keywords": ["guilty", "hope", "uncertainty", "mother", "daughter", "potential"],
+        "keywords": [["guilty", "guilt"], ["hope", "hopeful", "hoping"], ["uncertainty", "uncertain", "not certain"], 
+                    ["mother", "motherly", "parent"], ["daughter", "daughterly", "child", "child-like"], 
+                    ["potential", "prospective", "capable", "ambition", "ambitious", "resilience", "determination"]],
         "info": "The memory seems to show Lily walking and smoking.",
         "interpretations": [["This image shows Lily's self-reliance and determination.",
                                 "Lily's pose of walking, and the sense of speed in the movement. They show Lily's readiness to face the future."
