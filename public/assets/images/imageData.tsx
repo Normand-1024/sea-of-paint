@@ -11,8 +11,7 @@ export const IMAGE_DATA : Array<any> = [
         "name": "lily",
         "descp": "young Lily walking smoking",
         "keywords": [["guilty", "guilt"], ["hope", "hopeful", "hoping"], ["uncertainty", "uncertain", "not certain"], 
-                    ["mother", "motherly", "parent"], ["daughter", "daughterly", "child", "child-like"], 
-                    ["potential", "prospective", "capable", "ambition", "ambitious", "resilience", "determination"]],
+                    ["mother", "motherly", "daughter"], ["potential"]],
         "info": "The memory seems to show Lily walking and smoking.",
         "interpretations": [["This image shows Lily's self-reliance and determination.",
                                 "Lily's pose of walking, and the sense of speed in the movement. They show Lily's readiness to face the future."
@@ -41,5 +40,34 @@ export const IMAGE_DATA : Array<any> = [
         "info": "This memory shows a younger Mey standing a crowd, feeling uncertain.",
         "interpretations": [],
         "path": []
+    },
+    {   
+        "name": "lily_car",
+        "descp": "Lily in a car in pain feeling really emotionally stressed anxiety attack frustrated",
+        "keywords": [["sorry", "pity"], ["regret", "regretful"], ["sick"], 
+                    ["hurts", "hurt", "hurtful"], ["worried", "worry"]],
+        "info": "This memory shows Lily in a car, seemingly in stress.",
+        "interpretations": [["This image shows Lily having an anxiety attack. She is in pain.",
+                                "Lily looks like she has lost control of her inner self, desperate trying to make something go away. No wonder she craved escape."
+                            ],
+                            ["This image shows Lily's frustration at herself. She wants to escape.",
+                                "Lily looks like she wants to take control of her life again. Angry at her past actions and bottling up frustration. It explains her determination to leave."
+                            ]
+                            ],
+        "path": ["p_lily_work"]
+    },
+    {   
+        "name": "stefan",
+        "descp": "Well-dressed Stefan standing manager looking resentful with green suit red tie",
+        "keywords": [["pathetic"], ["insecure"], ["desperate"]],
+        "info": "The memory shows a young man, well-dressed, looking resentful.",
+        "interpretations": [["This image shows Stefan's anger. He cannot shake off his disappointment at both the world and himself.",
+                                "When someone is angry, that's because they are not heard. The expression is clearly one of despise, ready to be aggressive any minute."
+                            ],
+                            ["This image shows how Stefan feels trapped, being caged in and cannot be free. He is terrified.",
+                                "Stefan's head is lowered in this picture, looking up at something off-screen. The background is claustrophobic. He lives in a fight and flight mode."
+                            ]
+                            ],
+        "path": ["p_manager"]
     },
 ];

@@ -75,6 +75,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 				// get the similarity score for each image -KK
 				let similarities = [];
+				console.log(this.props.prompts);
 				for (let imgd of IMAGE_DATA) {
 					let name = imgd["name"];
 					let keywords = imgd["keywords"];
@@ -84,7 +85,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 					similarities.push({name: name, score: similarity});
 
 					// check for keywords if the similarity is high enough -KK 
-					if (similarity > HIGH_BOUND){
+					if (similarity > LOW_BOUND){
 						let count = 0;
 						// iterate through each keyword set for the image -KK 
 						for (let word_set of keywords){
@@ -98,7 +99,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 						if (count >= 3){
 							similarities.push({name: name, score: UNLOCK_SCORE});
 						}
-						console.log("Count: ", count);
+						// console.log("Count: ", count);
 					}
 				}
 
@@ -134,12 +135,12 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				mask = first + "_mask_1";
 			}
 			else if(filtered.length > 0){
-				let x = Math.floor(Math.random() * filtered.length);
-				first = filtered[x].name;
+				//let x = Math.floor(Math.random() * filtered.length);
+				first = filtered[0].name;
 
 				// Just randomly pick second image
 				let y = Math.floor(Math.random() * similarities.length);
-				while (x == y){
+				while (y == 0){
 					y = Math.floor(Math.random() * similarities.length);
 				}
 				second = similarities[y].name;

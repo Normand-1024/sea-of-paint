@@ -10,6 +10,7 @@ position: -47,-558
 <<set $scramble = false>>
 <<set $generate_lily = false>>
 <<set $generate = false>>
+<<set $generate_count = 0>>
 
 // Image Unlocked, the variable names match the image names
 // -2: not unlocked, -1: unlocked but waiting for interpretation
@@ -46,7 +47,7 @@ position: -47,-558
 
 -> Hello, Mey.
 
-<<jump Act_1_Lily>>
+// <<jump Act_1_Lily>>
 
 What is this? Why is it so dark here?
 
@@ -392,9 +393,9 @@ position: -19,393
 
     <<jump Act_2_Mey_Work>>
 
--> Did you want to do something else outside of being a Sea Weaver, Mey?
+// -> Did you want to do something else outside of being a Sea Weaver, Mey?
 
-    <<jump Act_2_Writing>>
+//     <<jump Act_2_Writing>>
 
 -> Oh Mey, I forgot to mention. Lily's image looks good.
 
@@ -415,9 +416,9 @@ position: -136,1177
 
     <<jump Act_2_Mey_Work>>
 
--> Did you want to do something else outside of being a Sea Weaver? <<if $p_writing is false>>
+// -> Did you want to do something else outside of being a Sea Weaver? <<if $p_writing is false>>
 
-    <<jump Act_2_Writing>>
+//     <<jump Act_2_Writing>>
 
 -> Oh Mey, I forgot to mention. Lily's image looks good. <<if $p_lily_work is false>>
 
@@ -438,7 +439,40 @@ title: Act_2_Generation
 position: -140,1354
 ---
 
-body!
+<<if $generate_count >= 0>>
+
+-> Hey Mey, I will put you into the Sea now. I'll see you in a bit.
+
+Okay, sounds good
+
+<<set $self = true>> 
+<<set $generate = true>>
+Mey's back to the Sea again.
+<<set $self = false>>
+
+<<endif>>
+
+
+<<set $generate_count = $generate_count + 1>>
+
+// ==========================================
+
+
+-> You're back, Mey. How are you feeling?
+
+<<if $generate_count == 1>>
+
+I don't think I'm quite used to it yet. I have to remember who I am everytime.
+
+But nevertheless, let's continue.
+
+<<elseif $generate_count > 1>>
+
+Still requires some effort to come back. You calling my name seems to help a little.
+
+<<endif>>
+
+<<jump Act_2_Hub>>
 
 ===
 
@@ -638,7 +672,7 @@ position: 963,435
 
 <<set $p_mey_work_2 = true>>
 
-body!
+Haven't written this one yet, oops!
 
 <<jump Act_2_Hub>>
 
@@ -651,7 +685,9 @@ position: 386,910
 
 <<set $p_writing = true>>
 
-body!
+Haven't written this one yet, oops!
+
+<<jump Act_2_Hub>>
 
 
 ===
@@ -705,11 +741,11 @@ I wonder how she thinks about it. Show her the picture and tell her my memories 
 
 <<endif>>
 
-...Lily signs up for labeling work that's...let's say more intense...
+...Lily signs up for labeling work that's...let's say more intense...it made me really worried.
 
 -> Intense how?
 
-They are for filtering and moerating purposes, a lot of very disturbing things you wouldn't see...
+They are for filtering and moderating purposes, a lot of very disturbing things you wouldn't see...
 
 ...abuse, torture, sexual exploitation, real death...those kinds of stuff.
 

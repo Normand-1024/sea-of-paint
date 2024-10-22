@@ -124,7 +124,6 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         
         if (this.state.generateState == GENERATE_WAIT_TYPE['wait_for_first'])
             this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['generated'] }));
-        else 
 
         this.setState((state) => ({
             promptList: [...state.promptList, inprompt]
