@@ -10,6 +10,7 @@ position: -47,-558
 <<set $scramble = false>>
 <<set $generate_lily = false>>
 <<set $generate = false>>
+<<set $generate_count = 0>>
 
 // Image Unlocked, the variable names match the image names
 // -2: not unlocked, -1: unlocked but waiting for interpretation
@@ -39,11 +40,14 @@ position: -47,-558
 <<set $act_1_remember_or_emotion = false>>
 <<set $act_1_flower_or_book = false>>
 
+// Act_2_Lily_Work
+<<set $act_2_lie_lily = false>>
+
 ...Hello?
 
 -> Hello, Mey.
 
-//<<jump Act_1_Lily>>
+// <<jump Act_1_Lily>>
 
 What is this? Why is it so dark here?
 
@@ -274,9 +278,13 @@ Oh, you want to do it now? Do you need to switch mode or something?
 
 Alright, I guess I have no choice. Go ahead then.
 
-<<set $generate_lily = true>>
 <<set $self = true>> 
-Mey's back to the Sea now. Let's try to get a clear picture of Lily. Some words describing a picture of Lily, plus three words describing how Mey feels about Lily from our conversation.
+Mey's back to the Sea now. Let's try to generate a picture from the Machine. 
+
+Some words describing a picture of Lily, plus three words describing how Mey feels about Lily from our conversation.
+
+<<set $generate_lily = true>>
+Everything in one text prompt, so the Machine can generate Mey's authentic memory of Lily.
 <<set $self = false>>
 
 
@@ -285,7 +293,7 @@ Mey's back to the Sea now. Let's try to get a clear picture of Lily. Some words 
 ===
 
 title: Act_2_Beginning
-position: -304,333
+position: 3,180
 ---
 
 -> You are back, Mey. How are you feeling?
@@ -308,13 +316,15 @@ A little dizzy, like I need to recollect who I am, as if I forgot in my sleep.
 
 -> You work with the Machine, right?
 
-Sort of...I'm a Sea Engineer.
+Sort of...I'm a Sea Weaver.
 
-It's a dumb name. We used to call it "data worker" before the Sea came to be.
+It's a dumb name. We used to call it "data worker" before the Sea came to be. I don't work with the Machine directly.
 
-I don't work with the Machine directly. I just create structures within the Sea so the Machine knows what to draw from it.
+We create, or "weave", structures into the Sea so the Machine knows what to draw from it.
 
--> It's a part of the Machine nonetheless. Not any less important.
+Also, because the Sea is ever flowing and shifting, datasets would wear and tear. So we have do maintenance as well.
+
+-> It's a part of the Machine nonetheless. Your job is not any less important.
 
     Thanks. But I'm still a bit further away from it.
 
@@ -376,18 +386,18 @@ Haha, sorry, the comparison is a bit clunky, to be honest. But ask away.
 
 title: Act_2_Hub_Initial
 
-position: -224,537
+position: -19,393
 ---
 
 -> Can you tell me how you feel about your work, Mey?
 
     <<jump Act_2_Mey_Work>>
 
--> Did you want to do something else outside of being a Sea Engineer?
+// -> Did you want to do something else outside of being a Sea Weaver, Mey?
 
-    <<jump Act_2_Writing>>
+//     <<jump Act_2_Writing>>
 
--> Oh, I forgot to mention. Lily's image looks good.
+-> Oh Mey, I forgot to mention. Lily's image looks good.
 
     <<jump Act_2_Lily_Work>>
 
@@ -395,7 +405,7 @@ position: -224,537
 
 title: Act_2_Hub
 
-position: 237,225
+position: -136,1177
 ---
 
 -> (Submerge Mey, Start Generation)
@@ -406,48 +416,397 @@ position: 237,225
 
     <<jump Act_2_Mey_Work>>
 
--> Did you want to do something else outside of being a Sea Engineer? <<if $p_writing is false>>
+// -> Did you want to do something else outside of being a Sea Weaver? <<if $p_writing is false>>
 
-    <<jump Act_2_Writing>>
+//     <<jump Act_2_Writing>>
 
--> Oh, I forgot to mention. Lily's image looks good. <<if $p_lily_work is false>>
+-> Oh Mey, I forgot to mention. Lily's image looks good. <<if $p_lily_work is false>>
 
     <<jump Act_2_Lily_Work>>
+
+-> Can you tell me more about the manager, Mey? <<if $p_mey_work is true && $p_manager is false>>
+
+    <<jump Act_2_Manager>>
+
+-> I didn't think the job would be so taxing. It must be hard on you, Mey. <<if $p_mey_work is true && $p_mey_work_2 is false>>
+
+    <<jump Act_2_Mey_Work_2>>
 
 ===
 
 title: Act_2_Generation
 
-position: 20,439
+position: -140,1354
 ---
 
-body!
+<<if $generate_count >= 0>>
+
+-> Hey Mey, I will put you into the Sea now. I'll see you in a bit.
+
+Okay, sounds good
+
+<<set $self = true>> 
+<<set $generate = true>>
+Mey's back to the Sea again.
+<<set $self = false>>
+
+<<endif>>
+
+
+<<set $generate_count = $generate_count + 1>>
+
+// ==========================================
+
+
+-> You're back, Mey. How are you feeling?
+
+<<if $generate_count == 1>>
+
+I don't think I'm quite used to it yet. I have to remember who I am everytime.
+
+But nevertheless, let's continue.
+
+<<elseif $generate_count > 1>>
+
+Still requires some effort to come back. You calling my name seems to help a little.
+
+<<endif>>
+
+<<jump Act_2_Hub>>
 
 ===
 
 title: Act_2_Mey_Work
 
-position: 288,463
+position: 390,337
 ---
 
-body!
+<<set $p_mey_work = true>>
+
+Perhaps a little conflicted, I think.
+
+You know I became a Sea Weaver because it gave the stability that I wanted, right?
+
+-> Do you like stability? Does it ake you feel stable in a way?
+
+    It's less about the feeling rather than just a matter of fact. Because I don't have to worry about finance.
+
+    -> Thank you for clearing that up. I guess that's not the right word. But "conflicted" is.
+
+    Yes. The job is definitely more stable than working remotely.
+
+->  I know my friends would be Sea Weavers mostly as transitions. Intentionally unstable, in a way.
+
+    Yes, I'm guessing those are your friends, and they would do it remotely?
+
+    -> Yes, easy to switch in and out of work.
+
+But they also have places where people can go for work, like a factory.
+
+-> Why did you say you felt conflicted about the job?
+
+It's difficult to describe...on the surface it's all the usual words, the working conditions, the exploitations and so on.
+
+But it's hard to tell whether you're just not cut out for the job...maybe there's some fundamental part of you that is built for something else.
+
+-> That's ridiculous! No job should make you feel this way!
+
+    I wouldn't be so quick to say that. I tend to be doubtful of things. Doubting myself is not uncommon to me.
+
+    But certainly the job doesn't help.
+
+    -> What happened at the job?
+
+-> What made you feel this way?
+
+The manager would measure our performances in groups. So it felt like a competition.
+
+The groups were separated by ages. We knew what he was doing. Lily and the others would help us sometimes.
+
+But it does seep into how you see yourself. Just how much you wish you could be independent for once, just to prove him wrong...
+
+-> I'm really sorry to hear that.
+
+    -> Can you tell me more about the manager, Mey?
+
+        <<jump Act_2_Manager>>
+
+    -> I didn't think the job would be so taxing. It must be hard on you, Mey.
+
+        <<jump Act_2_Mey_Work_2>>
+
+===
+title: Act_2_Manager
+
+position: 968,206
+---
+
+<<set $p_manager = true>>
+<<set $gossip_counter = 0>>
+
+Ahh...he is a fun one to talk about.
+
+Here's three words for you right away: pathetic, insecure, desperate.
+
+-> That was easy. I look forward to hearing all the tea.
+
+    <<set $gossip_counter = $gossip_counter + 1>>
+
+    Haha...oh there sure is some tea for you.
+
+-> It seems like you really despise him.
+
+No...I think he is complicated, despite how I feel about him now.
+
+We used to know each other through a data work gig. We were both in a group chat with other workers. He was in college then.
+
+-> What is his name?
+
+Stefan, why?
+
+-> It might be helpful for finding picture from the Sea, sorry to interrupt you.
+
+Makes sense. But as I was saying...
+
+When my son had to work in a tech sector, he asked us to move to the same city with him.
+
+Stefan helped a lot, he knew people in tech. So he and I found the Sea Weaver job that I am...that I was working in.
+
+-> That doesn't surprise me. There are many people who put on masks, hiding their true selves.
+
+    I'm not sure if he was putting on a mask. It felt like he was genuinely trying to be kind to people.
+
+-> He sounds really nice back then.
+
+I really appreciated him. And when my son had a child, I was able to be there for them.
+
+But there's soe obvious gaps. He likes to make references and jokes for people of his own generation. I didn't quite get them, but Lily did.
+
+-> Did he get along well with Lily too?
+
+Yes, us three were all working together. Everything changed after he got promoted to manager.
+
+He understand a lot of the harshness of the job. So he promisted to change the place for the better as a manager.
+
+He really believed it. A new generation and all.
+
+-> ...so he was corrupted by power.
+
+Maybe, some would say power reveals rather than corrupts. But I'm not sure if that's true either.
+
+But we could tell he didn't know how to be in power. It was like he was trying to discover himself through it, and he knew he wasn't as sophisticated.
+
+He would still tell jokes that Lily and the younger ones could understand, trying to fit in with them. But it would alienate some of us older folks.
+
+-> Insecure is the right word for it. He wanted to seek approval from the younger workers.
+
+    <<set $gossip_counter = $gossip_counter + 1 >>
+
+    I think that's right. But at the same time, it might be the only way he knew how to be charming.
+
+-> Perhaps that's his management style. He wants to be personable. I'd like to believe that about myself too.
+
+    That's why I can sympathize with him. To an extent, I'm glad I don't have to be in that position.
+
+He got worse when the quota became more demanding, and the competitors to the firm became serious.
+
+He wanted us to be more productive. So he made the changes: limited bathroom breaks, cameras to prevent us from chatting, employee rankings and all that.
+
+-> I heard about these things in other places too.
+
+Yes, they were obvious. Changing the place for us, on the other hand, was not.
+
+It came down on us older folks especially hard, mothers and grandmothers. We fought back. And he became even more of an asshole.
+
+Lily tooks our side. I think that really took a toll on him.
+
+-> Was he...fond of Lily?
+
+    Haha, I think so. Lily has a confidence in her that men were drawn to.
+
+    Especialy for a guy like Stefan, approval from Lily would probably mean a lot.
+
+-> It is sad to see that he failed at his own aspirations.
+
+    Yes, both being a different manager, and being cool for his peers.
+
+Too bad Lily calls him a little piglet...it's a little mean but still makes me giggle.
+
+-> Well Mey, I think we have talked enough about the little piglet.
+
+    Hahahahaha, I love that.
+
+-> Thank you, Mey. I think we have talked enough about Stefan.
+
+Yes I agree. Let's move on.
+
+<<if $gossip_counter > 1>>
+
+Thank you for indulging me in this. It felt a bit uncomfortable at first. But I'm glad you seemed to enjoy the gossiping.
+
+-> Of course, I'm glad to have this conversation, Mey.
+
+<<else>>
+
+<<set $scramble = true>>
+I didn't really like talking this badly about another person. So I'm glad we're moving on.
+<<set $scramble = false>>
+
+...did I...that was terrifying...I was emptied out for a second.
+
+-> The Sea came back again. But you are alright. Let's move on to something esle.
+
+Yes, let's move on, please.
+
+<<endif>>
+
+
+<<jump Act_2_Hub>>
+
+===
+
+title: Act_2_Mey_Work_2
+
+position: 963,435
+---
+
+<<set $p_mey_work_2 = true>>
+
+Haven't written this one yet, oops!
+
+<<jump Act_2_Hub>>
 
 ===
 
 title: Act_2_Writing
 
-position: 119,647
+position: 386,910
 ---
 
-body!
+<<set $p_writing = true>>
+
+Haven't written this one yet, oops!
+
+<<jump Act_2_Hub>>
+
 
 ===
 
 title: Act_2_Lily_Work
 
-position: 288,463
+position: -36,699
 ---
 
-body!
+<<set $p_lily_work = true>>
+
+Oh yea? How does it look?
+
+-> She looks like she's ready to face the future. <<if $lily is 0>>
+
+    In a way, she really is.
+
+-> She looks like she's processing some heavy emotions. <<if $lily is 1>>
+
+    Yes...considering everything that's been happening to her.
+
+-> She looks like she's very detached. <<if $lily is 2>>
+
+    She can look that way from the outside. But trust me, she does care.
+
+<<if $act_1_lie_lily is false>>
+
+Sorry...if she hadn't worked there, she might not have died.
+
+    -> Her death is not your fault, Mey. I'm sure of it.
+    
+        No...you don't understand. It's about her work.
+
+    -> Does Lily do similar work as you?
+
+        No, not entirely.
+
+<<else>>
+
+I wonder how she thinks about it. Show her the picture and tell her my memories made it.
+
+    -> Does Lily do similar work as you?
+    
+        No, not entirely. I guess we can talk about Lily's work.
+
+    -> (Lie) I will definitely show her. Maybe she can tell you about it herself.
+
+        Oh, I would love that. I can't wait to see her.
+
+        I really hope she has left the place by the time I see her...
+
+<<endif>>
+
+...Lily signs up for labeling work that's...let's say more intense...it made me really worried.
+
+-> Intense how?
+
+They are for filtering and moderating purposes, a lot of very disturbing things you wouldn't see...
+
+...abuse, torture, sexual exploitation, real death...those kinds of stuff.
+
+It's a part of the Sea, as it is always recording. Makes me sick to just imagine those things passing through me.
+
+-> ...oh...
+
+It would pay well. But it takes a toll on the mind.
+
+She burst out sobbing one day. I still remember the way her voice trembled...I felt sorry for her.
+
+-> That's awful...shouldn't they receive psychological help?
+
+    They do...but they are formalities first and foremost. Our performances are still measured.
+
+    Breathing techniques, mindfulness...they offer exercises only when you ask. It's hard to see depression and anxiety within you until they become overwhelming
+
+-> It's good that she has support, like you as her friend.
+
+    I guess so...but I couldn't handle the way she copes...
+
+    ...she would tell dark jokes about suicide...I told her I didn't want to hear those.
+
+I think it made her suppress it further. She picked up smoking to numb it. I guess there's a bit of regret there for me too...now that I think about her.
+
+-> That's surprising. She looks so self-determined in the picture. <<if $lily is 0>>
+
+    Perhaps that determination is a form of escaping and coping.
+
+-> It's heavy...so much burden but only she alone can handle it. <<if $lily is 1>>
+
+    I wish I could be there for her more...I really do. But I know I would hit my limits with her. And I couldn't help it.
+
+-> It looks like her detachment is a way of coping. <<if $lily is 2>>
+
+    Yes, but she also toughened herself through it.
+
+She was really enthusiatstic about her job search...almost like it's about the escape itself.
+
+That's why she would talk about having her own company, to finally have the freedom to make her own decisions.
+
+-> I admire Lily that way. She discovers who she is through this hardship.
+
+    Perhaps. I haven't thought of it that way. Maybe that's how she thinks about herself too. But I'm not so sure.
+
+    I think it's necessary for her to harden herself for survival. But I don't think she would make the right decisions from that place of suffering, either.
+
+-> Do you think it's good to crave escapes so much?
+
+    I'm not in a place to say, truly. I have thought about escaping in many forms many times. But I was never sure if I was ready for what's coming after it.
+
+    But I don't blame her...she told me she would have intrusive thoughts, like really disturbing ones.
+
+And the twitching, like her brains couldn't help but to be in a panic mode, trying to defend itself.
+
+-> Thank you, I think we have talked enough about Lily. I don't want you to dwell on it for too long, Mey.
+
+Sure, I'm sure there's another memory of her in the Sea somehwere, maybe you can find it.
+
+Sorry...I need a few seconds. It hurts to think about her.
+
+<<jump Act_2_Hub>>
 
 ===
