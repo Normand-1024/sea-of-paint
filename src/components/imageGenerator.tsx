@@ -21,7 +21,7 @@ type ImageGeneratorProps = {
 
 type ImageGeneratorState = {
     mainP5: any;
-	images: Array<Array<string>>;
+	images: Array<Array<any>>;
 	currentP5Index: number;
 }
 
@@ -75,46 +75,55 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 				// get the similarity score for each image -KK
 				let similarities = [];
-				console.log(this.props.prompts);
+				//console.log(this.props.prompts);
 				for (let imgd of IMAGE_DATA) {
 					let name = imgd["name"];
-					let keywords = imgd["keywords"];
 
 					// compare it to the prompt to get the similarity -KK
 					let similarity = this.st.cosineSimilarity(prompt_embed, this.imgEmbed[name]);
 					similarities.push({name: name, score: similarity});
-
-					// check for keywords if the similarity is high enough -KK 
-					if (similarity > LOW_BOUND){
-						let count = 0;
-						// iterate through each keyword set for the image -KK 
-						for (let word_set of keywords){
-							for (let word of word_set){
-								if(prompt.includes(word)){
-									count++;	// the prompt matches a word in the keyword set -KK
-									break;		// break to avoid accidental repetitions -KK
-								}
-							}
-						}
-						if (count >= 3){
-							similarities.push({name: name, score: UNLOCK_SCORE});
-						}
-						// console.log("Count: ", count);
-					}
 				}
 
 				// sort similarities in descending order -KK
 				similarities.sort((a, b) => b.score - a.score);
-				console.log("Sorted similarities: ", similarities);
 
-				p5.generateImage(similarities);
+				// check for keywords if the similarity is high enough -KK 
+				let matched_keywords : Array<string> = ["","",""]
+				if (this.imgData[similarities[0].name].keywords.length > 0 &&
+					similarities[0].score > HIGH_BOUND) {
+
+					let count = 0;
+					let keywords = this.imgData[similarities[0].name]["keywords"];
+
+					// iterate through each keyword set for the image -KK 
+					for (let word_set of keywords){
+						for (let word of word_set){
+							if(prompt.includes(word)){
+								matched_keywords[count] = word;
+								count++;	// the prompt matches a word in the keyword set -KK
+								break;		// break to avoid accidental repetitions -KK
+							}
+						}
+						if (count >= 3) break;
+					}
+
+					if (count >= 3){
+						similarities[0].score = UNLOCK_SCORE;
+					}
+					// console.log("Count: ", count);
+
+				}
+
+				//console.log("Sorted similarities: ", similarities);
+
+				p5.generateImage(similarities, matched_keywords);
 			}
 		}
 
 		// ********************************
 		// Actual image generation function
 		// ********************************
-		p5.generateImage = async (similarities : Array<any>) => {
+		p5.generateImage = async (similarities : Array<any>, matched_keywords : Array<string>) => {
 			p5.background('white');
 
 			let img : p5.Image = p5.createImage(500, 500);
@@ -129,40 +138,51 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				first = similarities[0].name;
 				unlocked = true;
 			}
-			else if(similarities[0].score > HIGH_BOUND) {
+			else if(filtered.length > 0) { //similarities[0].score > HIGH_BOUND) {
 				first = similarities[0].name;
-				second = similarities[1].name;
 				mask = first + "_mask_1";
 			}
-			else if(filtered.length > 0){
-				//let x = Math.floor(Math.random() * filtered.length);
-				first = filtered[0].name;
 
-				// Just randomly pick second image
-				let y = Math.floor(Math.random() * similarities.length);
-				while (y == 0){
-					y = Math.floor(Math.random() * similarities.length);
-				}
-				second = similarities[y].name;
-
-				mask = first + "_mask_1"; 	// adjust this to match the first image -KK
+			if (filtered.length > 1) {
+				second = similarities[1].name;
 			}
 
+			// else if(filtered.length > 0){
+			// 	//let x = Math.floor(Math.random() * filtered.length);
+			// 	first = filtered[0].name;
+
+			// 	// Just randomly pick second image
+			// 	let y = Math.floor(Math.random() * similarities.length);
+			// 	while (y == 0){
+			// 		y = Math.floor(Math.random() * similarities.length);
+			// 	}
+			// 	second = similarities[y].name;
+
+			// 	mask = first + "_mask_1"; 	// adjust this to match the first image -KK
+			// }
+
 			let raw1 : p5.Image = this.rawImg[first];
-			let raw2 : p5.Image = this.rawImg[second]; // raw2 is over raw1
-			let raw1_mask : p5.Image = this.rawImg[mask];
-			raw1.loadPixels();
-			raw2.loadPixels();
-			raw1_mask.loadPixels();
-
-			hardlightBlend(raw1, raw2, img);		// hardlight blends raw2 over raw1
-			// make blending random (hardlight, overlay, softlight, etc)
-			normalBlend(img, raw1_mask, img);		// normal blends mask over img
-
 			if (unlocked){
 				p5.image(raw1, 0, 0);
 			}
 			else{
+
+				let raw2 : p5.Image = this.rawImg[second]; // raw2 is over raw1
+				let raw1_mask : p5.Image = this.rawImg[mask];
+				raw1.loadPixels();
+				raw2.loadPixels();
+				raw1_mask.loadPixels();
+	
+				hardlightBlend(raw1, raw2, img);		// hardlight blends raw2 over raw1
+				// make blending random (hardlight, overlay, softlight, etc)
+
+				//	Use first two similarities to determine opacity of the mask
+				let score_ratio = similarities[0]["score"] / (similarities[0]["score"] + similarities[1]["score"]);
+				let mask_opacity = Math.min(((score_ratio - 0.5) * 6), 1.0); // 0.5 - 0.65 -> 0.0 - 1.0
+				console.log(mask_opacity);
+
+				normalBlend(img, raw1_mask, img, mask_opacity);		// normal blends mask over img
+	
 				p5.image(img, 0, 0);
 			}
 
@@ -175,7 +195,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 			}
 
 			this.setState((state) => ({
-				images: [...state.images, [first, second, this.p5Canvas.elt.toDataURL()]]
+				images: [...state.images, [first, second, this.p5Canvas.elt.toDataURL(), similarities, matched_keywords]]
 			}));
 		}
 
@@ -211,6 +231,8 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 					return (
 						<Candidate 
 							inprompt={this.props.prompts[index]}
+							similarities={img[3]}
+							matched_keywords={img[4]}
                             imageurl={img[2]} 
 							imgName={img[0]}
 							imgName2={img[1]}

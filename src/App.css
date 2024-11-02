@@ -124,6 +124,36 @@
       height: 90%;
       overflow-y: auto;
       scroll-behavior: smooth;
+
+      .candidate {
+          /* Create two unequal columns that floats next to each other */
+          .column {
+            display:inline-block;
+            text-align: left;
+            vertical-align: middle;
+          }
+
+          .left {
+            width: 25%;
+            margin-right: 5%;
+          }
+
+          .right {
+            width: 70%;
+
+            .notif {
+              text-align: center;
+              margin:0;
+              color:chocolate;
+            }
+          }
+
+          /* Clear floats after the columns */
+          .row {
+            display: block;
+            margin-bottom: 1%;
+          }
+      }
     }
      
     #prompt-control {

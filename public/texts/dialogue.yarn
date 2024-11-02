@@ -16,6 +16,8 @@ position: -47,-558
 // -2: not unlocked, -1: unlocked but waiting for interpretation
 // Natural numbers refers to the index of the interpretation
 <<set $lily = -2>> 
+<<set $stefan = -2>> 
+<<set $lily_car = -2>> 
 
 // Path Variables - tracking which path has been traversed
 <<set $p_lily_initial = false>>
@@ -47,7 +49,7 @@ position: -47,-558
 
 -> Hello, Mey.
 
-// <<jump Act_1_Lily>>
+//<<jump Act_1_Lily>>
 
 What is this? Why is it so dark here?
 
@@ -196,7 +198,7 @@ Wait...is Lily okay? How is she now?
 
     Thank god. The girl has so much going for her.
 
-    I don't know how I would feel if she is also gone. I feel guilty somehow
+    I don't know how I would feel if she is also gone. I feel guilty somehow.
 
     -> You are not responsible for what happened, Mey.
 
@@ -268,9 +270,7 @@ And a mixed up images is not authentic to you?
 
 -> I think it gets confused about the subjects. It needs more accurate emotions to make something focused.
 
-    -> Typically, I would enter three words from our conversation that describe your feelings about the subject.
-
-        -> So far, I think I have gained enough understanding of your relationship with Lily. I can generate an image of her.
+    -> So far, I think I have gained enough understanding of your relationship with Lily. I can generate an image of her.
 
 Oh, you want to do it now? Do you need to switch mode or something?
 
@@ -281,10 +281,46 @@ Alright, I guess I have no choice. Go ahead then.
 <<set $self = true>> 
 Mey's back to the Sea now. Let's try to generate a picture from the Machine. 
 
-Some words describing a picture of Lily, plus three words describing how Mey feels about Lily from our conversation.
+Let's recall some words that Mey used - How does she feel about Lily being in the car crash?
+
+-> Guilty?
+
+    I think that's right. One key word down for this memory.
+
+-> Worried?
+
+    I don't think that's the word she used. I should check the log.
+
+-> Regret?
+
+    I don't think that's the word she used. I should check the log.
+
+-> Responsible?
+
+    I don't think that's the word she used. I should check the log.
+
+Next - What words did she use when she thinks of Lily's future?
+
+-> Motherly and Uncertain?
+
+    Not quite what I remember. Better go back to check.
+
+-> Hope and Uncertainty?
+
+    Yes. Two keywords down.
+
+-> Motherly and Hope?
+
+    Not quite what I remember. Better go back to check.
+
+Okay. That's enough with the keywords. Next is retrieving the core memory.
+
+The Sea is full of memories. My text input will resonate with them. The closer my description is, the higher the resonance.
+
+Only the two most resonated memories will display, and the core memories to be unlocked will be marked with "?". 
 
 <<set $generate_lily = true>>
-Everything in one text prompt, so the Machine can generate Mey's authentic memory of Lily.
+Descriptions and keywords all in one text prompt, so the Machine can generate Mey's authentic memory of Lily. Let's try it.
 <<set $self = false>>
 
 
@@ -806,6 +842,55 @@ And the twitching, like her brains couldn't help but to be in a panic mode, tryi
 Sure, I'm sure there's another memory of her in the Sea somehwere, maybe you can find it.
 
 Sorry...I need a few seconds. It hurts to think about her.
+
+<<set $self = true>>
+While I'm giving Mey some space, let's recall the keywords.
+
+How does she feel about Lily doing labeling work?
+
+-> Intense?
+
+    That's the word she used about the work itself. Not about Lily. I need to go back and check.
+
+-> Disturbed?
+
+    That's the word she used about the work itself. Not about Lily. I need to go back and check.
+
+-> Worried?
+
+    Yes. I think that's right. Lily's work makes Mey worried for her.
+
+How does she feel about Lily having mental breakdown?
+
+-> Sorry?
+
+    Yes. I can't imagine going through that everyday.
+
+-> Awful?
+
+    I don't think that's the word. She said a specific word when she broke out crying.
+
+How does she feel about her role to help Lily?
+
+-> Limited?
+
+    Not quite the word she used. I need to go back.
+
+-> Regret?
+
+    Yes. She wanted to help but couldn't. The guilty lingers.
+
+-> Helpless?
+
+    Not quite the word she used. I need to go back.
+
+-> Obligaed?
+
+    Definitely not. Need to go back and check the log.
+
+I think that's enough. Let's go back to Mey.
+
+<<set $self = false>>
 
 <<jump Act_2_Hub>>
 

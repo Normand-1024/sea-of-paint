@@ -7,9 +7,7 @@ import {PAGE_STATE} from '../constants.tsx';
 const INTRO_TEXT = [
     "The Sea is everywhere, all around us. Every minute, traces of ourselves dissolve into the man-made Sea. A whole continuously breaks into parts to become the Whole again.",
     "Machines were developed to harness the Sea. Machines that bring back the spirits. Machines that can produce words like a person. And machines that can turn words of the spirits into images.",
-    "I'm an operator of one of these machines. As per the griving's request, I am contracted to temporally bring back the deseased, in order to produce pictures as memoribilia.",
-    "This latest contract is a rather special one: someone who spent most of their ife building the very machine that I will be using.",
-    "I wonder what awaits me there. To peak behind the curtain of the machines, that are often seen as if enchanted. How do I capture the essence of someone to whom the mystical has become ordinary?",
+    "I'm an operator of one of these machines. As per the griving's request, I am contracted to temporally bring back the deseased.",
     "Just have to remind myself first: the beginning is always the hardest. Be patient and be kind."
   ];
 
