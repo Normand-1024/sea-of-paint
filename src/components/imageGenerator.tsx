@@ -4,11 +4,12 @@ import React, {createRef} from 'react';
 
 import Candidate from './candidate';
 import SentenceTransformer from '../functions/sentenceTransformer.tsx';
-import {normalBlend, overlayBlend, hardlightBlend} from '../functions/blending.tsx';
+import { normalBlend, overlayBlend, hardlightBlend } from '../functions/blending.tsx';
+import { brightness, randomHue } from '../functions/imageProcessing.tsx';
 
 import '../App.css';
 
-import {IMAGE_DIM, HIGH_BOUND, LOW_BOUND} from '../constants.tsx';
+import { IMAGE_DIM, HIGH_BOUND, LOW_BOUND } from '../constants.tsx';
 import { IMAGE_DATA } from '../../public/assets/images/imageData.tsx';
 
 let UNLOCK_SCORE = 1.2;
@@ -147,19 +148,19 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				second = similarities[1].name;
 			}
 
-			// else if(filtered.length > 0){
-			// 	//let x = Math.floor(Math.random() * filtered.length);
-			// 	first = filtered[0].name;
+			/*else if(filtered.length > 0){
+				//let x = Math.floor(Math.random() * filtered.length);
+				first = filtered[0].name;
 
-			// 	// Just randomly pick second image
-			// 	let y = Math.floor(Math.random() * similarities.length);
-			// 	while (y == 0){
-			// 		y = Math.floor(Math.random() * similarities.length);
-			// 	}
-			// 	second = similarities[y].name;
+				// Just randomly pick second image
+				let y = Math.floor(Math.random() * similarities.length);
+				while (y == 0){
+					y = Math.floor(Math.random() * similarities.length);
+				}
+				second = similarities[y].name;
 
-			// 	mask = first + "_mask_1"; 	// adjust this to match the first image -KK
-			// }
+				mask = first + "_mask_1"; 	// adjust this to match the first image -KK
+			}*/
 
 			let raw1 : p5.Image = this.rawImg[first];
 			if (unlocked){
@@ -182,6 +183,8 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				console.log(mask_opacity);
 
 				normalBlend(img, raw1_mask, img, mask_opacity);		// normal blends mask over img
+				console.log("score ratio: " + score_ratio/HIGH_BOUND);
+				brightness(img, score_ratio/HIGH_BOUND);	// implemented brightness here -KK
 	
 				p5.image(img, 0, 0);
 			}
