@@ -48,7 +48,7 @@ export const IMAGE_DATA : Array<any> = [
         "name": "lily_car",
         "memory_name": "id_lily02",
         "descp": "Lily in a car feeling emotionally stressed anxious worried",
-        "keywords": [["sorry", "pity"], ["regret"], ["sick"], ["hurt"], ["worr"]],
+        "keywords": [["sorry"], ["regret"], ["worr"]],
         "info": "This memory shows Lily in a car, seemingly in stress.",
         "interpretations": [["This image shows Lily having an anxiety attack. She is in pain.",
                                 "Lily looks like she has lost control of her inner self, desperate trying to make something go away. No wonder she craved escape."
@@ -62,14 +62,14 @@ export const IMAGE_DATA : Array<any> = [
     {   
         "name": "stefan",
         "memory_name": "id_stefan",
-        "descp": "Stefan standing with suit and red tie, yellow hair, looking resentful, pathetic",
+        "descp": "Stefan standing with green suit and red tie, yellow hair, looking angry, pathetic",
         "keywords": [["pathetic"], ["insecure"], ["desperate"]],
         "info": "The memory shows a young man, well-dressed, looking resentful.",
         "interpretations": [["This image shows Stefan's anger. He cannot shake off his disappointment at both the world and himself.",
-                                "When someone is angry, that's because they are not heard. The expression is clearly one of despise, ready to be aggressive any minute."
+                                "When someone is angry, that's because they are not heard. The expression is clearly one of spite, ready to be aggressive any minute."
                             ],
                             ["This image shows how Stefan feels trapped, being caged in and cannot be free. He is terrified.",
-                                "Stefan's head is lowered in this picture, looking up at something off-screen. The background is claustrophobic. He lives in a fight and flight mode."
+                                "Stefan's head is lowered in this picture, looking up at something. The background is claustrophobic. He lives in a fight or flight mode."
                             ]
                             ],
         "path": ["p_manager"]
