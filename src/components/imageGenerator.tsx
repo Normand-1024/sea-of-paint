@@ -5,7 +5,7 @@ import React, {createRef} from 'react';
 import Candidate from './candidate';
 import SentenceTransformer from '../functions/sentenceTransformer.tsx';
 import { normalBlend, overlayBlend, hardlightBlend } from '../functions/blending.tsx';
-import { brightness, randomHue, saturation } from '../functions/imageProcessing.tsx';
+import { brightness, randomCMYK, randomHue, saturation } from '../functions/imageProcessing.tsx';
 
 import '../App.css';
 
@@ -185,8 +185,9 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				normalBlend(img, raw1_mask, img, mask_opacity);		// normal blends mask over img
 				console.log("score: " + (similarities[0]["score"] - HIGH_BOUND));
 				// brightness(img, score_ratio/HIGH_BOUND);						// implemented brightness here -KK
-				randomHue(img);													// implemented hue here -KK
+				// randomHue(img);												// implemented hue here -KK
 				// saturation(img, (similarities[0]["score"] - HIGH_BOUND));  	// implemented saturation here -KK
+				randomCMYK(img);												// implemented cmyk here -KK
 	
 				p5.image(img, 0, 0);
 			}

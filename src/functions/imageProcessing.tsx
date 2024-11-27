@@ -61,7 +61,35 @@ export function saturation(raw: p5.Image, saturation_adjustment: number) {
     }
     raw.updatePixels();
 }
+
+export function randomCMYK(raw: p5.Image) {
+    // make a small color adjustment to the image on the cmyk color plane -KK
+    let adjustment = Math.random() * 0.6 - 0.3;
+
+    for (let i = 0; i < raw.pixels.length; i += 4) {
+        let r = raw.pixels[i];
+        let g = raw.pixels[i + 1];
+        let b = raw.pixels[i + 2];
   
+        let cmyk = rgbToCmyk(r, g, b);
+  
+        cmyk[0] = keepInRange(cmyk[0] + adjustment, 0, 1);
+        cmyk[1] = keepInRange(cmyk[1] + adjustment, 0, 1);
+        cmyk[2] = keepInRange(cmyk[2] + adjustment, 0, 1);
+
+        let rgb = cmykToRgb(cmyk[0], cmyk[1], cmyk[2], cmyk[3]);
+
+        raw.pixels[i] = rgb[0];
+        raw.pixels[i + 1] = rgb[1];
+        raw.pixels[i + 2] = rgb[2];
+    }
+    raw.updatePixels();
+}
+  
+function keepInRange(n: number, min: number, max: number) {
+    return Math.max(min, Math.min(max, n));
+}
+
 function rgbToHsv(r: number, g: number, b: number) {
     // normalize rgb values
     r /= 255;
@@ -91,7 +119,6 @@ function rgbToHsv(r: number, g: number, b: number) {
 }
 
 function hsvToRgb(h: number, s: number, v: number) {
-
     // calculate initial values -KK
     let c = v * s;                
     let x = c * (1 - Math.abs((h * 6) % 2 - 1)); 
@@ -111,5 +138,33 @@ function hsvToRgb(h: number, s: number, v: number) {
     b = Math.round((b + m) * 255);
 
     return [r, g, b];
+}
+
+function rgbToCmyk(r: number, g: number, b: number) {
+    // calculate initial values -KK
+    let c = 1 - r/255;
+    let m = 1 - g/255;
+    let y = 1 - b/255;
+    let k = Math.min(c, m, y);
+
+    if (k === 1) {  // color is black -KK
+        return [0, 0, 0, 1]; 
+    }
+
+    // adjust values based on k -KK
+    c = (c-k)/(1-k);
+    m = (m-k)/(1-k);
+    y = (y-k)/(1-k);
+
+    return [c, m, y, k];
+}
+
+function cmykToRgb(c: number, m: number, y: number, k: number) {
+    // convert back to rgb -KK
+    let r = (1-c) * (1-k) * 255;
+    let g = (1-m) * (1-k) * 255;
+    let b = (1-y) * (1-k) * 255;
+
+    return [Math.round(r), Math.round(g), Math.round(b)];
 }
   
