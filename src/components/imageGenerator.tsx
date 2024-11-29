@@ -4,8 +4,8 @@ import React, {createRef} from 'react';
 
 import Candidate from './candidate';
 import SentenceTransformer from '../functions/sentenceTransformer.tsx';
-import { normalBlend, overlayBlend, hardlightBlend } from '../functions/blending.tsx';
-import { brightness, randomCMYK, randomHue, saturation } from '../functions/imageProcessing.tsx';
+import { normalBlend, overlayBlend, hardlightBlend, cmykBlend } from '../functions/blending.tsx';
+import { brightness, randomCMYK, randomHue, saturation, copyOver } from '../functions/imageProcessing.tsx';
 
 import '../App.css';
 
@@ -174,7 +174,12 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				raw2.loadPixels();
 				raw1_mask.loadPixels();
 	
-				hardlightBlend(raw1, raw2, img);		// hardlight blends raw2 over raw1
+				copyOver(raw1, img);
+				randomCMYK(img);
+				
+
+				//cmykBlend(img, raw2, img, 0.8);
+				hardlightBlend(img, raw2, img, 0.5);		// hardlight blends raw2 over raw1
 				// make blending random (hardlight, overlay, softlight, etc)
 
 				//	Use first two similarities to determine opacity of the mask
@@ -182,12 +187,13 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				let mask_opacity = Math.min(((score_ratio - 0.5) * 6), 1.0); // 0.5 - 0.65 -> 0.0 - 1.0
 				console.log(mask_opacity);
 
-				normalBlend(img, raw1_mask, img, mask_opacity);		// normal blends mask over img
+				//normalBlend(img, raw1_mask, img, mask_opacity);		// normal blends mask over img
+				cmykBlend(img, raw1_mask, img, mask_opacity * 0.8);
 				console.log("score: " + (similarities[0]["score"] - HIGH_BOUND));
 				// brightness(img, score_ratio/HIGH_BOUND);						// implemented brightness here -KK
 				// randomHue(img);												// implemented hue here -KK
 				// saturation(img, (similarities[0]["score"] - HIGH_BOUND));  	// implemented saturation here -KK
-				randomCMYK(img);												// implemented cmyk here -KK
+																// implemented cmyk here -KK
 	
 				p5.image(img, 0, 0);
 			}

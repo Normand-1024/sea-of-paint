@@ -64,7 +64,9 @@ export function saturation(raw: p5.Image, saturation_adjustment: number) {
 
 export function randomCMYK(raw: p5.Image) {
     // make a small color adjustment to the image on the cmyk color plane -KK
-    let adjustment = Math.random() * 0.6 - 0.3;
+    let adjustment1 = Math.random() * 0.6 - 0.3;
+    let adjustment2 = Math.random() * 0.6 - 0.3;
+    let adjustment3 = Math.random() * 0.6 - 0.3;
 
     for (let i = 0; i < raw.pixels.length; i += 4) {
         let r = raw.pixels[i];
@@ -73,9 +75,9 @@ export function randomCMYK(raw: p5.Image) {
   
         let cmyk = rgbToCmyk(r, g, b);
   
-        cmyk[0] = keepInRange(cmyk[0] + adjustment, 0, 1);
-        cmyk[1] = keepInRange(cmyk[1] + adjustment, 0, 1);
-        cmyk[2] = keepInRange(cmyk[2] + adjustment, 0, 1);
+        cmyk[0] = keepInRange(cmyk[0] + adjustment1, 0, 1);
+        cmyk[1] = keepInRange(cmyk[1] + adjustment2, 0, 1);
+        cmyk[2] = keepInRange(cmyk[2] + adjustment3, 0, 1);
 
         let rgb = cmykToRgb(cmyk[0], cmyk[1], cmyk[2], cmyk[3]);
 
@@ -85,10 +87,43 @@ export function randomCMYK(raw: p5.Image) {
     }
     raw.updatePixels();
 }
-  
-function keepInRange(n: number, min: number, max: number) {
-    return Math.max(min, Math.min(max, n));
+
+// ===================================
+// None Image Processing Export Functions
+// ===================================
+export function copyOver(raw: p5.Image, img: p5.Image) {
+    for (let i = 0; i < raw.pixels.length; i += 1) {
+        img.pixels[i] = raw.pixels[i];
+    }
+    img.updatePixels();
 }
+
+export function interpolateCmyk(rgb1: Array<number>, rgb2: Array<number>, ratio: number, print = false){
+    let cmyk1 = rgbToCmyk(rgb1[0], rgb1[1], rgb1[2]);
+    let cmyk2 = rgbToCmyk(rgb2[0], rgb2[1], rgb2[2]);
+
+    if (print){
+        console.log([cmyk1,
+            cmyk2,
+            [
+                interpolate(cmyk1[0],cmyk2[0],ratio),
+                interpolate(cmyk1[1],cmyk2[1],ratio),
+                interpolate(cmyk1[2],cmyk2[2],ratio),
+                interpolate(cmyk1[3],cmyk2[3],ratio)]
+        ])
+    }
+
+    return cmykToRgb(
+        interpolate(cmyk1[0],cmyk2[0],ratio),
+        interpolate(cmyk1[1],cmyk2[1],ratio),
+        interpolate(cmyk1[2],cmyk2[2],ratio),
+        interpolate(cmyk1[3],cmyk2[3],ratio)
+    )
+}
+
+// ===================================
+// Color Converstion Functions
+// ===================================
 
 function rgbToHsv(r: number, g: number, b: number) {
     // normalize rgb values
@@ -168,3 +203,14 @@ function cmykToRgb(c: number, m: number, y: number, k: number) {
     return [Math.round(r), Math.round(g), Math.round(b)];
 }
   
+// ==================================
+// Helper Functions
+// ==================================
+
+function keepInRange(n: number, min: number, max: number) {
+    return Math.max(min, Math.min(max, n));
+}
+
+function interpolate(n0: number, n1: number, ratio: number){
+    return n0 + (n1 - n0) * ratio;
+}
