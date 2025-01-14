@@ -1,19 +1,10 @@
 export const IMAGE_DATA : Array<any> = [
     {   
-        "name": "city",
-        "memory_name": "id_962",
-        "descp": "distorted view of a city block",
-        "keywords": [],
-        "info": "A distorted view of a city block.",
-        "interpretations": [],
-        "path": []
-    },
-    {   
         "name": "lily",
-        "memory_name": "id_lily",
-        "descp": "Lily walking and smoking guilty",
+        "memory_name": "Lily smoking while walking...",
+        "descp": "Lily smoking while walking away from Mey after argument about Stefan, feelings of doubt and envy",
+        "descp2": "Lily smoking while walking away from [?] after argument about [?], feelings of [?] and [?]",
         "keywords": [["guilt"], ["hope"], ["uncertain"]],
-        "info": "The memory seems to show Lily walking and smoking.",
         "interpretations": [["This image shows Lily's self-reliance and determination.",
                                 "Lily's pose of walking, and the sense of speed in the movement. They show Lily's readiness to face the future."
                             ],
@@ -24,54 +15,63 @@ export const IMAGE_DATA : Array<any> = [
                                 "Lily feels like she's walking away from something, finding comfort in detachment from certain concerns."
                             ]
                             ],
-        "path": ["p_lily_initial"]
+        "path": "p_lily_initial",
+        "scene": "A1_Lily"
     },
     {   
         "name": "mey_sitting_2",
-        "memory_name": "id_432",
+        "memory_name": "Mey sitting deep thinking...",
         "descp": "Mey sitting deep thinking at home in the kitchen",
+        "descp2": "Mey sitting deep thinking at home in the kitchen",
         "keywords": [],
-        "info": "This memory shows an older Mey sitting in her home, deep in thoughts.",
         "interpretations": [],
-        "path": []
+        "path": "p_ivan_o",
+        "scene": "A2_Ivan_O"
     },
     {   
         "name": "mey_crowd",
-        "memory_name": "id_489",
-        "descp": "young Mey standing in crowd feeling uncertain",
+        "memory_name": "Mey and Emma standing...",
+        "descp": "Young Mey and Emma standing in the crowd, recently left Centuria, feelings of lost and something",
+        "descp2": "Young Mey and Emma standing in the crowd, recently left [?], feelings of [?] and [?]",
         "keywords": [],
-        "info": "This memory shows a younger Mey standing a crowd, feeling uncertain.",
         "interpretations": [],
-        "path": []
+        "path": "p_emma_o",
+        "scene": "A2_Emma_O"
     },
     {   
         "name": "lily_car",
-        "memory_name": "id_lily02",
+        "memory_name": "Lily in a car feeling...",
         "descp": "Lily in a car feeling emotionally stressed anxious worried",
+        "descp2": "Lily in a car feeling emotionally stressed anxious worried",
         "keywords": [["sorry", "pity"], ["regret"], ["sick"], ["hurt"], ["worr"]],
         "info": "This memory shows Lily in a car, seemingly in stress.",
-        "interpretations": [["This image shows Lily having an anxiety attack. She is in pain.",
-                                "Lily looks like she has lost control of her inner self, desperate trying to make something go away. No wonder she craved escape."
+        "interpretations": [
+                            // ["This image shows Lily having an anxiety attack. She is in pain.",
+                            //     "Lily looks like she has lost control of her inner self, desperate trying to make something go away. No wonder she craved escape."
+                            // ],
+                            // ["This image shows Lily's frustration at herself. She wants to escape.",
+                            //     "Lily looks like she wants to take control of her life again. Angry at her past actions and bottling up frustration. It explains her determination to leave."
+                            // ]
                             ],
-                            ["This image shows Lily's frustration at herself. She wants to escape.",
-                                "Lily looks like she wants to take control of her life again. Angry at her past actions and bottling up frustration. It explains her determination to leave."
-                            ]
-                            ],
-        "path": ["p_lily_work"]
+        "path": "p_lily_work",
+        "scene": "A2_Emma_O"
     },
     {   
         "name": "stefan",
-        "memory_name": "id_stefan",
+        "memory_name": "Stefan standing with suit...",
         "descp": "Stefan standing with suit and red tie, yellow hair, looking resentful, pathetic",
+        "descp2": "Stefan standing with suit and red tie, yellow hair, looking resentful, pathetic",
         "keywords": [["pathetic"], ["insecure"], ["desperate"]],
         "info": "The memory shows a young man, well-dressed, looking resentful.",
-        "interpretations": [["This image shows Stefan's anger. He cannot shake off his disappointment at both the world and himself.",
-                                "When someone is angry, that's because they are not heard. The expression is clearly one of despise, ready to be aggressive any minute."
+        "interpretations": [
+                            // ["This image shows Stefan's anger. He cannot shake off his disappointment at both the world and himself.",
+                            //     "When someone is angry, that's because they are not heard. The expression is clearly one of despise, ready to be aggressive any minute."
+                            // ],
+                            // ["This image shows how Stefan feels trapped, being caged in and cannot be free. He is terrified.",
+                            //     "Stefan's head is lowered in this picture, looking up at something off-screen. The background is claustrophobic. He lives in a fight and flight mode."
+                            // ]
                             ],
-                            ["This image shows how Stefan feels trapped, being caged in and cannot be free. He is terrified.",
-                                "Stefan's head is lowered in this picture, looking up at something off-screen. The background is claustrophobic. He lives in a fight and flight mode."
-                            ]
-                            ],
-        "path": ["p_manager"]
-    },
+        "path": "p_manager",
+        "scene": "A2_Emma_O"
+    }
 ];

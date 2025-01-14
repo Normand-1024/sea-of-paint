@@ -11,7 +11,7 @@ import { MarkovScrambler } from '../functions/markovGeneration.tsx';
 import {PAGE_STATE, SPIRIT_NAME, MID_INTEGR_THRSH, LOW_INTEGR_THRSH} from '../constants.tsx';
 
 const DIALOGUE_TYPE = {'spirit': 0, 'self-speaking': 1, 'self-thinking': 2, 'machine': 3};
-const GENERATE_WAIT_TYPE = {'dialogue': -1, 'wait_for_first': 0, 'generated': 1, 'wait_for_lily': 2, 'wait_for_interpretations': 3};
+const GENERATE_WAIT_TYPE = {'dialogue': -1, 'wait_for_first': 0, 'generated': 1, 'wait_for_lily1': 2, 'wait_for_lily2': 22, 'wait_for_interpretations': 3};
 
 type MachineProps = {
     pageState: number;
@@ -72,7 +72,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         this.state.dialogueVar.set(v, value);
 
         // Check if there's any interpretations left open
-        if (this.state.generateState == GENERATE_WAIT_TYPE['wait_for_lily'] &&
+        if (this.state.generateState == GENERATE_WAIT_TYPE['wait_for_lily2'] &&
             this.state.dialogueVar.get("lily") >= 0)
             this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['generated'] }));  
         // else if (this.state.generateState == GENERATE_WAIT_TYPE['wait_for_lily'])
@@ -137,15 +137,20 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     
         //console.log(this.state.dialogueRunner.currentResult);
         //console.log(this.state.dialogueVar);
+        //console.log(this.state.dialogueVar.get("scene_var"));
 
         // If #generate is true, get into image generation mode
         if (this.state.dialogueVar.get("generate")) {
             this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['wait_for_first'] }));
             this.state.dialogueVar.set("generate", false)
         }
-        else if (this.state.dialogueVar.get("generate_lily")) {
-            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['wait_for_lily'] }));
-            this.state.dialogueVar.set("generate_lily", false)
+        else if (this.state.dialogueVar.get("generate_lily1")) {
+            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['wait_for_lily1'] }));
+            this.state.dialogueVar.set("generate_lily1", false)
+        }
+        else if (this.state.dialogueVar.get("generate_lily2")) {
+            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['wait_for_lily2'] }));
+            this.state.dialogueVar.set("generate_lily2", false)
         }
         else {
             this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['dialogue'] }));
@@ -155,7 +160,12 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         //  is handled in the HTML, communiated thru the option param
         // Except the machine prompt, which is not added to the dialogue
         if (option >= 0){
-            if (!this.state.dialogueVar.get("machine"))
+            if (this.state.dialogueVar.get("noprint")){
+                // If $noprint is true, do not print this dialogue option.
+                
+                this.state.dialogueVar.set("noprint", false);
+            } 
+            else    
                 this.pushSelfDialogue(
                     this.state.dialogueRunner.currentResult.options[option].text,
                     DIALOGUE_TYPE['self-speaking']
@@ -169,9 +179,9 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                 this.pushSelfDialogue(this.state.dialogueRunner.currentResult.text,
                 DIALOGUE_TYPE['self-thinking']);
 
-            else if (this.state.dialogueVar.get("machine"))
+            else if (this.state.dialogueVar.get("selfspeak"))
                 this.pushSelfDialogue(this.state.dialogueRunner.currentResult.text,
-                DIALOGUE_TYPE['machine']);
+                DIALOGUE_TYPE['self-speaking']);
 
             else this.pushSpiritDialogue(this.state.dialogueRunner.currentResult.text);
 
@@ -180,9 +190,15 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
 
         // If $follow is true, print the next statement
         while (this.state.dialogueVar.get("follow")) {
+            console.log(this.state.dialogueVar.get("selfspeak"));
             if (this.state.dialogueVar.get("self"))
                 this.pushSelfDialogue(this.state.dialogueRunner.currentResult.text,
                     DIALOGUE_TYPE['self-thinking']);
+
+            else if (this.state.dialogueVar.get("selfspeak"))
+                this.pushSelfDialogue(this.state.dialogueRunner.currentResult.text,
+                    DIALOGUE_TYPE['self-speaking']);
+
             else this.pushSpiritDialogue(this.state.dialogueRunner.currentResult.text);
 
             this.state.dialogueRunner.advance();
@@ -286,7 +302,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                                         
                                     :
 
-                                    this.state.generateState ==  GENERATE_WAIT_TYPE['wait_for_lily']?
+                                    this.state.generateState ==  GENERATE_WAIT_TYPE['wait_for_lily2']?
                                         
                                         <div className="button-div">
                                         <button type="button" className="continue-button" disabled>
@@ -294,27 +310,35 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
 
                                         :
 
-                                        this.state.generateState ==  GENERATE_WAIT_TYPE['generated']?
-                                            
-                                            <div className="button-div">
-                                            <button type="button" className="continue-button" 
-                                                onClick = {() => this.handleDialogue()}>
-                                                Bring back Mey</button></div>
+                                        this.state.generateState ==  GENERATE_WAIT_TYPE['wait_for_lily1']?
+                                        
+                                        <div className="button-div">
+                                        <button type="button" className="continue-button" disabled>
+                                            Find a Core Memory</button></div>   
 
-                                            :
+                                        :
 
-                                            this.state.generateState ==  GENERATE_WAIT_TYPE['wait_for_interpretations']?
-
-                                                <div className="button-div">
-                                                <button type="button" className="continue-button" disabled>
-                                                    Finish Interpretations to Continue</button></div> 
-
-                                                :
-                                                    
+                                            this.state.generateState ==  GENERATE_WAIT_TYPE['generated']?
+                                                
                                                 <div className="button-div">
                                                 <button type="button" className="continue-button" 
                                                     onClick = {() => this.handleDialogue()}>
-                                                    Continue</button></div>
+                                                    Bring back Mey</button></div>
+
+                                                :
+
+                                                this.state.generateState ==  GENERATE_WAIT_TYPE['wait_for_interpretations']?
+
+                                                    <div className="button-div">
+                                                    <button type="button" className="continue-button" disabled>
+                                                        Finish Interpretations to Continue</button></div> 
+
+                                                    :
+                                                        
+                                                    <div className="button-div">
+                                                    <button type="button" className="continue-button" 
+                                                        onClick = {() => this.handleDialogue()}>
+                                                        Continue</button></div>
                             )
                             }
                         </div>
@@ -326,8 +350,10 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
 
                 <div id="machineControl">
                     <ImageGenerator prompts = {this.state.promptList}
+                                    if_tutorial = {this.state.generateState == GENERATE_WAIT_TYPE['wait_for_lily1'] || this.state.generateState == GENERATE_WAIT_TYPE['wait_for_lily2']}
                                     dialogueVar = {this.state.dialogueVar}
-                                    setDialogueVar  = {this.setDialogueVar} ></ImageGenerator>
+                                    setDialogueVar  = {this.setDialogueVar}
+                                    initiateScene = {this.handleDialogue} ></ImageGenerator>
 
                     { 
                     

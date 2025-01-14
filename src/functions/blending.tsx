@@ -1,5 +1,7 @@
 //@ts-ignore
 import p5 from 'P5';
+import { interpolateCmyk } from '../functions/imageProcessing.tsx';
+
 
 // Normal blending math here: https://www.wikiwand.com/en/Alpha_compositing
 export function normalBlend(raw1 : p5.Image, raw2 : p5.Image, output : p5.Image, opacity : number = 1.0){
@@ -104,6 +106,32 @@ export function hardlightBlend(raw1 : p5.Image, raw2 : p5.Image, output : p5.Ima
         output.pixels[i+1] = g3 * 255;
         output.pixels[i+2] = b3 * 255;
         output.pixels[i+3] = a3 * 255;
+    }
+
+    output.updatePixels();
+}
+
+export function cmykBlend(raw1 : p5.Image, raw2 : p5.Image, output : p5.Image, ratio : number = 1.0){
+
+    for (let i=0; i < output.pixels.length; i+=4) {
+        let a1 : number = raw1.pixels[i+3] / 255;
+        let r1 : number = raw1.pixels[i] / 255;
+        let g1 : number = raw1.pixels[i+1] / 255;
+        let b1 : number = raw1.pixels[i+2] / 255;
+        let a2 : number = raw2.pixels[i+3] / 255 * ratio;
+        let r2 : number = raw2.pixels[i] / 255;
+        let g2 : number = raw2.pixels[i+1] / 255;
+        let b2 : number = raw2.pixels[i+2] / 255;
+
+        let [r3, g3, b3] = interpolateCmyk
+            ([r1 * 255, g1 * 255, b1 * 255],
+             [r2 * 255, g2 * 255, b2 * 255],
+             a2);
+
+        output.pixels[i] = r3;
+        output.pixels[i+1] = g3;
+        output.pixels[i+2] = b3;
+        output.pixels[i+3] = 255;
     }
 
     output.updatePixels();

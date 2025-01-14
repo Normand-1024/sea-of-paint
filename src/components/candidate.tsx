@@ -6,15 +6,16 @@ import { match } from 'assert';
 
 type CandidateProps = {
     inprompt: string;
+	if_tutorial: boolean;
     similarities: Array<any>;
     matched_keywords: Array<string>;
     imgName: string;
-    imgName2: string;
     imageurl: string;
     imgData: { [id: string] : any; };
     
     dialogueVar: Map<any, any>;
     setDialogueVar: Function;
+    initiateScene: Function;
 }
 
 type CandidateState = {
@@ -25,19 +26,21 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
         imageurl: "public/assets/images/placeholder.jpg"
     }
 
-    getMemInfo(image_name : string, image_score: number) {
-        let output : string = this.props.imgData[image_name].memory_name;
+    private aboveHigh = this.props.similarities[0].score > HIGH_BOUND;
 
-        if (this.props.imgData[image_name]["path"].length > 0 && this.props.dialogueVar.get(image_name) == -2) {
-            output += "?";
+    getMemInfo(image_name : string, image_score : number, if_locked : boolean, i : number) {
+        let memName : string = this.props.imgData[image_name].memory_name;
+        let score : string = image_score < LOW_BOUND ? "Too Dissonant" : this.distanceFunc(image_score);
+
+        if (i > 1 || image_score < LOW_BOUND){
+            return (<div>
+                <p>{score} --- [{if_locked ? <u>{memName}</u> : memName}] </p>
+            </div>)
         }
 
-        output += " --- ";
-        
-        if (image_score < LOW_BOUND) output += "Too Dissonant";
-        else output += this.distanceFunc(image_score);
-
-        return output;
+        return <div>
+            <p><b>{score} --- [{if_locked ? <u>{memName}</u> : memName}] </b></p>
+        </div>;
     }
 
     getKeywordString() {
@@ -46,32 +49,95 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
         return output;
     }
 
+    initiateScene() {
+        this.props.setDialogueVar("scene_var", this.props.imgData[this.props.imgName]["scene"]);
+        this.props.setDialogueVar(this.props.imgData[this.props.imgName]["path"], true);
+        console.log(this.props.dialogueVar.get("scene_var"));
+        this.props.initiateScene();
+    }
+
     getDistanceString(i : number, imgName : string, score : number, is_unlockable : boolean) {
-        if (i > 1) {
-            return (this.getMemInfo(imgName, score));
-        }
-        else if (i == 1) {
-            if (score > LOW_BOUND) return (<b>{this.getMemInfo(imgName, score)}</b>);
-            else return (this.getMemInfo(imgName, score));
+
+        // Check if the image is yet to be unlocked
+        let if_locked : boolean = 
+            this.props.imgData[imgName]["interpretations"].length > 0
+            && this.props.dialogueVar.get(imgName) == -2; 
+
+        if (i > 0) {
+            return (<div>{this.getMemInfo(imgName, score, if_locked, i)}</div>);
         }
         else{
-            if (!is_unlockable) 
-                return (<b>{this.getMemInfo(imgName, score)}</b>);
-            else if (score < HIGH_BOUND) 
+
+            // Check if the scene for that image has been visited
+            
+            // TODO: descp IS PLACEHOLDER
+            if (this.props.dialogueVar.get(this.props.imgData[imgName]["path"])) {
+                // has visited
                 return (<div>
-                            <b>{this.getMemInfo(imgName, score)}</b>
-                            <p className = "notif">Refine description to reach {this.distanceFunc(HIGH_BOUND)}</p>
-                        </div>);
-            else if (this.props.matched_keywords.filter(wrd => wrd != "").length == 0) 
-                return (<div>
-                            <b>{this.getMemInfo(imgName, score)}</b>
-                            <p className = "notif">Core memory tainted. No keywords found</p>
-                        </div>);
-            else 
-                return (<div>
-                            <b>{this.getMemInfo(imgName, score)}</b>
-                            <p className = "notif">Matched keywords: {this.getKeywordString()}</p>
-                        </div>);
+                    {this.getMemInfo(imgName, score, if_locked, i)}
+
+                    <p className = "notif"> Core Memory - Not Yet Retrieved </p>
+
+                    <p className = "notif">"{this.props.imgData[imgName]["descp2"]}"</p> 
+                </div>);
+                // TODO: SAY HOW MANY KEYWORDS REVEALED
+                //      <p className = "notif"> 0/4 Missing Words Found </p>
+
+            }
+            else {
+                // has not visited
+                //      TODO: <p className = "notif"> 4 Words Missing - Inquiry Needed  </p>
+
+                if (this.props.if_tutorial){
+                    return (<div>
+                                {this.getMemInfo(imgName, score, if_locked, i)}
+
+                                { this.props.imgName == "lily" ? 
+                                    <p className = "notif"> Core Memory - 4 Words Missing - Inquiry Needed  </p>
+                                    : (null)}
+
+                                <p className = "notif">"{this.props.imgData[imgName]["descp2"]}"</p>
+                                
+                                { this.props.imgName == "lily" ? 
+                                    <button key={i} type="button"
+                                    style={{'marginLeft': '5%'}}
+                                    onClick = {() => this.initiateScene()}>
+                                    Bring back Mey, Inquire about Memory
+                                    </button> 
+                                    : (null)
+                                }
+                            </div>)
+                        
+                }
+                else
+                    return (<div>
+                                {this.getMemInfo(imgName, score, if_locked, i)}
+                                <p className = "notif">"{this.props.imgData[imgName]["descp2"]}"</p>
+                                <button key={i} type="button"
+                                style={{'marginLeft': '5%'}}
+                                onClick = {() => this.initiateScene()}>
+                                Bring back Mey, Inquire about Memory
+                                </button> 
+                            </div>);
+            }
+
+            // if (!is_unlockable) 
+            //     return (this.getMemInfo(imgName, score, if_locked, i));
+            // else if (score < HIGH_BOUND) 
+            //     return (<div>
+            //                 {this.getMemInfo(imgName, score, if_locked, i)}
+            //                 <p className = "notif">Refine description to reach {this.distanceFunc(HIGH_BOUND)}</p>
+            //             </div>);
+            // else if (this.props.matched_keywords.filter(wrd => wrd != "").length == 0) 
+            //     return (<div>
+            //                 {this.getMemInfo(imgName, score, if_locked, i)}
+            //                 <p className = "notif">Core memory tainted. No keywords found</p>
+            //             </div>);
+            // else 
+            //     return (<div>
+            //                 {this.getMemInfo(imgName, score, if_locked, i)}
+            //                 <p className = "notif">Matched keywords: {this.getKeywordString()}</p>
+            //             </div>);
 
         }
     }
@@ -84,9 +150,8 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
 
         // check if paths to unlocked the image has been traversed
         let imgName = this.props.imgName;
-        let imgName2 = this.props.imgName2;
-        let is_unlockable = this.props.imgData[imgName]["path"].length > 0;
-        let matched = this.props.matched_keywords.filter(wrd => wrd != "").length == 3;
+        let is_unlockable = imgName == "noise" ? false : this.props.imgData[imgName]["interpretations"].length > 0;
+        let matched = this.aboveHigh;
 
         return (
             <div className = "candidate">
@@ -119,7 +184,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                 : !is_unlockable || !matched                ?
                         // Render the top five memories
                         <div className = "row">
-                            <p   className = "column left" style={{'marginTop': 0}}> Memory Resonance: </p>
+                            <p   className = "column left" style={{'marginTop': 0}}> <big>Memory Resonance:</big> <br></br><br></br> <small>Reach {this.distanceFunc(HIGH_BOUND)} to Retrieve Memory</small></p>
                             <div className = "column right">
                                 {this.props.similarities.slice(0,5).map(
                                     (img:any, i:number) => {
@@ -132,10 +197,15 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                                 )}
                             </div>
                         </div>
-                : this.props.dialogueVar.get(imgName) > -1  ? <p style={{'marginTop': 0}}>{this.props.imgData[imgName]["interpretations"][this.props.dialogueVar.get(imgName)][1]}</p>
+                : this.props.dialogueVar.get(imgName) > -1  ? 
+                    <div>
+                    <p className = "notif">Core Memory - "{this.props.imgData[imgName]["descp"]}"</p>
+                    <p style={{'marginTop': 0}}>{this.props.imgData[imgName]["interpretations"][this.props.dialogueVar.get(imgName)][1]}</p>
+                    </div>
                 :   // The buttons for interpretations
                     <div>
-                    <p style={{'marginTop': 0}}>This core memory is unlocked. But what is this picture saying? </p>
+                    <p className = "notif">Core Memory Retrieved - "{this.props.imgData[imgName]["descp"]}"</p>
+                    <p style={{'marginTop': 0}}>Core memory retrieved. But what is this picture saying? </p>
                     {   
                         this.props.imgData[imgName]["interpretations"].map(
                             (op:any,i:number) => {                      
