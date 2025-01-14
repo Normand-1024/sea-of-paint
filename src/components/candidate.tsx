@@ -65,7 +65,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
             else if (this.props.matched_keywords.filter(wrd => wrd != "").length == 0) 
                 return (<div>
                             <b>{this.getMemInfo(imgName, score)}</b>
-                            <p className = "notif">Tainted Memory. No keywords from Mey found.</p>
+                            <p className = "notif">Core memory tainted. No keywords found</p>
                         </div>);
             else 
                 return (<div>
@@ -119,7 +119,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                 : !is_unlockable || !matched                ?
                         // Render the top five memories
                         <div className = "row">
-                            <p   className = "column left" style={{'marginTop': 0}}>Resonance of Mey's Memory: </p>
+                            <p   className = "column left" style={{'marginTop': 0}}> Memory Resonance: </p>
                             <div className = "column right">
                                 {this.props.similarities.slice(0,5).map(
                                     (img:any, i:number) => {
