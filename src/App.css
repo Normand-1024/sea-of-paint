@@ -100,7 +100,7 @@
         .continue-button {
           display: block;
           margin-left: auto;
-          margin-right: 0;
+          margin-right: auto;
           margin-bottom: 1%;
           font-style: oblique;
         }
@@ -142,8 +142,8 @@
             width: 70%;
 
             .notif {
-              text-align: center;
-              margin:0;
+              text-align: left;
+              margin-left: 5%;
               color:chocolate;
             }
           }
@@ -152,6 +152,12 @@
           .row {
             display: block;
             margin-bottom: 1%;
+          }
+
+          .notif {
+            text-align: center;
+            margin-left: 5%;
+            color:chocolate;
           }
       }
     }

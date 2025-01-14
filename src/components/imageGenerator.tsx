@@ -16,8 +16,10 @@ let UNLOCK_SCORE = 1.2;
 
 type ImageGeneratorProps = {
 	prompts: Array<string>;
+	if_tutorial: boolean;
     dialogueVar: Map<any, any>;
     setDialogueVar: Function;
+	initiateScene: Function;
 }
 
 type ImageGeneratorState = {
@@ -40,7 +42,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 	private st = new SentenceTransformer();
 
 	private rawImg : { [id: string] : any; } = {};
-	private imgData: { [id: string] : any; } = {}; // [image descriptions, [3 keywords], questions]
+	private imgData: { [id: string] : any; } = {}; // name : all other data in IMAGE_DATA
 	private imgEmbed: { [id: string] : any; } = {}; // Embeddings for each image
 
   Sketch = (p5:any) => {
@@ -80,9 +82,12 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				for (let imgd of IMAGE_DATA) {
 					let name = imgd["name"];
 
-					// compare it to the prompt to get the similarity -KK
-					let similarity = this.st.cosineSimilarity(prompt_embed, this.imgEmbed[name]);
-					similarities.push({name: name, score: similarity});
+					// If during tutorial phase, don't show everything
+					if (!this.props.if_tutorial || name == "lily" || imgd["interpretations"].length == 0){
+						// compare it to the prompt to get the similarity -KK
+						let similarity = this.st.cosineSimilarity(prompt_embed, this.imgEmbed[name]);
+						similarities.push({name: name, score: similarity});
+					}
 				}
 
 				// sort similarities in descending order -KK
@@ -90,27 +95,29 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 				// check for keywords if the similarity is high enough -KK 
 				let matched_keywords : Array<string> = ["","",""]
-				if (this.imgData[similarities[0].name].keywords.length > 0 &&
+				if (this.props.dialogueVar.get(this.imgData[similarities[0].name]["path"]) &&
 					similarities[0].score > HIGH_BOUND) {
 
-					let count = 0;
-					let keywords = this.imgData[similarities[0].name]["keywords"];
+					similarities[0].score = UNLOCK_SCORE;
 
-					// iterate through each keyword set for the image -KK 
-					for (let word_set of keywords){
-						for (let word of word_set){
-							if(prompt.includes(word)){
-								matched_keywords[count] = word;
-								count++;	// the prompt matches a word in the keyword set -KK
-								break;		// break to avoid accidental repetitions -KK
-							}
-						}
-						if (count >= 3) break;
-					}
+					// let count = 0;
+					// let keywords = this.imgData[similarities[0].name]["keywords"];
 
-					if (count >= 3){
-						similarities[0].score = UNLOCK_SCORE;
-					}
+					// // iterate through each keyword set for the image -KK 
+					// for (let word_set of keywords){
+					// 	for (let word of word_set){
+					// 		if(prompt.includes(word)){
+					// 			matched_keywords[count] = word;
+					// 			count++;	// the prompt matches a word in the keyword set -KK
+					// 			break;		// break to avoid accidental repetitions -KK
+					// 		}
+					// 	}
+					// 	if (count >= 3) break;
+					// }
+
+					// if (count >= 3){
+					// 	similarities[0].score = UNLOCK_SCORE;
+					// }
 					// console.log("Count: ", count);
 
 				}
@@ -132,6 +139,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 			img.loadPixels();
 
 			// generate image based off of similarity score -KK
+			// added logic: if the first image is not above HIGH_BOUND, then blend the first three images
 			let first = "noise"; let second = "noise"; let mask = "noise";
 			let filtered = similarities.filter(sim => sim.score > LOW_BOUND);
 
@@ -167,34 +175,39 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				p5.image(raw1, 0, 0);
 			}
 			else{
-
 				let raw2 : p5.Image = this.rawImg[second]; // raw2 is over raw1
 				let raw1_mask : p5.Image = this.rawImg[mask];
 				raw1.loadPixels();
 				raw2.loadPixels();
 				raw1_mask.loadPixels();
-	
+
 				copyOver(raw1, img);
-				randomCMYK(img);
-				
+				//randomCMYK(img);
 
-				//cmykBlend(img, raw2, img, 0.8);
-				hardlightBlend(img, raw2, img, 0.5);		// hardlight blends raw2 over raw1
-				// make blending random (hardlight, overlay, softlight, etc)
-
-				//	Use first two similarities to determine opacity of the mask
+				//	Use first two similarities to determine opacity of the top mask
 				let score_ratio = similarities[0]["score"] / (similarities[0]["score"] + similarities[1]["score"]);
 				let mask_opacity = Math.min(((score_ratio - 0.5) * 6), 1.0); // 0.5 - 0.65 -> 0.0 - 1.0
-				console.log(mask_opacity);
+				//console.log(mask_opacity);
+
+				// let hardlight_ratio = Math.max(0, Math.min(1.0, 
+				// 	((similarities[0]["score"] - HIGH_BOUND - 0.1) / 0.2)
+				// ))
+				// hardlightBlend(img, raw2, img, hardlight_ratio);
+				// cmykBlend(img, raw2, img, (1.0 - hardlight_ratio) * Math.min(mask_opacity + 0.5));
+				// console.log([similarities[0]["score"], ((similarities[0]["score"] - LOW_BOUND - 0.1) / (HIGH_BOUND - LOW_BOUND)), hardlight_ratio]);
+
+				//cmykBlend(img, raw2, img, mask_opacity * 0.5 + 0.5);
+				cmykBlend(img, raw2, img, mask_opacity);
+				hardlightBlend(img, raw2, img, 1 - mask_opacity);
 
 				//normalBlend(img, raw1_mask, img, mask_opacity);		// normal blends mask over img
-				cmykBlend(img, raw1_mask, img, mask_opacity * 0.8);
-				console.log("score: " + (similarities[0]["score"] - HIGH_BOUND));
+				cmykBlend(img, raw1_mask, img, mask_opacity);
+
 				// brightness(img, score_ratio/HIGH_BOUND);						// implemented brightness here -KK
 				// randomHue(img);												// implemented hue here -KK
 				// saturation(img, (similarities[0]["score"] - HIGH_BOUND));  	// implemented saturation here -KK
 																// implemented cmyk here -KK
-	
+
 				p5.image(img, 0, 0);
 			}
 
@@ -207,7 +220,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 			}
 
 			this.setState((state) => ({
-				images: [...state.images, [first, second, this.p5Canvas.elt.toDataURL(), similarities, matched_keywords]]
+				images: [...state.images, [first, this.p5Canvas.elt.toDataURL(), similarities, matched_keywords]]
 			}));
 		}
 
@@ -243,15 +256,17 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 					return (
 						<Candidate 
 							inprompt={this.props.prompts[index]}
-							similarities={img[3]}
-							matched_keywords={img[4]}
-                            imageurl={img[2]} 
+							if_tutorial={this.props.if_tutorial}
+							similarities={img[2]}
+							matched_keywords={img[3]}
+                            imageurl={img[1]} 
 							imgName={img[0]}
-							imgName2={img[1]}
 							imgData={this.imgData}
 
 							dialogueVar = {this.props.dialogueVar}
 							setDialogueVar  = {this.props.setDialogueVar}
+							initiateScene = {this.props.initiateScene}
+
 							key={index}>
 
 						</Candidate>

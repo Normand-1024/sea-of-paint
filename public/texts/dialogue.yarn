@@ -5,10 +5,12 @@ position: -47,-558
 // Global Variables
 <<set $integrity = 100>> 
 <<set $self = false>>
-<<set $machine = false>>
+<<set $selfspeak = false>>
 <<set $follow = false>>
+<<set $noprint = false>>
 <<set $scramble = false>>
-<<set $generate_lily = false>>
+<<set $generate_lily1 = false>>
+<<set $generate_lily2 = false>> // REMEMBER: Don't trigger this variable right after choosing a dialogue option
 <<set $generate = false>>
 <<set $generate_count = 0>>
 
@@ -16,41 +18,45 @@ position: -47,-558
 // -2: not unlocked, -1: unlocked but waiting for interpretation
 // Natural numbers refers to the index of the interpretation
 <<set $lily = -2>> 
+<<set $lily2 = -2>> 
 <<set $stefan = -2>> 
-<<set $lily_car = -2>> 
+<<set $ivan = -2>> 
+<<set $emma = -2>> 
 
 // Path Variables - tracking which path has been traversed
 <<set $p_lily_initial = false>>
-<<set $p_lily_work = false>>
-<<set $p_mey_work = false>>
-<<set $p_manager = false>>
-<<set $p_mey_work_2 = false>>
-<<set $p_writing = false>>
-<<set $p_writing_2 = false>>
-<<set $p_publishing = false>>
+<<set $p_lily = false>>
+<<set $p_stefan = false>>
 <<set $p_ivan = false>>
+<<set $p_emma = false>>
 
-// Act_1_Family
+<<set $p_lily_o = false>>
+<<set $p_stefan_o = false>>
+<<set $p_ivan_o = false>>
+<<set $p_emma_o = false>>
+
+// Variable for jumping to different scenes
+<<set $scene_var = "A2_Hub">>
+
+// A1_Family
 <<set $informed_husband = false>>
 <<set $informed_son = false>>
 <<set $informed_mum = false>>
 
-// Act_1_Lily
+// A1_Lily
 <<set $act_1_lie_lily = false>>
 
-// Act_1_Self
-<<set $act_1_remember_or_emotion = false>>
-<<set $act_1_flower_or_book = false>>
-
-// Act_2_Lily_Work
-<<set $act_2_lie_lily = false>>
+// A1_Lily_Q
+<<set $ask_lily_argue = false>>
+<<set $ask_lily_angry = false>>
 
 ...Hello?
 
 -> Hello, Mey.
 
-//<<jump Act_1_Lily>>
-<<jump Act_2_Hub>>
+//<<jump A1_Machine_Intro>>
+// <<set $p_lily_initial = true>>
+// <<jump A1_Lily_Q>>
 
 What is this? Why is it so dark here?
 
@@ -62,11 +68,11 @@ What is this? Why is it so dark here?
 
 ...a car accident?...why?...
 
--> I don't know why. Things are cruel this way. They don't make sense.
+-> (Affirm) Take a deep breath, Mey. It's okay to feel confused.
 
-    Yes...it doesn't make sense...I don't know why I asked. I'm just in shock.
+    Yes...it doesn't make sense...I don't know why I asked...I'm just in shock.
 
-    -> It's okay. You just got brought back. It must be difficult for you.
+    -> (Affirm) It's okay. You just got brought back. It must be difficult for you.
 
         So why am I here? Why did you bring me back?
 
@@ -88,16 +94,33 @@ What about my family? Where are they? Are they here?
 
 I've never thought Machine could be used this way. Aren't there pictures of me?
 
--> We are curious about what you would remember about yourself. It would be more authentic this way.
+<<set $noprint = true>>
 
-   As opposed to how others remember about me? I don't know which one would be better.
+-> Memory is like an archive...
 
--> The images will contain rawer emotions from the past. It would be more authentic this way.
+    <<set $selfspeak = true>>
+    Pictures can never replace the large collection of your own memories. Only you can put them back together, Mey.
+    <<set $selfspeak = false>>
 
-    I never thought about how the Sea could record emotions...it is such a nebulous thing. How is it even possible?
-    <<set $act_1_remember_or_emotion = true>>
+    I guess so...It's funny isn't it. Even in death I have to sift through my own memory...it's a strange feeling.
 
-So my family hired you? Why aren't they with you?
+-> Memory is like a painting...
+
+    <<set $selfspeak = true>>
+    Pictures can never replace the person that created those memories - the joys and struggles. Only you can speak to them, Mey.
+    <<set $selfspeak = false>>
+
+    I guess so...I feel perfectly fine for others to describe me. Not sure if I can do better than they do.
+
+-> Mmeory is like a play...
+
+    <<set $selfspeak = true>>
+    Pictures can never recollect memories the way the actual person does. Only you can enact them properly, Mey.
+    <<set $selfspeak = false>>
+
+    I guess so...I don't know what "properly" means. It's a strange feeling to speak to my own memory.
+
+Regardless...so my family hired you? Why aren't they with you?
 
 -> I believe they talked to you through another service.
 
@@ -109,268 +132,267 @@ I don't understand...I really want to talk to them...
 
 Can you at least tell me how they are doing?
 
-<<jump Act_1_Family>>
+<<jump A1_Family>>
 
 ===
 
-title: Act_1_Family
+title: A1_Family
 position: 112,-303
 ---
 
--> Your husband is still working. But he's also getting government benefits <<if $informed_husband is false>>
+-> Your husband just secured a big commision. <<if $informed_husband is false>>
 
     <<set $informed_husband = true>>
 
-    I really wish Ivan doesn't put so much on himself. He should retire soon
+    Ex-husband, you mean.
 
-    -> I believe he will next year. At least from what he told me
-
-    Thank god, I feel terrible leaving him alone like this
+    I guess I'm happy for Ivan, since he's so dedicated to his craft...to a fault perhaps.
 
     <<if $informed_mum is false || $informed_son is false>>
     How about the others?
     <<endif>>
 
-    <<jump Act_1_Family>>
+    <<jump A1_Family>>
 
--> Your son was promoted recently. They hired a nanny <<if $informed_son is false>>
+-> Your son was promoted recently. <<if $informed_son is false>>
 
     <<set $informed_son = true>>
 
-    That's good to hear. He's been working for it for so long.
-
-    We used to take care of the kids. We'd prefer that, had this not happened
+    That's good to hear. They should hire a nanny. Who is going to look after the kids now?
 
     Is there more?
     
-    <<jump Act_1_Family>>
+    <<jump A1_Family>>
 
--> Your mother had an accident recently. She's hospitalized now <<if $informed_mum is false>>
+-> Your mother passed recently. <<if $informed_mum is false>>
 
     <<set $informed_mum = true>>
 
-    Again? When is she getting out?
+    Oh...
 
-    -> I'm not sure. They said she's rather confused
+    -> I'm really sorry, Mey.
     
-    Confused? how?
+    It's okay...I'm sad, but I've been expecting it.
 
-    -> They only mentioned in passing, and it wasn't my place to ask...I'm sorry. But it sounded like she needs 24/7 care from now
-    
-    To be honest, part of me already expected something like this would happen...but it's still hard to hear
+    She's been doing bad for a long time. I just vist her in the hospital every week, wondering when it'll happen eventually.
 
-    So she will spend the rest of her days under care...I can't imagine that...
-
-    -> I'm really sorry, Mey
-
-    Yes...me too...
+    Still...it's difficult to hear it. I hope she passed peacefully.
 
     We can move on if you'd like...but feel free to tell me more
 
-    <<jump Act_1_Family>>
+    <<jump A1_Family>>
 
 -> That's all I know. I didn't talk to your family very much, but they seem to be doing okay overall. <<if $informed_husband is true || $informed_son is true || $informed_mum is true>>
 
 Thank you...I appreciate it.
 
-<<jump Act_1_Lily>>
+<<jump A1_Machine_Intro>>
 
 ===
 
-title: Act_1_Lily
-position: -3,-66
+title: A1_Machine_Intro
 ---
 
-<<set $p_lily_initial = true>>
+So what do you need for this...memorabilia service?
 
-So I died from a car accident. What day was it?
+-> It's a back-and-forth process. I need to put you back into the Sea to search your memories.
 
--> I believe it was a Wednesday.
+    -> And then bring you back to talk about them, so that I can get clearer images with proper context. Without a precise description, the images get mixed up.
 
-That makes sense. Lily was supposed to give me a ride back. She's not feeling well lately.
+Oh, you need to put me back to the Sea? Do you need to switch modes or something?
 
--> Is Lily younger? Do you get along well?
+-> Yes. I'll bring you back out once I find a memory.
 
-Twenty years younger, in fact. And yes, we have people from many walks of lives in our place.
+Okay...it's a little terrifying...how exactly will I feel?
 
-Wait...is Lily okay? How is she now?
+-> It'll be like going to sleep. I promise I'll bring you back shortly.
 
--> (Lie) Fortunately she survived, she's under intensive care right now.
+Alright, I guess I have no choice in this. Go ahead then.
 
-    Thank god. The girl has so much going for her.
+<<set $self = true>>
 
-    I don't know how I would feel if she is also gone. I feel guilty somehow.
+Mey is back to the Sea now. Time to find a memory.
 
-    -> You are not responsible for what happened, Mey.
+The Machine will dive into the Sea, where memories flow and pass through each other. My text input will resonate with the memories. The closer my description is, the higher the resonance.
 
-        <<set $act_1_lie_lily = true>>
-
-        Yes, I know. But it could've gone wrong so easily.
-
-        I hope she recovers soon. She's going to leave that place. She told me she heard back from a couple of interviews.
-
-        Maybe I'll hear from her. I'm glad she's alright.
-
-    -> I'm sorry, Mey. But I lied. Lily actually died in the crash. I'm so sorry.
-
-        ...so she's gone?
-
-        -> Yes, I'm so sorry. I just felt terrible to break the news. That was selfish of me.
-
-        I get that. But don't lie to me again.
-
--> I'm really sorry, but neither of you survived the crash.
-
-    God...I can't believe that, the girl has so much going for her.
-
-<<if $act_1_lie_lily is false>>
-
-The world will miss her. It's a damn shame that Lily had to be the one to come with me. She had so much going for her...I could see it...
-
--> You are not responsible for what happened, Mey.
-
-I know that. It's more about how it could've turned out differently...
-
-I'm sorry...I just feel really guilty somehow.
-
-<<endif>>
-
--> I'm sure she's glad to have you in her life, Mey.
-
-Perhaps. Someimtes I would felt like a mother to her. I think it's more to my benefit.
-
-I just feel a sense of hope and uncertainty in her that really reminded me of myself.
-
--> I understand that - feeling your life has just begun and not knowing where you'll end up.
-
-Yes...you feel that way about where you are too?
-
--> Yes, this job is temporary. It suits me but I want to do something more.
-
-What do you like about it?
-
--> I want to hear about other people's stories, what they have to say. This job lets me do that.
-
-So you fancy yourself as an artist, huh?
-
--> Yes. I compare it to looking at a flower. The longer you look the more there is to discover. People are complex that way.
-
-    -> And you really need to know how to work the Machine to bring that quality out.
-
--> Yes. I compare it to dissecting a book. There's so many bits and pieces. It takes immense effort to connect all the dots.
-
-    -> And you really need to know how to work the Machine to bring that quality out.
-
-    <<set $act_1_flower_or_book = true>>
-
-So working with the Machine is a craft in itself to you.
-
--> Yes, the Machine usually produces mixed up images. The technology is not quite there yet.
-
-And a mixed up images is not authentic to you?
-
--> I think it gets confused about the subjects. It needs more accurate emotions to make something focused.
-
-    -> So far, I think I have gained enough understanding of your relationship with Lily. I can generate an image of her.
-
-Oh, you want to do it now? Do you need to switch mode or something?
-
--> Yes, I need to put you back to the Sea.
-
-Alright, I guess I have no choice. Go ahead then.
-
-<<set $self = true>> 
-Mey's back to the Sea now. Let's try to generate a picture from the Machine. 
-
-Let's recall some words that Mey used - How does she feel about Lily being in the car crash?
-
--> Guilty?
-
-    I think that's right. One key word down for this memory.
-
--> Worried?
-
-    I don't think that's the word she used. I should check the log.
-
--> Regret?
-
-    I don't think that's the word she used. I should check the log.
-
--> Responsible?
-
-    I don't think that's the word she used. I should check the log.
-
-Next - What words did she use when she thinks of Lily's future?
-
--> Motherly and Uncertain?
-
-    Not quite what I remember. Better go back to check.
-
--> Hope and Uncertainty?
-
-    Yes. Two keywords down.
-
--> Motherly and Hope?
-
-    Not quite what I remember. Better go back to check.
-
-Okay. That's enough with the keywords. Next is retrieving the core memory.
-
-The Sea is full of memories. My text input will resonate with them. The closer my description is, the higher the resonance.
-
-Only the two most resonated memories will display, and the core memories to be unlocked will be marked with "?". 
-
-<<set $generate_lily = true>>
-Descriptions and keywords all in one text prompt, so the Machine can generate Mey's authentic memory of Lily. Let's try it.
+<<set $generate_lily1 = true>>
+The core memories will be underlined. Those are more concrete than the abstract and impressionistic ones. I'll focus on the core memories in this query. Let's try it.
 <<set $self = false>>
 
-
-<<jump Act_2_Beginning>>
+<<jump A1_Lily>>
 
 ===
 
-title: Act_2_Beginning
-position: 3,180
+title: A1_Lily
+position: -3,-66
 ---
 
 -> You are back, Mey. How are you feeling?
 
-A little dizzy, like I need to recollect who I am, as if I forgot in my sleep.
+A little dizzy. For a second my mind was blank...like I didn't know what to think...or who I am...
 
--> You were merged with the Sea. A lot of data was needed to materialize the images. I think that's why.
+-> You were merged with the Sea and dragged around by different memories. I think that's why.
 
-...but am I not always part of the Sea in some ways?
+Yes. I'm familiar with how the Sea works. But to experience it, and to become part of it...it's just...nauseating.
 
--> Yes, your basic faculties are always part of the Sea. The sense of individuality comes more from your specific memory.
+-> You worked with the Machine, right?
 
-...Yes, I went through a basic training for my work. It didn't make things much clearer
+Sort of. I'm a Sea Weaver.
 
--> The Machine is just very obscure. But it works, that's what matters.
-
-    Still...I'd like to understand it. Considering that I'm part of it now.
-
-    -> You work with the Machine, right?
-
--> You work with the Machine, right?
-
-Sort of...I'm a Sea Weaver.
-
-It's a dumb name. We used to call it "data worker" before the Sea came to be. I don't work with the Machine directly.
+It's a dumb name. We used to call it "data worker" before the Sea. I don't work with the Machine directly.
 
 We create, or "weave", structures into the Sea so the Machine knows what to draw from it.
 
-Also, because the Sea is ever flowing and shifting, datasets would wear and tear. So we have do maintenance as well.
+Also, because the Sea is ever flowing and shifting, datasets would wear and tear. So we have to do maintenance as well.
 
--> It's a part of the Machine nonetheless. Your job is not any less important.
+Anyways...you woke me up...did you find a memory?
 
-    Thanks. But I'm still a bit further away from it.
+-> Yes. Someone named Lily. Red hair. And she's walking...
 
-    -> I'm sure you have much to share. Let's talk more about yourself.
+...and smoking? Walking away from me, right?
 
--> Regardless, I'd like to ask you about your experience, if that's alright.
+-> Yes. Do you recall this memory?
+
+Yes, now that you brought it up. It's very vivid. Lily is my co-worker. Almost twenty years younger than me.
+
+We just had an argument, I believe. And she was getting out of my car. I still remember the last thing she said to me...
+
+"If you want that little piglet to walk all over you, then be my guest."
+
+Then she walked away. Her pace almost deliberately sped up. Then she started lighting up a cigarette.
+
+<<jump A1_Lily_Q>>
+
+===
+
+title: A1_Lily_Q
+
+---
+
+-> (Question) What did you argue about? <<if $ask_lily_argue is false>>
+
+    <<set $ask_lily_argue = true>>
+
+    It was about our manager, Stefan. He's always an asshole to us.
+
+    He said something to me at work. It was harsh. Lily said I should've stood up to him. I disagreed...but I don't remember why.
+
+    It's strange...I don't remember what he said to me. It's like a fog in my brain.
+
+    <<jump A1_Lily_Q>>
+
+-> (Question) Was she angry with you? <<if $ask_lily_angry is false>>
+
+    <<set $ask_lily_angry = true>>
+
+    I don't think so. Lily just needs her space. She buds heads with people. I'm used to the way she acts.
+
+    It felt like smoking was a way for her to process things. But part of it also felt like she was showing that to me, that she was stressed.
+
+    <<jump A1_Lily_Q>>
+
+-> (Continue) And how does that make you feel, her walking away like that?
+
+I feel...maybe doubt?...and...envy? I don't know why. I can't make sense of it...
+
+-> Do you doubt because you could've apologized?
+
+-> Do you have doubts about whether you were in the wrong?
+
+-> What do you feel envious about?
+
+I really don't know...I can't remember why. I just feel it.
+
+Like there's so much fog in my thoughts. It chokes me to see through it. What's going on? Is there something wrong with me?
+
+-> It's normal. Your memory is not put back together yet. I need to search the Sea to find more.
+
+So I need you to actually recollect my own memory?
+
+-> Unfortunately yes. Again, this is a back-and-forth process.
+
+    -> But I should have enough information to access the memory of Lily now. I need to put you back to the Sea again, Mey.
+
+Oh, that was...an efficient conversation.
+
+Wait...just a second before you do that.
+
+...so I died from a car accident. Do you know which day of the week it was?
+
+-> I believe it was a Wednesday.
+
+Lily was supposed to give me a ride back that day...oh no...
+
+Have you heard anything about the accident? Whether anyone survived?
+
+-> (Lie) I did hear about a survivor. It must be Lily.
+
+    <<set $act_1_lie_lily = true>>
+
+    Thank god. I don't know how I would feel if she is also gone. She has so much future ahead of her...
+
+-> I don't think so...I'm so sorry, Mey.
+
+    God...I can't believe that, she has so much future ahead of her...
+    
+    Why do I have to bear with this news...it's...all too much.
+
+    -> Again, I'm really sorry, Mey. Both of you will be missed.
+
+    I will miss her...I just need some time...maybe the Sea will reset me somehow.
+
+You can put me back now.
+
+-> Are you sure? Do you need to stay a little bit longer?
+
+No, we should move on.
+
+I'm still a bit terrified. But I'll get used to it.
+
+-> See you in a bit, Mey.
+
+<<set $self = true>> 
+Mey is back to the Sea again. 
+
+<<set $generate_lily2 = true>>
+I should have gathered enough information to retrive the memory now. Just need to fill in the missing words to get a high enough resonance.
+<<set $self = false>>
+
+
+<<jump A2_Start>>
+
+===
+
+title: A2_Start
+position: 3,180
+---
+
+-> Welcome back, Mey. Do you still feel okay?
+
+I think so...I think waking up is always the scariest. Everything is a hazy emptiness. I need to try really hard to recollect myself.
+
+-> A lot of data was needed to materialize your memory into images. And the Sea was flowing through you too.
+
+Am I not always part of the Sea in some ways?
+
+-> Yes, your basic faculties are always part of the Sea. The sense of individuality comes more from your specific memory.
+
+Yes, I went through a basic training for my work. It didn't make things much clearer.
+
+Everyone says the Sea is very obscure. Nobody knows how it works exactly. But it works. That's what matters.
+
+Now that I'm part of it...I wish I know exactly what I am now.
+
+-> (Affirm) You are Mey. You have always been Mey. It's just that your consciousness exists in a different way now.
+
+    Thank you. But consciousness is so flimsy. I'm not exactly sure what that means...
+
+-> I wish I could say, Mey. But I'm as clueless as you are. I just operate the Machine.
+
+    I understand. It's funny how the Machine is everywhere now. A whole industry around it. Even though nobody fully knows how it works.
 
 <<set $scramble = true>>
-...sure, but I'm not sure if I can give you what you want.
+...and my memory doesn't fully work either.
 <<set $scramble = false>>
 
 ...what was that? I felt like my mind skipped a beat.
@@ -383,98 +405,65 @@ Also, because the Sea is ever flowing and shifting, datasets would wear and tear
 
 <<set $self = true>>
 <<set $follow = true>>
-I need to be careful with generating images. Too many will make the Sea swallow Mey, dissolving her individuality as a result.
-<<set $self = false>>
+The Sea flows through Mey every second, taking bits and pieces of her away.
 <<set $follow = false>>
 
-...okay, thank you. But as I was saying...you need emotional words for my memory.
+Especially when I'm generating images. Too many attempts will make the Sea swallow Mey, dissolving her into the current.
 
-But it's hard to know how I actually feel about the past. Articulating in words is not easy.
+I need to sometimes (affirm) her so she's not lost to the Sea. If successful, I might have more bandwidth to generate more images too.
+<<set $self = false>>
 
--> It's very common actually. I'll be asking more questions and help you locate the words.
+...okay, thank you. That was unpleasant. Felt like my entire body shook.
 
--> Memory clears up as you talk more over it. So let's just keep talking.
+So what now? Do we continue the search?
 
-Makes sense. What did you say again...
+-> Yes, let's keep searching your memory. I just need around three to get a good idea for memorabilia.
 
-<<if $act_1_remember_or_emotion is true && $act_1_flower_or_book == true>>
-    
-...I guess I'm a book that needs to discover the raw emotions in its own words.
+To be honest, I almost look forward to it. To find the past again. I can't remember much at all.
 
-<<elseif $act_1_remember_or_emotion is false && $act_1_flower_or_book == true>>
+Well, ask away then.
 
-...I guess I'm a book that needs to narrate itself.
-
-<<elseif $act_1_remember_or_emotion is true && $act_1_flower_or_book == false>>
-
-...I guess I'm a flower that needs to recover its raw, flowery emotions.
-
-<<else>>
-
-...I guess I'm a flower that needs to remember its own floweriness.
-
-<<endif>>
-
-Haha, sorry, the comparison is a bit clunky, to be honest. But ask away.
-
-<<jump Act_2_Hub_Initial>>
+------ That concludes the Intro! ------
 
 ===
 
-title: Act_2_Hub_Initial
+title: A2_Hub
 
-position: -19,393
----
-
--> Can you tell me how you feel about your work, Mey?
-
-    <<jump Act_2_Mey_Work>>
-
-// -> Did you want to do something else outside of being a Sea Weaver, Mey?
-
-//     <<jump Act_2_Writing>>
-
--> Oh Mey, I forgot to mention. Lily's image looks good.
-
-    <<jump Act_2_Lily_Work>>
-
-===
-
-title: Act_2_Hub
-
-position: -136,1177
+position: -110,1165
 ---
 
 -> (Submerge Mey, Start Generation)
 
-    <<jump Act_2_Generation>>
+    <<jump A2_Generation>>
 
--> Can you tell me how you feel about your work, Mey? <<if $p_mey_work is false>>
+// -> Can you tell me how you feel about your work, Mey? <<if $p_stefan is false>>
 
-    <<jump Act_2_Mey_Work>>
+//     <<jump A2_Stefan>>
 
 // -> Did you want to do something else outside of being a Sea Weaver? <<if $p_writing is false>>
 
 //     <<jump Act_2_Writing>>
 
--> Oh Mey, I forgot to mention. Lily's image looks good. <<if $p_lily_work is false>>
+-> Oh Mey, I forgot to mention. Lily's image looks good. <<if $p_lily is false>>
 
-    <<jump Act_2_Lily_Work>>
+    <<jump A2_Lily>>
 
--> Can you tell me more about the manager, Mey? <<if $p_mey_work is true && $p_manager is false>>
+// -> I didn't think the job would be so taxing. It must be hard on you, Mey. <<if $p_mey_work is true && $p_mey_work_2 is false>>
 
-    <<jump Act_2_Manager>>
-
--> I didn't think the job would be so taxing. It must be hard on you, Mey. <<if $p_mey_work is true && $p_mey_work_2 is false>>
-
-    <<jump Act_2_Mey_Work_2>>
+//     <<jump A2_Mey_Work_2>>
 
 ===
 
-title: Act_2_Generation
+title: A2_Generation
 
 position: -140,1354
 ---
+
+<<set $scene_var = "A2_Hub">>
+
+// ==========================================
+// ========INTO THE SEA======================
+// ==========================================
 
 <<if $generate_count >= 0>>
 
@@ -485,13 +474,72 @@ Okay, sounds good
 <<set $self = true>> 
 <<set $generate = true>>
 Mey's back to the Sea again.
-<<set $self = false>>
 
 <<endif>>
 
 
 <<set $generate_count = $generate_count + 1>>
 
+
+// ========COMING BACK TEXT=================
+
+<<if $generate_count >= 0>>
+
+The Sea shifts, tracing out the shape of Mey.
+
+<<endif>>
+<<set $self = false>>
+
+
+// =========================================
+// =======SCENE TRANSITION==================
+// =========================================
+
+<<if $scene_var == "A2_Stefan">>
+
+<<set $p_stefan = true>>
+<<jump A2_Stefan>>
+
+<<elseif $scene_var == "A2_Ivan">>
+
+<<set $p_ivan = true>>
+<<jump A2_Ivan>>
+
+<<elseif $scene_var == "A2_Lily">>
+
+<<set $p_lily = true>>
+<<jump A2_Lily>>
+
+<<elseif $scene_var == "A2_Emma">>
+
+<<set $p_emma = true>>
+<<jump A2_Emma>>
+
+<<elseif $scene_var == "A2_Stefan_O">>
+
+<<set $p_stefan_o = true>>
+supposed to jump here
+
+<<elseif $scene_var == "A2_Ivan_O">>
+
+<<set $p_ivan_o = true>>
+supposed to jump here
+
+<<elseif $scene_var == "A2_Lily_O">>
+
+<<set $p_lily_o = true>>
+supposed to jump here
+
+<<elseif $scene_var == "A2_Emma_O">>
+
+<<set $p_emma_o = true>>
+<<jump A2_Emma_O>>
+
+<<endif>>
+
+// IF NOT SCENE TRANSITION:
+// ==========================================
+// ========COMING BACK=======================
 // ==========================================
 
 
@@ -509,16 +557,14 @@ Still requires some effort to come back. You calling my name seems to help a lit
 
 <<endif>>
 
-<<jump Act_2_Hub>>
+<<jump A2_Hub>>
 
 ===
 
-title: Act_2_Mey_Work
+title: A2_Mey_Work
 
 position: 390,337
 ---
-
-<<set $p_mey_work = true>>
 
 Perhaps a little conflicted, I think.
 
@@ -562,23 +608,12 @@ The groups were separated by ages. We knew what he was doing. Lily and the other
 
 But it does seep into how you see yourself. Just how much you wish you could be independent for once, just to prove him wrong...
 
--> I'm really sorry to hear that.
-
-    -> Can you tell me more about the manager, Mey?
-
-        <<jump Act_2_Manager>>
-
-    -> I didn't think the job would be so taxing. It must be hard on you, Mey.
-
-        <<jump Act_2_Mey_Work_2>>
-
 ===
-title: Act_2_Manager
+title: A2_Stefan
 
 position: 968,206
 ---
 
-<<set $p_manager = true>>
 <<set $gossip_counter = 0>>
 
 Ahh...he is a fun one to talk about.
@@ -698,43 +733,26 @@ Yes, let's move on, please.
 <<endif>>
 
 
-<<jump Act_2_Hub>>
+<<jump A2_Hub>>
 
 ===
 
-title: Act_2_Mey_Work_2
-
-position: 963,435
----
-
-<<set $p_mey_work_2 = true>>
-
-Haven't written this one yet, oops!
-
-<<jump Act_2_Hub>>
-
-===
-
-title: Act_2_Writing
+title: A2_Ivan
 
 position: 386,910
 ---
 
-<<set $p_writing = true>>
-
 Haven't written this one yet, oops!
 
-<<jump Act_2_Hub>>
+<<jump A2_Hub>>
 
 
 ===
 
-title: Act_2_Lily_Work
+title: A2_Lily
 
 position: -36,699
 ---
-
-<<set $p_lily_work = true>>
 
 Oh yea? How does it look?
 
@@ -893,6 +911,26 @@ I think that's enough. Let's go back to Mey.
 
 <<set $self = false>>
 
-<<jump Act_2_Hub>>
+<<jump A2_Hub>>
+
+===
+
+title: A2_Emma
+
+---
+
+Not writing anything yet!
+
+<<jump A2_Hub>>
+
+===
+
+title: A2_Emma_O
+
+---
+
+Not writing anything yet!
+
+<<jump A2_Hub>>
 
 ===
