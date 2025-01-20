@@ -306,7 +306,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                                         
                                         <div className="button-div">
                                         <button type="button" className="continue-button" disabled>
-                                            Unlock Lily's Memory to Continue</button></div>   
+                                            Unlock Memory of Lily to Continue</button></div>   
 
                                         :
 
