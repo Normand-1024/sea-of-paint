@@ -100,30 +100,77 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 					similarities[0].score = UNLOCK_SCORE;
 
-					// let count = 0;
-					// let keywords = this.imgData[similarities[0].name]["keywords"];
-
-					// // iterate through each keyword set for the image -KK 
-					// for (let word_set of keywords){
-					// 	for (let word of word_set){
-					// 		if(prompt.includes(word)){
-					// 			matched_keywords[count] = word;
-					// 			count++;	// the prompt matches a word in the keyword set -KK
-					// 			break;		// break to avoid accidental repetitions -KK
-					// 		}
-					// 	}
-					// 	if (count >= 3) break;
-					// }
-
-					// if (count >= 3){
-					// 	similarities[0].score = UNLOCK_SCORE;
-					// }
-					// console.log("Count: ", count);
-
 				}
 
-				//console.log("Sorted similarities: ", similarities);
 
+				// --------------------------------------- //
+				// KEYWORD DETECTION AND REPLACEMENT BELOW //
+				// --------------------------------------- //
+
+				// are there supposed to be any parameters met before checking for keywords?
+				// or is the image being top similarity enough? -KK
+				
+				let keywords = this.imgData[similarities[0].name]["keywords"]; 
+				let fulldescp = this.imgData[similarities[0].name]["descp"]; 
+				let placeholder = this.imgData[similarities[0].name]["descp2"]; 
+			
+				// iterate through the text to see if it matches any keywords
+				// reveal prompt accordingly -KK
+				let count = 1;
+				for (let word of keywords) {
+					let promptLower = prompt.toLowerCase();
+					let wordLower = word[0].toLowerCase();
+					console.log(prompt);
+
+					// the below code works really elegantly but only for the first keyword :( -KK
+					/*if (promptLower.includes(wordLower)) {
+						console.log("keyword " + word + " detected in prompt");
+						
+						// find index of keyword -KK
+						let index = fulldescp.toLowerCase().indexOf(wordLower);
+						console.log(index);
+						
+						let before = placeholder.substring(0, index);
+						let after = placeholder.substring(index + 3)
+						placeholder = before + word + after;
+						console.log("placeholder: " + placeholder);
+	
+						// update dialogue -KK
+						const dialogueKey = this.imgData[similarities[0].name]["path"];
+						this.props.setDialogueVar(dialogueKey, placeholder);
+					}*/
+
+					if (promptLower.includes(wordLower)) {
+						console.log("keyword " + word + " detected in prompt");
+						
+						// count the number of occurrences of [?] to match word with the descp -KK
+						let occurrenceIndex = -1;
+						let occurrenceCount = 0;
+						for (let i = 0; i < placeholder.length; i++) {
+							if (placeholder.substring(i, i + 3) == "[?]") {
+								occurrenceCount++; 
+								if (count == occurrenceCount){
+									occurrenceIndex = i;
+									break;
+								}
+							}
+						}
+						console.log("[?] index: " + occurrenceIndex);
+						
+						let before = placeholder.substring(0, occurrenceIndex);
+						let after = placeholder.substring(occurrenceIndex + 3)
+						placeholder = before + word + after;
+						console.log("new placeholder: " + placeholder);
+	
+						// update dialogue -KK
+						const dialogueKey = this.imgData[similarities[0].name]["path"];
+						this.props.setDialogueVar(dialogueKey, placeholder);
+					}
+					else{
+						count++;
+					}
+				}
+				
 				p5.generateImage(similarities, matched_keywords);
 			}
 		}
