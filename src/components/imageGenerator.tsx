@@ -44,6 +44,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 	private rawImg : { [id: string] : any; } = {};
 	private imgData: { [id: string] : any; } = {}; // name : all other data in IMAGE_DATA
 	private imgEmbed: { [id: string] : any; } = {}; // Embeddings for each image
+	private imgWordStat: {[id: string] : any[]} = {} // For each image, store the state of unlocked keywords (marked by boolean)
 
   Sketch = (p5:any) => {
 
@@ -56,6 +57,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				this.rawImg[name + "_mask_1"] = p5.loadImage("./assets/images/" + name + "_mask_1" + ".png");
 				this.imgData[name] = imgd;
 				this.imgEmbed[name] = await this.st.embed(imgd["descp"]);
+				this.imgWordStat[name] = new Array(this.imgData[name]["keywords"].length).fill(false);
 			}
 			this.rawImg["noise"] = p5.loadImage("./assets/images/noise.png");
 		}
@@ -93,45 +95,44 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				// sort similarities in descending order -KK
 				similarities.sort((a, b) => b.score - a.score);
 
+				// ----------------- //
+				// KEYWORD DETECTION //
+				// ----------------- //
+
+				// are there supposed to be any parameters met before checking for keywords?
+				// or is the image being top similarity enough? -KK
+				
+				let keywords = this.imgData[similarities[0].name]["keywords"]; 
+				let wordStat = this.imgWordStat[similarities[0].name];
+				let fulldescp = this.imgData[similarities[0].name]["descp"]; 
+				let placeholder = this.imgData[similarities[0].name]["descp2"]; 
+			
+				for (let i=0; i<wordStat.length; i++) {
+					if (wordStat[i]) continue;
+					for (let j=0; j < keywords[i].length; j++){
+						if (prompt.includes(keywords[i][j].toLowerCase())){
+							wordStat[i] = true;
+						}
+					}
+				}
+				this.imgWordStat[similarities[0].name] = wordStat;
+
+				
 				// check for keywords if the similarity is high enough -KK 
-				let matched_keywords : Array<string> = ["","",""]
-				if (this.props.dialogueVar.get(this.imgData[similarities[0].name]["path"]) &&
-					similarities[0].score > HIGH_BOUND) {
+				if (similarities[0].score > HIGH_BOUND) {
 
 					similarities[0].score = UNLOCK_SCORE;
 
-					// let count = 0;
-					// let keywords = this.imgData[similarities[0].name]["keywords"];
-
-					// // iterate through each keyword set for the image -KK 
-					// for (let word_set of keywords){
-					// 	for (let word of word_set){
-					// 		if(prompt.includes(word)){
-					// 			matched_keywords[count] = word;
-					// 			count++;	// the prompt matches a word in the keyword set -KK
-					// 			break;		// break to avoid accidental repetitions -KK
-					// 		}
-					// 	}
-					// 	if (count >= 3) break;
-					// }
-
-					// if (count >= 3){
-					// 	similarities[0].score = UNLOCK_SCORE;
-					// }
-					// console.log("Count: ", count);
-
 				}
-
-				//console.log("Sorted similarities: ", similarities);
-
-				p5.generateImage(similarities, matched_keywords);
+				
+				p5.generateImage(similarities, wordStat);
 			}
 		}
 
 		// ********************************
 		// Actual image generation function
 		// ********************************
-		p5.generateImage = async (similarities : Array<any>, matched_keywords : Array<string>) => {
+		p5.generateImage = async (similarities : Array<any>, wordStat : Array<boolean>) => {
 			p5.background('white');
 
 			let img : p5.Image = p5.createImage(500, 500);
@@ -220,7 +221,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 			}
 
 			this.setState((state) => ({
-				images: [...state.images, [first, this.p5Canvas.elt.toDataURL(), similarities, matched_keywords]]
+				images: [...state.images, [first, this.p5Canvas.elt.toDataURL(), similarities, wordStat]]
 			}));
 		}
 
@@ -258,7 +259,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 							inprompt={this.props.prompts[index]}
 							if_tutorial={this.props.if_tutorial}
 							similarities={img[2]}
-							matched_keywords={img[3]}
+							wordStat={img[3]}
                             imageurl={img[1]} 
 							imgName={img[0]}
 							imgData={this.imgData}
