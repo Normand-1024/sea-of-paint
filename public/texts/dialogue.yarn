@@ -24,7 +24,7 @@ position: -47,-558
 <<set $emma = -2>> 
 
 // Path Variables - tracking which path has been traversed
-<<set $p_lily_initial = false>>
+<<set $p_lily_q = false>>
 <<set $p_lily = false>>
 <<set $p_stefan = false>>
 <<set $p_ivan = false>>
@@ -54,9 +54,8 @@ position: -47,-558
 
 -> Hello, Mey.
 
-//<<jump A1_Machine_Intro>>
-// <<set $p_lily_initial = true>>
- <<jump A1_Lily_Q>>
+// <<jump A1_Machine_Intro>>
+// <<jump A1_Lily_Q>>
 
 What is this? Why is it so dark here?
 
@@ -112,7 +111,7 @@ I've never thought Machine could be used this way. Aren't there pictures of me?
 
     I guess so...I feel perfectly fine for others to describe me. Not sure if I can do better than they do.
 
--> Mmeory is like a play...
+-> Memory is like a play...
 
     <<set $selfspeak = true>>
     Pictures can never recollect memories the way the actual person does. Only you can enact them properly, Mey.
@@ -174,7 +173,7 @@ position: 112,-303
     
     It's okay...I'm sad, but I've been expecting it.
 
-    She's been doing bad for a long time. I just vist her in the hospital every week, wondering when it'll happen eventually.
+    She's been doing bad for a long time. I visited her in the hospital every week, wondering when it'll happen eventually.
 
     Still...it's difficult to hear it. I hope she passed peacefully.
 
@@ -195,7 +194,7 @@ title: A1_Machine_Intro
 
 So what do you need for this...memorabilia service?
 
--> It's a back-and-forth process. I need to put you back into the Sea to search your memories.
+-> It's a back-and-forth process. I need to put you back in the Sea to search your memories.
 
     -> And then bring you back to talk about them, so that I can get clearer images with proper context. Without a precise description, the images get mixed up.
 
@@ -216,7 +215,7 @@ Mey is back to the Sea now. Time to find a memory.
 The Machine will dive into the Sea, where memories flow and pass through each other. My text input will resonate with the memories. The closer my description is, the higher the resonance.
 
 <<set $generate_lily1 = true>>
-The core memories will be underlined. Those are more concrete than the abstract and impressionistic ones. I'll focus on the core memories in this query. Let's try it.
+The core memories would appear different from others. Those are more concrete than the abstract and impressionistic ones. I'll focus on the core memories in this query. Let's try it.
 <<set $self = false>>
 
 <<jump A1_Lily>>
@@ -268,6 +267,8 @@ Then she walked away. Her pace almost deliberately sped up. Then she started lig
 title: A1_Lily_Q
 
 ---
+
+<<set $p_lily_q = true>>
 
 -> (Question) What did you argue about? <<if $ask_lily_argue is false>>
 
@@ -381,7 +382,7 @@ Yes, I went through a basic training for my work. It didn't make things much cle
 
 Everyone says the Sea is very obscure. Nobody knows how it works exactly. But it works. That's what matters.
 
-Now that I'm part of it...I wish I know exactly what I am now.
+Now that I'm part of it...I wish I knew what I am now.
 
 -> (Affirm) You are Mey. You have always been Mey. It's just that your consciousness exists in a different way now.
 

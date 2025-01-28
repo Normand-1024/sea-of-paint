@@ -34,12 +34,12 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
 
         if (i > 1 || image_score < LOW_BOUND){
             return (<div>
-                <p>{score} --- [{if_locked ? <u>{memName}</u> : memName}] </p>
+                <p>{score} --- {if_locked ? <u>&lt;&lt;{memName}&gt;&gt;</u> : <>[{memName}]</>} </p>
             </div>)
         }
 
         return <div>
-            <p><b>{score} --- [{if_locked ? <u>{memName}</u> : memName}] </b></p>
+            <p><b>{score} --- {if_locked ? <u>&lt;&lt;{memName}&gt;&gt;</u> : <>[{memName}]</>} </b></p>
         </div>;
     }
     
@@ -88,7 +88,10 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                 return (<div>
                     {this.getMemInfo(imgName, score, if_locked, i)}
 
-                    <p className = "notif"> Core Memory - Not Yet Retrieved </p>
+                    { if_locked ? 
+                        <p className = "notif"> Core Memory - Not Yet Retrieved </p>
+                        : <p className = "notif"> Core Memory - Retrieved </p>
+                    }
 
                     {this.getPrompt()}
                 </div>);
@@ -106,7 +109,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
 
                                 { this.props.imgName == "lily" ? 
                                     <p className = "notif"> Core Memory - 4 Words Missing - Inquiry Needed  </p>
-                                    : (null)}
+                                    : <p className = "notif"> Non-core Memory </p>}
 
                                 {this.getPrompt()}
                                 
@@ -119,7 +122,6 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                                     : (null)
                                 }
                             </div>)
-                        
                 }
                 else
                     return (<div>
@@ -196,7 +198,15 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                 : !is_unlockable || !matched                ?
                         // Render the top five memories
                         <div className = "row">
-                            <p   className = "column left" style={{'marginTop': 0}}> <big>Memory Resonance:</big> <br></br><br></br> <small>Reach {this.distanceFunc(HIGH_BOUND)} to Retrieve Memory</small></p>
+                            <p   className = "column left" style={{'marginTop': 0}}> 
+                                <big>Memory Resonance:</big> 
+
+
+                                { this.props.dialogueVar.get("p_lily_q") ? 
+                                 <><br></br><br></br><small>Reach {this.distanceFunc(HIGH_BOUND)} to Retrieve Memory</small></>
+                                : (null)}
+                            </p>
+
                             <div className = "column right">
                                 {this.props.similarities.slice(0,5).map(
                                     (img:any, i:number) => {
