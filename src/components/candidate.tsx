@@ -30,7 +30,9 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
 
     getMemInfo(image_name : string, image_score : number, if_locked : boolean, i : number) {
         let memName : string = this.props.imgData[image_name].memory_name;
-        let score : string = image_score < LOW_BOUND ? "Too Dissonant" : this.distanceFunc(image_score);
+        let score : string = 
+                !this.props.dialogueVar.get("generate_lily2") ? (i + 1).toString()
+                    : image_score < LOW_BOUND ? "Too Dissonant" : this.distanceFunc(image_score);
 
         if (i > 1 || image_score < LOW_BOUND){
             return (<div>
@@ -104,24 +106,48 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                 //      TODO: <p className = "notif"> 4 Words Missing - Inquiry Needed  </p>
 
                 if (this.props.if_tutorial){
-                    return (<div>
-                                {this.getMemInfo(imgName, score, if_locked, i)}
+                    if (!this.props.dialogueVar.get("generate_lily2")){
+                        
+                        return (<div>
+                            {this.getMemInfo(imgName, score, if_locked, i)}
 
-                                { this.props.imgName == "lily" ? 
-                                    <p className = "notif"> Core Memory - 4 Words Missing - Inquiry Needed  </p>
-                                    : <p className = "notif"> Non-core Memory </p>}
+                            { this.props.imgName == "lily" ? 
+                                <p className = "notif"> Core Memory - 4 Words Missing - Inquiry Needed  </p>
+                                : <p className = "notif"> Non-core Memory </p>}
 
-                                {this.getPrompt()}
-                                
-                                { this.props.imgName == "lily" ? 
-                                    <button key={i} type="button"
-                                    style={{'marginLeft': '5%'}}
-                                    onClick = {() => this.initiateScene()}>
-                                    Bring back Mey, Inquire about Memory
-                                    </button> 
-                                    : (null)
-                                }
-                            </div>)
+                            {this.props.imgName == "lily" ? this.getPrompt() : (null)}
+                            
+                            { this.props.imgName == "lily" ? 
+                                <button key={i} type="button"
+                                style={{'marginLeft': '5%'}}
+                                onClick = {() => this.initiateScene()}>
+                                Bring back Mey, Inquire about Memory
+                                </button> 
+                                : (null)
+                            }
+                        </div>)
+
+                    }
+                    else{
+                        return (<div>
+                                    {this.getMemInfo(imgName, score, if_locked, i)}
+
+                                    { this.props.imgName == "lily" ? 
+                                        <p className = "notif"> Core Memory - 4 Words Missing - Inquiry Needed  </p>
+                                        : <p className = "notif"> Non-core Memory </p>}
+
+                                    {this.getPrompt()}
+                                    
+                                    { this.props.imgName == "lily" ? 
+                                        <button key={i} type="button"
+                                        style={{'marginLeft': '5%'}}
+                                        onClick = {() => this.initiateScene()}>
+                                        Bring back Mey, Inquire about Memory
+                                        </button> 
+                                        : (null)
+                                    }
+                                </div>)
+                    }
                 }
                 else
                     return (<div>
