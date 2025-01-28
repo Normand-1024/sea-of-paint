@@ -44,6 +44,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 	private rawImg : { [id: string] : any; } = {};
 	private imgData: { [id: string] : any; } = {}; // name : all other data in IMAGE_DATA
 	private imgEmbed: { [id: string] : any; } = {}; // Embeddings for each image
+	private imgWordStat: {[id: string] : any[]} = {} // For each image, store the state of unlocked keywords (marked by boolean)
 
   Sketch = (p5:any) => {
 
@@ -56,6 +57,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				this.rawImg[name + "_mask_1"] = p5.loadImage("./assets/images/" + name + "_mask_1" + ".png");
 				this.imgData[name] = imgd;
 				this.imgEmbed[name] = await this.st.embed(imgd["descp"]);
+				this.imgWordStat[name] = new Array(this.imgData[name]["keywords"].length).fill(false);
 			}
 			this.rawImg["noise"] = p5.loadImage("./assets/images/noise.png");
 		}
@@ -93,92 +95,44 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				// sort similarities in descending order -KK
 				similarities.sort((a, b) => b.score - a.score);
 
-				// check for keywords if the similarity is high enough -KK 
-				let matched_keywords : Array<string> = ["","",""]
-				if (this.props.dialogueVar.get(this.imgData[similarities[0].name]["path"]) &&
-					similarities[0].score > HIGH_BOUND) {
-
-					similarities[0].score = UNLOCK_SCORE;
-
-				}
-
-
-				// --------------------------------------- //
-				// KEYWORD DETECTION AND REPLACEMENT BELOW //
-				// --------------------------------------- //
+				// ----------------- //
+				// KEYWORD DETECTION //
+				// ----------------- //
 
 				// are there supposed to be any parameters met before checking for keywords?
 				// or is the image being top similarity enough? -KK
 				
 				let keywords = this.imgData[similarities[0].name]["keywords"]; 
+				let wordStat = this.imgWordStat[similarities[0].name];
 				let fulldescp = this.imgData[similarities[0].name]["descp"]; 
 				let placeholder = this.imgData[similarities[0].name]["descp2"]; 
 			
-				// iterate through the text to see if it matches any keywords
-				// reveal prompt accordingly -KK
-				let count = 1;
-				for (let word of keywords) {
-					let promptLower = prompt.toLowerCase();
-					let wordLower = word[0].toLowerCase();
-					console.log(prompt);
-
-					// the below code works really elegantly but only for the first keyword :( -KK
-					/*if (promptLower.includes(wordLower)) {
-						console.log("keyword " + word + " detected in prompt");
-						
-						// find index of keyword -KK
-						let index = fulldescp.toLowerCase().indexOf(wordLower);
-						console.log(index);
-						
-						let before = placeholder.substring(0, index);
-						let after = placeholder.substring(index + 3)
-						placeholder = before + word + after;
-						console.log("placeholder: " + placeholder);
-	
-						// update dialogue -KK
-						const dialogueKey = this.imgData[similarities[0].name]["path"];
-						this.props.setDialogueVar(dialogueKey, placeholder);
-					}*/
-
-					if (promptLower.includes(wordLower)) {
-						console.log("keyword " + word + " detected in prompt");
-						
-						// count the number of occurrences of [?] to match word with the descp -KK
-						let occurrenceIndex = -1;
-						let occurrenceCount = 0;
-						for (let i = 0; i < placeholder.length; i++) {
-							if (placeholder.substring(i, i + 3) == "[?]") {
-								occurrenceCount++; 
-								if (count == occurrenceCount){
-									occurrenceIndex = i;
-									break;
-								}
-							}
+				for (let i=0; i<wordStat.length; i++) {
+					if (wordStat[i]) continue;
+					for (let j=0; j < keywords[i].length; j++){
+						if (prompt.includes(keywords[i][j].toLowerCase())){
+							wordStat[i] = true;
 						}
-						console.log("[?] index: " + occurrenceIndex);
-						
-						let before = placeholder.substring(0, occurrenceIndex);
-						let after = placeholder.substring(occurrenceIndex + 3)
-						placeholder = before + word + after;
-						console.log("new placeholder: " + placeholder);
-	
-						// update dialogue -KK
-						const dialogueKey = this.imgData[similarities[0].name]["path"];
-						this.props.setDialogueVar(dialogueKey, placeholder);
-					}
-					else{
-						count++;
 					}
 				}
+				this.imgWordStat[similarities[0].name] = wordStat;
+
 				
-				p5.generateImage(similarities, matched_keywords);
+				// check for keywords if the similarity is high enough -KK 
+				if (similarities[0].score > HIGH_BOUND) {
+
+					similarities[0].score = UNLOCK_SCORE;
+
+				}
+				
+				p5.generateImage(similarities, wordStat);
 			}
 		}
 
 		// ********************************
 		// Actual image generation function
 		// ********************************
-		p5.generateImage = async (similarities : Array<any>, matched_keywords : Array<string>) => {
+		p5.generateImage = async (similarities : Array<any>, wordStat : Array<boolean>) => {
 			p5.background('white');
 
 			let img : p5.Image = p5.createImage(500, 500);
@@ -267,7 +221,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 			}
 
 			this.setState((state) => ({
-				images: [...state.images, [first, this.p5Canvas.elt.toDataURL(), similarities, matched_keywords]]
+				images: [...state.images, [first, this.p5Canvas.elt.toDataURL(), similarities, wordStat]]
 			}));
 		}
 
@@ -305,7 +259,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 							inprompt={this.props.prompts[index]}
 							if_tutorial={this.props.if_tutorial}
 							similarities={img[2]}
-							matched_keywords={img[3]}
+							wordStat={img[3]}
                             imageurl={img[1]} 
 							imgName={img[0]}
 							imgData={this.imgData}

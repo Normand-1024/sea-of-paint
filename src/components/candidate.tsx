@@ -8,7 +8,7 @@ type CandidateProps = {
     inprompt: string;
 	if_tutorial: boolean;
     similarities: Array<any>;
-    matched_keywords: Array<string>;
+    wordStat: Array<boolean>;
     imgName: string;
     imageurl: string;
     imgData: { [id: string] : any; };
@@ -42,11 +42,22 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
             <p><b>{score} --- [{if_locked ? <u>{memName}</u> : memName}] </b></p>
         </div>;
     }
+    
+    getPrompt() {
+        let prompt_array = this.props.imgData[this.props.imgName]["descp2"];
+        let keywords = this.props.imgData[this.props.imgName]["keywords"];
+        let output = prompt_array[0];
 
-    getKeywordString() {
-        let output = "";
-        for (let wrd of this.props.matched_keywords) output += "[\"" + wrd + "\"]";
-        return output;
+        // If the word has been matched before, print the word, otherwise print [?]
+        for (let i = 0; i < this.props.wordStat.length; i++){
+            if (this.props.wordStat[i]) 
+                output = output.concat(" [" + keywords[i][0] + "] " + prompt_array[i + 1]);
+            else 
+                output = output.concat(" [?] " + prompt_array[i + 1]);
+            console.log(i)
+        }
+
+        return <p className = "notif">"{output}"</p>
     }
 
     initiateScene() {
@@ -55,6 +66,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
         console.log(this.props.dialogueVar.get("scene_var"));
         this.props.initiateScene();
     }
+
 
     getDistanceString(i : number, imgName : string, score : number, is_unlockable : boolean) {
 
@@ -78,7 +90,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
 
                     <p className = "notif"> Core Memory - Not Yet Retrieved </p>
 
-                    <p className = "notif">"{this.props.imgData[imgName]["descp2"]}"</p> 
+                    {this.getPrompt()}
                 </div>);
                 // TODO: SAY HOW MANY KEYWORDS REVEALED
                 //      <p className = "notif"> 0/4 Missing Words Found </p>
@@ -96,7 +108,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                                     <p className = "notif"> Core Memory - 4 Words Missing - Inquiry Needed  </p>
                                     : (null)}
 
-                                <p className = "notif">"{this.props.imgData[imgName]["descp2"]}"</p>
+                                {this.getPrompt()}
                                 
                                 { this.props.imgName == "lily" ? 
                                     <button key={i} type="button"
@@ -112,7 +124,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                 else
                     return (<div>
                                 {this.getMemInfo(imgName, score, if_locked, i)}
-                                <p className = "notif">"{this.props.imgData[imgName]["descp2"]}"</p>
+                                {this.getPrompt()}
                                 <button key={i} type="button"
                                 style={{'marginLeft': '5%'}}
                                 onClick = {() => this.initiateScene()}>

@@ -56,7 +56,7 @@ position: -47,-558
 
 //<<jump A1_Machine_Intro>>
 // <<set $p_lily_initial = true>>
-// <<jump A1_Lily_Q>>
+ <<jump A1_Lily_Q>>
 
 What is this? Why is it so dark here?
 

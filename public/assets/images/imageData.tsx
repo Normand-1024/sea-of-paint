@@ -3,8 +3,8 @@ export const IMAGE_DATA : Array<any> = [
         "name": "lily",
         "memory_name": "Lily smoking while walking...",
         "descp": "Lily smoking while walking away from Mey after argument about Stefan, feelings of doubt and envy",
-        "descp2": "Lily smoking while walking away from [?] after argument about [?], feelings of [?] and [?]",
-        "keywords": [["Mey"], ["Stefan"], ["doubt"], ["envy"]],
+        "descp2": ["Lily smoking while walking away from", "after argument about", ", feelings of", "and", ""],
+        "keywords": [["Mey", "me"], ["Stefan", "manager"], ["doubt"], ["envy"]],
         "interpretations": [["This image shows Lily's self-reliance and determination.",
                                 "Lily's pose of walking, and the sense of speed in the movement. They show Lily's readiness to face the future."
                             ],
@@ -22,8 +22,8 @@ export const IMAGE_DATA : Array<any> = [
         "name": "mey_sitting_2",
         "memory_name": "Mey sitting deep thinking...",
         "descp": "Mey sitting deep thinking at home in the kitchen",
-        "descp2": "Mey sitting deep thinking at home in the kitchen",
-        "keywords": [],
+        "descp2": ["Mey sitting deep thinking at", " in the kitchen"],
+        "keywords": [[""]],
         "interpretations": [],
         "path": "p_ivan_o",
         "scene": "A2_Ivan_O"
@@ -32,8 +32,8 @@ export const IMAGE_DATA : Array<any> = [
         "name": "mey_crowd",
         "memory_name": "Mey and Emma standing...",
         "descp": "Young Mey and Emma standing in the crowd, recently left Centuria, feelings of lost and something",
-        "descp2": "Young Mey and Emma standing in the crowd, recently left [?], feelings of [?] and [?]",
-        "keywords": [],
+        "descp2": ["Young Mey and Emma standing in the crowd, recently left", ", feelings of ", "and", ""],
+        "keywords": [[""]],
         "interpretations": [],
         "path": "p_emma_o",
         "scene": "A2_Emma_O"
@@ -42,7 +42,7 @@ export const IMAGE_DATA : Array<any> = [
         "name": "lily_car",
         "memory_name": "Lily in a car feeling...",
         "descp": "Lily in a car feeling emotionally stressed anxious worried",
-        "descp2": "Lily in a car feeling emotionally stressed anxious worried",
+        "descp2": ["Lily in a car feeling emotionally","anxious worried"],
         "keywords": [["sorry", "pity"], ["regret"], ["sick"], ["hurt"], ["worr"]],
         "info": "This memory shows Lily in a car, seemingly in stress.",
         "interpretations": [
@@ -60,7 +60,7 @@ export const IMAGE_DATA : Array<any> = [
         "name": "stefan",
         "memory_name": "Stefan standing with suit...",
         "descp": "Stefan standing with suit and red tie, yellow hair, looking resentful, pathetic",
-        "descp2": "Stefan standing with suit and red tie, yellow hair, looking resentful, pathetic",
+        "descp2": ["Stefan standing with suit and ", "tie, yellow hair, looking resentful, pathetic"],
         "keywords": [["pathetic"], ["insecure"], ["desperate"]],
         "info": "The memory shows a young man, well-dressed, looking resentful.",
         "interpretations": [
