@@ -54,7 +54,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                 output = output.concat(" [" + keywords[i][0] + "] " + prompt_array[i + 1]);
             else 
                 output = output.concat(" [?] " + prompt_array[i + 1]);
-            console.log(i)
+            // console.log(i)
         }
 
         return <p className = "notif">"{output}"</p>

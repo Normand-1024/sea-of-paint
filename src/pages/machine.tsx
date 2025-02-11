@@ -26,6 +26,8 @@ type MachineState = {
     dialogueRunner: YarnBound;
     generateState: number;
     dialogueVar: Map<any, any>;
+    hoveredIndex: number | null;
+    clickedIndices: number[];
 }
 
 class MachinePage extends React.Component<MachineProps, MachineState> {
@@ -36,7 +38,9 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         markovScrambler: new MarkovScrambler(),
         dialogueRunner: undefined,
         generateState: GENERATE_WAIT_TYPE['dialogue'],
-        dialogueVar: new Map<any, any>()
+        dialogueVar: new Map<any, any>(),
+        hoveredIndex: null,
+        clickedIndices: [],
     };
 
     private dialogueEndRef = createRef<HTMLDivElement>();
@@ -217,6 +221,26 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         }
     }
 
+    handleMouseEnter = (index: number) => {
+        this.setState({ hoveredIndex: index });
+    };
+
+    handleMouseLeave = () => {
+        this.setState({ hoveredIndex: null });
+    };
+
+    handleClick = (index: number) => {
+        this.setState((prevState) => {
+            const { clickedIndices } = prevState;
+            // unhighlights if the text is already highlighted, otherwise highlights -KK
+            if (clickedIndices.includes(index)) {
+                return { clickedIndices: clickedIndices.filter(i => i !== index) };
+            } else {
+                return { clickedIndices: [...clickedIndices, index] };
+            }
+        });
+    };
+
     render() {
         return (
             <div id="machinePage">
@@ -239,14 +263,32 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                     
                         <div id="dialogue">
                             {this.state.dialogueList.map((item,index) => {
-                                if (item[0] == DIALOGUE_TYPE['spirit']) 
-                                    return (<p key={index} className='spirit-line'>{item[1]}</p>);
-                                else if (item[0] == DIALOGUE_TYPE['self-speaking'])
+                                if (item[0] == DIALOGUE_TYPE['self-speaking'])
                                     return (<p key={index} className='self-speaking-line'>{item[1]}</p>);
                                 else if (item[0] == DIALOGUE_TYPE['self-thinking'])
                                     return (<p key={index} className='self-thinking-line'>{item[1]}</p>);
-                                else
+                                else if (item[0] == DIALOGUE_TYPE['machine']) 
                                     return (<p key={index} className='machine-line'>{item[1]}</p>);
+                                else{ 
+                                    let css = 'spirit-line';
+                                    if (this.state.clickedIndices.includes(index)) {
+                                        css = 'spirit-line-highlighted';
+                                    } else if (this.state.hoveredIndex === index) {
+                                        css = 'spirit-line-hover';
+                                    }
+
+                                    return (
+                                        <p
+                                            key={index}
+                                            className={css}
+                                            onMouseEnter={() => this.handleMouseEnter(index)}
+                                            onMouseLeave={this.handleMouseLeave}
+                                            onClick={() => this.handleClick(index)}
+                                        >
+                                            {item[1]}
+                                        </p>
+                                    );
+                                }
                             })}
                         </div>
 
@@ -276,19 +318,6 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                                                 onClick = {() => this.handleDialogue(i)}>
                                                     {op.text}
                                             </button></div> : <div></div>
-
-                                            // this.state.dialogueVar.get("machine") ?  
-                                                
-                                            //     <div className="button-div" key={i}><button key={i} 
-                                            //         type="button" className="machine-button"
-                                            //         onClick = {() => this.handleDialogue(i)}>
-                                            //             {op.text}
-                                            //     </button></div> :
-                                            //     <div className="button-div" key={i}><button key={i} 
-                                            //         type="button" className="dialogue-button"
-                                            //         onClick = {() => this.handleDialogue(i)}>
-                                            //             {op.text}
-                                            //     </button></div>
                                         );
                                 }) 
                                 
@@ -296,49 +325,61 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                                 
                                 this.state.generateState ==  GENERATE_WAIT_TYPE['wait_for_first']?  
                                 
-                                    <div className="button-div">
+                                <div className="button-div">
                                     <button type="button" className="continue-button" disabled>
-                                        Generate one Image to Continue</button></div> 
+                                        Generate one Image to Continue
+                                    </button>
+                                </div> 
                                         
-                                    :
+                                :
 
-                                    this.state.generateState ==  GENERATE_WAIT_TYPE['wait_for_lily2']?
+                                this.state.generateState ==  GENERATE_WAIT_TYPE['wait_for_lily2']?
                                         
-                                        <div className="button-div">
-                                        <button type="button" className="continue-button" disabled>
-                                            Unlock Memory of Lily to Continue</button></div>   
+                                <div className="button-div">
+                                    <button type="button" className="continue-button" disabled>
+                                        Unlock Memory of Lily to Continue
+                                    </button>
+                                </div>   
 
-                                        :
+                                :
 
-                                        this.state.generateState ==  GENERATE_WAIT_TYPE['wait_for_lily1']?
-                                        
-                                        <div className="button-div">
-                                        <button type="button" className="continue-button" disabled>
-                                            Find a Core Memory</button></div>   
+                                this.state.generateState ==  GENERATE_WAIT_TYPE['wait_for_lily1']?
+                                
+                                <div className="button-div">
+                                    <button type="button" className="continue-button" disabled>
+                                        Find a Core Memory
+                                    </button>
+                                </div>   
 
-                                        :
+                                :
 
-                                            this.state.generateState ==  GENERATE_WAIT_TYPE['generated']?
-                                                
-                                                <div className="button-div">
-                                                <button type="button" className="continue-button" 
-                                                    onClick = {() => this.handleDialogue()}>
-                                                    Bring back Mey</button></div>
+                                this.state.generateState ==  GENERATE_WAIT_TYPE['generated']?
+                                    
+                                <div className="button-div">
+                                    <button type="button" className="continue-button" 
+                                        onClick = {() => this.handleDialogue()}>
+                                        Bring back Mey
+                                    </button>
+                                </div>
 
-                                                :
+                                :
 
-                                                this.state.generateState ==  GENERATE_WAIT_TYPE['wait_for_interpretations']?
+                                this.state.generateState ==  GENERATE_WAIT_TYPE['wait_for_interpretations']?
 
-                                                    <div className="button-div">
-                                                    <button type="button" className="continue-button" disabled>
-                                                        Finish Interpretations to Continue</button></div> 
+                                <div className="button-div">
+                                    <button type="button" className="continue-button" disabled>
+                                        Finish Interpretations to Continue
+                                    </button>
+                                </div> 
 
-                                                    :
-                                                        
-                                                    <div className="button-div">
-                                                    <button type="button" className="continue-button" 
-                                                        onClick = {() => this.handleDialogue()}>
-                                                        Continue</button></div>
+                                :
+                                    
+                                <div className="button-div">
+                                    <button type="button" className="continue-button" 
+                                        onClick = {() => this.handleDialogue()}>
+                                        Continue
+                                    </button>
+                                </div>
                             )
                             }
                         </div>
