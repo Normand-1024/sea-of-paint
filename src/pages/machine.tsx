@@ -272,9 +272,9 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                                 else{ 
                                     let css = 'spirit-line';
                                     if (this.state.clickedIndices.includes(index)) {
-                                        css = 'spirit-line-highlighted';
+                                        css = 'spirit-line';//'spirit-line-highlighted';
                                     } else if (this.state.hoveredIndex === index) {
-                                        css = 'spirit-line-hover';
+                                        css = 'spirit-line';//'spirit-line-hover';
                                     }
 
                                     return (
