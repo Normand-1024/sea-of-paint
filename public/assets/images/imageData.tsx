@@ -4,19 +4,47 @@ export const IMAGE_DATA : Array<any> = [
         "memory_name": "Lily smoking while walking...",
         "descp": "Lily smoking while walking away from Mey after argument about Stefan, feelings of doubt and envy",
         "descp2": ["Lily smoking while walking away from", "after argument about", ", feelings of", "and", ""],
-        "keywords": [["Mey", "me"], ["Stefan", "manager"], ["doubt"], ["envy"]],
+        "keywords": [["Mey", " me "], ["Stefan", "manager"], ["doubt"], ["envy"]],
         "interpretations": [["This image shows Lily's self-reliance and determination.",
-                                "Lily's pose of walking, and the sense of speed in the movement. They show Lily's readiness to face the future."
+                                "Lily's pace looks determined. There's a sense of speed in the movement. They show Lily's readiness to face anything."
                             ],
                             ["This image shows Lily's loneliness and pain. She's processing something alone.",
                                 "Her expression feels detached. The external coldness of her outside hides a person bearing something difficult deep within."
                             ],
-                            ["This image shows Lily's insensitivity to everything. She does not or chooses not to care.",
+                            ["This image shows Lily's detachment. When something hurts too much, her instinct is to block it out.",
                                 "Lily feels like she's walking away from something, finding comfort in detachment from certain concerns."
                             ]
                             ],
-        "path": "p_lily_initial",
+        "path": "p_lily_q",
         "scene": "A1_Lily"
+    },
+    {   
+        "name": "lily2",
+        "memory_name": "Mey comforting Lily after...",
+        "descp": "Mey comforting Lily after Lily saw a digital postcard at work, feelings of sympathy and doubt",
+        "descp2": ["Mey comforting Lily after Lily saw a","","","at",", feelings of", "and", ""],
+        "keywords": [["digital", "nice", "wholesome"], ["postcard"], ["work"], ["sympathy"], ["doubt"]],
+        "interpretations": [
+                            ["This image shows Lily's loneliness and pain. She's processing something alone.",
+                                "Her expression feels detached. The external coldness of her outside hides a person bearing something difficult deep within."
+                            ],
+                            ["This image shows Lily's detachment. When something hurts too much, her instinct is to block it out.",
+                                "Lily feels like she's walking away from something, finding comfort in detachment from certain concerns."
+                            ]
+                            ],
+        "path": "p_lily",
+        "scene": "A2_Lily"
+    },
+    {   
+        "name": "lily_spark",
+        "memory_name": "Lily standing and looking...",
+        "descp": "Lily standing and looking afar, her sparks bursting out of her, feelings of envy and hope",
+        "descp2": ["Lily standing and looking afar, her","bursting out of her, feelings of", "and", ""],
+        "keywords": [["spark"], ["envy"], ["hope"]],
+        "info": "Lily is covered in her \"spark\". This seems to have a significance for Mey.",
+        "interpretations": [],
+        "path": "p_lily_o",
+        "scene": ""
     },
     {   
         "name": "mey_sitting_2",
@@ -28,6 +56,7 @@ export const IMAGE_DATA : Array<any> = [
         "path": "p_ivan_o",
         "scene": "A2_Ivan_O"
     },
+    // ==================================
     {   
         "name": "mey_crowd",
         "memory_name": "Mey and Emma standing...",
@@ -36,24 +65,6 @@ export const IMAGE_DATA : Array<any> = [
         "keywords": [[""]],
         "interpretations": [],
         "path": "p_emma_o",
-        "scene": "A2_Emma_O"
-    },
-    {   
-        "name": "lily_car",
-        "memory_name": "Lily in a car feeling...",
-        "descp": "Lily in a car feeling emotionally stressed anxious worried",
-        "descp2": ["Lily in a car feeling emotionally","anxious worried"],
-        "keywords": [["sorry", "pity"], ["regret"], ["sick"], ["hurt"], ["worr"]],
-        "info": "This memory shows Lily in a car, seemingly in stress.",
-        "interpretations": [
-                            // ["This image shows Lily having an anxiety attack. She is in pain.",
-                            //     "Lily looks like she has lost control of her inner self, desperate trying to make something go away. No wonder she craved escape."
-                            // ],
-                            // ["This image shows Lily's frustration at herself. She wants to escape.",
-                            //     "Lily looks like she wants to take control of her life again. Angry at her past actions and bottling up frustration. It explains her determination to leave."
-                            // ]
-                            ],
-        "path": "p_lily_work",
         "scene": "A2_Emma_O"
     },
     {   
