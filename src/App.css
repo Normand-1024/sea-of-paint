@@ -55,6 +55,24 @@
           width: 60%;
           float:left;
           text-align: left;
+          background: white;
+          border: 2px solid white;
+        }
+
+        .spirit-line-hover {
+          width: 60%;
+          float:left;
+          text-align: left;
+          background: white;
+          border: 2px solid yellow;
+        }
+
+        .spirit-line-highlighted {
+          width: 60%;
+          float:left;
+          text-align: left;
+          background: yellow;
+          border: 2px solid yellow;
         }
 
         .self-speaking-line {

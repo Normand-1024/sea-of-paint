@@ -53,8 +53,8 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				let name = imgd["name"];
 
 				// Loading raw assets and populate image data by name
-				this.rawImg[name] = p5.loadImage("./assets/images/" + name + ".png");
-				this.rawImg[name + "_mask_1"] = p5.loadImage("./assets/images/" + name + "_mask_1" + ".png");
+				// this.rawImg[name] = p5.loadImage("./assets/images/" + name + ".png");
+				// this.rawImg[name + "_mask_1"] = p5.loadImage("./assets/images/" + name + "_mask_1" + ".png");
 				this.imgData[name] = imgd;
 				this.imgEmbed[name] = await this.st.embed(imgd["descp"]);
 				this.imgWordStat[name] = new Array(this.imgData[name]["keywords"].length).fill(false);
@@ -64,7 +64,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 		p5.setup = () => {
 			this.p5Canvas = p5.createCanvas(IMAGE_DIM, IMAGE_DIM);
-
+			this.p5Canvas.elt.getContext("2d", { willReadFrequently: true });
 			p5.noStroke();
 		}
    
@@ -82,7 +82,6 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 				// get the similarity score for each image -KK
 				let similarities = [];
-				//console.log(this.props.prompts);
 				for (let imgd of IMAGE_DATA) {
 					let name = imgd["name"];
 
@@ -96,18 +95,15 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 				// sort similarities in descending order -KK
 				similarities.sort((a, b) => b.score - a.score);
+				if (similarities[0].score > HIGH_BOUND) {
+					similarities[0].score = UNLOCK_SCORE;
+				}
 
 				// ----------------- //
 				// KEYWORD DETECTION //
 				// ----------------- //
-
-				// are there supposed to be any parameters met before checking for keywords?
-				// or is the image being top similarity enough? -KK
-				
 				let keywords = this.imgData[similarities[0].name]["keywords"]; 
 				let wordStat = this.imgWordStat[similarities[0].name];
-				let fulldescp = this.imgData[similarities[0].name]["descp"]; 
-				let placeholder = this.imgData[similarities[0].name]["descp2"]; 
 			
 				for (let i=0; i<wordStat.length; i++) {
 					if (wordStat[i]) continue;
@@ -118,15 +114,18 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 					}
 				}
 				this.imgWordStat[similarities[0].name] = wordStat;
-
 				
-				// check for keywords if the similarity is high enough -KK 
-				if (similarities[0].score > HIGH_BOUND) {
-
-					similarities[0].score = UNLOCK_SCORE;
-
+				// filter out all similarities that don't satisfy the lower bound
+				// then select only the top one or two images for loading -KK
+				let images;
+				if (similarities[0].score == UNLOCK_SCORE){
+					images = similarities.slice(0,1);
+				} else {
+					images = similarities.slice(0,2);
 				}
-				
+				if (images.length > 0) {
+            		await this.loadImages(images.map((img) => img.name));
+				}
 				p5.generateImage(similarities, wordStat);
 			}
 		}
@@ -142,15 +141,13 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 			img.loadPixels();
 
 			// generate image based off of similarity score -KK
-			// added logic: if the first image is not above HIGH_BOUND, then blend the first three images
 			let first = "noise"; let second = "noise"; let mask = "noise";
 			let filtered = similarities.filter(sim => sim.score > LOW_BOUND);
 
 			if(similarities[0].score == UNLOCK_SCORE){
 				first = similarities[0].name;
 				unlocked = true;
-			}
-			else if(filtered.length > 0) { //similarities[0].score > HIGH_BOUND) {
+			} else if(filtered.length > 0) { 
 				first = similarities[0].name;
 				mask = first + "_mask_1";
 			}
@@ -159,20 +156,6 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				second = similarities[1].name;
 			}
 
-			/*else if(filtered.length > 0){
-				//let x = Math.floor(Math.random() * filtered.length);
-				first = filtered[0].name;
-
-				// Just randomly pick second image
-				let y = Math.floor(Math.random() * similarities.length);
-				while (y == 0){
-					y = Math.floor(Math.random() * similarities.length);
-				}
-				second = similarities[y].name;
-
-				mask = first + "_mask_1"; 	// adjust this to match the first image -KK
-			}*/
-
 			let raw1 : p5.Image = this.rawImg[first];
 			if (unlocked){
 				p5.image(raw1, 0, 0);
@@ -180,41 +163,23 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 			else{
 				let raw2 : p5.Image = this.rawImg[second]; // raw2 is over raw1
 				let raw1_mask : p5.Image = this.rawImg[mask];
+				
 				raw1.loadPixels();
 				raw2.loadPixels();
 				raw1_mask.loadPixels();
 
 				copyOver(raw1, img);
-				//randomCMYK(img);
 
 				//	Use first two similarities to determine opacity of the top mask
 				let score_ratio = similarities[0]["score"] / (similarities[0]["score"] + similarities[1]["score"]);
 				let mask_opacity = Math.min(((score_ratio - 0.5) * 6), 1.0); // 0.5 - 0.65 -> 0.0 - 1.0
-				//console.log(mask_opacity);
-
-				// let hardlight_ratio = Math.max(0, Math.min(1.0, 
-				// 	((similarities[0]["score"] - HIGH_BOUND - 0.1) / 0.2)
-				// ))
-				// hardlightBlend(img, raw2, img, hardlight_ratio);
-				// cmykBlend(img, raw2, img, (1.0 - hardlight_ratio) * Math.min(mask_opacity + 0.5));
-				// console.log([similarities[0]["score"], ((similarities[0]["score"] - LOW_BOUND - 0.1) / (HIGH_BOUND - LOW_BOUND)), hardlight_ratio]);
-
-				//cmykBlend(img, raw2, img, mask_opacity * 0.5 + 0.5);
+				
 				cmykBlend(img, raw2, img, mask_opacity);
 				hardlightBlend(img, raw2, img, 1 - mask_opacity);
-
-				//normalBlend(img, raw1_mask, img, mask_opacity);		// normal blends mask over img
 				cmykBlend(img, raw1_mask, img, mask_opacity);
-
-				// brightness(img, score_ratio/HIGH_BOUND);						// implemented brightness here -KK
-				// randomHue(img);												// implemented hue here -KK
-				// saturation(img, (similarities[0]["score"] - HIGH_BOUND));  	// implemented saturation here -KK
-																// implemented cmyk here -KK
 
 				p5.image(img, 0, 0);
 			}
-
-			//p5.text(this.props.prompts[this.props.prompts.length-1], IMAGE_DIM/10, IMAGE_DIM/10);
 
 			// Check if this image has been unlocked, set the variables in yarn
 			// -2: not unlocked, -1: unlocked but waiting for interpretation
@@ -229,6 +194,29 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 	}
 
+	// loads each image and associated mask -KK
+	loadImages = async (images: string[]) => {
+		const loadImageAsync = (name: string) => {
+			return new Promise((resolve) => {
+				this.state.mainP5.loadImage(`./assets/images/${name}.png`, (img: any) => {
+					this.rawImg[name] = img;
+					resolve(img);
+				});
+			});
+		};
+	
+		await Promise.all(images.map(async (name) => {
+			if (!this.rawImg[name]) {
+				console.log("loading image: " + name.toString());
+				await loadImageAsync(name);
+			}
+			if (!this.rawImg[name + "_mask_1"]) {
+				console.log("loading mask: " + name.toString());
+				await loadImageAsync(name + "_mask_1");
+			}
+		}));
+	};
+	
     componentDidMount() {
         this.state.mainP5 = new p5(this.Sketch, this.p5Ref.current);
 	}
