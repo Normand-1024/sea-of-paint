@@ -1,4 +1,5 @@
 import React, {createRef, useState} from 'react';
+import { Story } from 'inkjs';
 
 import '../App.css';
 
@@ -23,9 +24,8 @@ type MachineState = {
     markovScrambler: MarkovScrambler;
     dialogueList: Array<[number, string]>;
     promptList: Array<string>;
-    dialogueRunner: YarnBound;
+    dialogueRunner: Story|undefined;
     generateState: number;
-    dialogueVar: Map<any, any>;
     hoveredIndex: number | null;
     clickedIndices: number[];
 }
@@ -38,7 +38,6 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         markovScrambler: new MarkovScrambler(),
         dialogueRunner: undefined,
         generateState: GENERATE_WAIT_TYPE['dialogue'],
-        dialogueVar: new Map<any, any>(),
         hoveredIndex: null,
         clickedIndices: [],
     };
@@ -52,16 +51,24 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
 
         this.state.markovScrambler.initialize("./assets/markovtext.txt");
 
-        // *********** Load the yarn file into dialogueRunner ***********
-        fetch("./texts/dialogue.yarn")
+        // *********** Load the yarn ink into dialogueRunner ***********
+        // fetch("./texts/dialogue.yarn")
+        // .then((res) => res.text())
+        // .then((text) => {
+        //     this.setState(() => ({
+        //         dialogueRunner: new YarnBound({
+        //             dialogue: text,
+        //             variableStorage: this.state.dialogueVar
+        //         })
+        //     }));
+        // })
+        // .catch((e) => console.error(e));
+        fetch("./texts/storytext.json")
         .then((res) => res.text())
-        .then((text) => {
-            this.setState(() => ({
-                dialogueRunner: new YarnBound({
-                    dialogue: text,
-                    variableStorage: this.state.dialogueVar
-                })
-            }));
+        .then((json) => {
+            this.setState(() => ({ 
+                dialogueRunner: new Story(json)
+            }))
         })
         .catch((e) => console.error(e));
     }
@@ -73,50 +80,67 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     }
 
     setDialogueVar = (v : string, value : any) => {
-        this.state.dialogueVar.set(v, value);
+        if(!this.state.dialogueRunner) {
+            console.log("dialogueRunner is undefined");
+            return
+        }
+
+        this.state.dialogueRunner.variablesState[v] = value;
 
         // Check if there's any interpretations left open
         if (this.state.generateState == GENERATE_WAIT_TYPE['wait_for_lily2'] &&
-            this.state.dialogueVar.get("lily") >= 0)
-            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['generated'] }));  
-        // else if (this.state.generateState == GENERATE_WAIT_TYPE['wait_for_lily'])
-        //     this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['generated'] }));
+            this.state.dialogueRunner.variablesState["lily"] >= 0){
+            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['generated'] })); 
+        } 
 
         this.forceUpdate();
     }
 
-    pushSpiritDialogue = (line : string) => {
-        
-        // Check scrambling
-        if (this.state.dialogueVar.get("integrity") < MID_INTEGR_THRSH || this.state.dialogueVar.get("scramble")){
-            line = this.state.markovScrambler.markovScramble(this.state.dialogueRunner.currentResult.text);
-            line = this.state.markovScrambler.markovScramble(line);
-        }
-        else if (this.state.dialogueVar.get("integrity") < LOW_INTEGR_THRSH)
-            line = this.state.markovScrambler.generate();
-
-        let new_entry : [number, string] = [DIALOGUE_TYPE['spirit'], line];
-        this.setState((state) => ({
-            dialogueList: [...state.dialogueList, new_entry]
-        }));
+    setToDialogue = () => {
+        this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['dialogue'] }));
     }
 
-    pushSelfDialogue = (line: string, dialogueType: number) => {
+    pushDialogue = (line: string | null, dialogueType : number = DIALOGUE_TYPE['spirit']) => {
+        if(!this.state.dialogueRunner) {
+            console.log("dialogueRunner is undefined");
+            return
+        }
+
+        if (this.state.dialogueRunner.currentTags &&
+            this.state.dialogueRunner.currentTags.indexOf('self') > -1) {
+
+            dialogueType = DIALOGUE_TYPE['self-thinking'];
+        }
+        else {
+            // Check scrambling
+            if (this.state.dialogueRunner.currentTags &&
+                this.state.dialogueRunner.currentTags.indexOf('scramble') > -1){
+                line = this.state.markovScrambler.markovScramble(this.state.dialogueRunner.currentText);
+                line = this.state.markovScrambler.markovScramble(line);
+            }
+        }
+
+        if(!line) line = "";
         let new_entry : [number, string] = [dialogueType, line];
+
         this.setState((state) => ({
             dialogueList: [...state.dialogueList, new_entry]
         }));
     }
 
     activateMachine = () => {
+        if(!this.state.dialogueRunner) {
+            console.log("dialogueRunner is undefined")
+            return
+        }
+
         this.setState(() => ({
             machineActive: true
         }));
 
         //this.updatePromptList(); // generate a random image
         
-        this.pushSpiritDialogue(this.state.dialogueRunner.currentResult.text);
-        this.state.dialogueRunner.advance();
+        this.pushDialogue(this.state.dialogueRunner.Continue());
     }
 
     // Updating the prompt list also signals the image generator to start working
@@ -137,88 +161,72 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     }
 
     handleDialogue = (option : number = -1) => {
-        let original_integr = this.state.dialogueVar.get("integrity");
-    
-        //console.log(this.state.dialogueRunner.currentResult);
-        //console.log(this.state.dialogueVar);
-        //console.log(this.state.dialogueVar.get("scene_var"));
+        if(!this.state.dialogueRunner) {
+            console.log("dialogueRunner is undefined");
+            return
+        }
 
-        // If #generate is true, get into image generation mode
-        if (this.state.dialogueVar.get("generate")) {
-            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['wait_for_first'] }));
-            this.state.dialogueVar.set("generate", false)
-        }
-        else if (this.state.dialogueVar.get("generate_lily1")) {
-            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['wait_for_lily1'] }));
-            this.state.dialogueVar.set("generate_lily1", false)
-        }
-        else if (this.state.dialogueVar.get("generate_lily2")) {
-            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['wait_for_lily2'] }));
-            this.state.dialogueVar.set("generate_lily2", false)
-        }
-        else {
-            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['dialogue'] }));
-        }
+        let original_integr = this.state.dialogueRunner.variablesState["integrity"];
 
         // Whether dialogueRunner.currentResult is option or text
         //  is handled in the HTML, communiated thru the option param
         // Except the machine prompt, which is not added to the dialogue
         if (option >= 0){
-            if (this.state.dialogueVar.get("noprint")){
+            this.state.dialogueRunner.ChooseChoiceIndex(option);
+
+            if (this.state.dialogueRunner.variablesState["noprint"]){
                 // If $noprint is true, do not print this dialogue option.
                 
-                this.state.dialogueVar.set("noprint", false);
+                this.setDialogueVar("noprint", false);
+                this.state.dialogueRunner.Continue();
             } 
             else    
-                this.pushSelfDialogue(
-                    this.state.dialogueRunner.currentResult.options[option].text,
-                    DIALOGUE_TYPE['self-speaking']
-                );
-
-            this.state.dialogueRunner.advance(option);
+                this.pushDialogue(this.state.dialogueRunner.Continue(), DIALOGUE_TYPE["self-speaking"]);
         }
 
-        if (!("options" in this.state.dialogueRunner.currentResult)) {
-            if (this.state.dialogueVar.get("self"))
-                this.pushSelfDialogue(this.state.dialogueRunner.currentResult.text,
-                DIALOGUE_TYPE['self-thinking']);
-
-            else if (this.state.dialogueVar.get("selfspeak"))
-                this.pushSelfDialogue(this.state.dialogueRunner.currentResult.text,
-                DIALOGUE_TYPE['self-speaking']);
-
-            else this.pushSpiritDialogue(this.state.dialogueRunner.currentResult.text);
-
-            this.state.dialogueRunner.advance();
+        // Push the current text
+        if (this.state.dialogueRunner.canContinue) {
+            this.pushDialogue(this.state.dialogueRunner.Continue());
         }
-
+        
         // If $follow is true, print the next statement
-        while (this.state.dialogueVar.get("follow")) {
-            console.log(this.state.dialogueVar.get("selfspeak"));
-            if (this.state.dialogueVar.get("self"))
-                this.pushSelfDialogue(this.state.dialogueRunner.currentResult.text,
-                    DIALOGUE_TYPE['self-thinking']);
+        // while (this.state.dialogueRunner.currentTags &&
+        //     this.state.dialogueRunner.currentTags.indexOf('follow') > -1) {
+        //         this.pushDialogue(this.state.dialogueRunner.Continue());
+        // }
 
-            else if (this.state.dialogueVar.get("selfspeak"))
-                this.pushSelfDialogue(this.state.dialogueRunner.currentResult.text,
-                    DIALOGUE_TYPE['self-speaking']);
-
-            else this.pushSpiritDialogue(this.state.dialogueRunner.currentResult.text);
-
-            this.state.dialogueRunner.advance();
+        // If #generate is true, get into image generation mode
+        if (this.state.dialogueRunner.currentTags &&
+            this.state.dialogueRunner.currentTags.indexOf('generate') > -1) {
+            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['wait_for_first'] }));
+        }
+        else if (this.state.dialogueRunner.currentTags &&
+                this.state.dialogueRunner.currentTags.indexOf('generate_lily1') > -1) {
+            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['wait_for_lily1'] }));
+        }
+        else if (this.state.dialogueRunner.currentTags &&
+            this.state.dialogueRunner.currentTags.indexOf('generate_lily2') > -1) {
+            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['wait_for_lily2'] }));
+        }
+        else {
+            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['dialogue'] }));
         }
 
         // Handle announcement when thresholds are crossed
-        if (original_integr > MID_INTEGR_THRSH &&
-                this.state.dialogueVar.get("integrity") < MID_INTEGR_THRSH) {
-            this.pushSelfDialogue(SPIRIT_NAME + " is overwhelmed by the Voices", 
-                DIALOGUE_TYPE['self-thinking']);
-        }
-        else if (original_integr > LOW_INTEGR_THRSH &&
-                this.state.dialogueVar.get("integrity") < LOW_INTEGR_THRSH) {
-            this.pushSelfDialogue(SPIRIT_NAME + " is lost to the Sea", 
-                DIALOGUE_TYPE['self-thinking']);
-        }
+        // if (original_integr > MID_INTEGR_THRSH &&
+        //         this.state.dialogueRunner.variablesState["integrity"] < MID_INTEGR_THRSH) {
+        //     this.pushSelfDialogue(SPIRIT_NAME + " is overwhelmed by the Voices", 
+        //         DIALOGUE_TYPE['self-thinking']);
+        // }
+        // else if (original_integr > LOW_INTEGR_THRSH &&
+        //         this.state.dialogueRunner.variablesState["integrity"] < LOW_INTEGR_THRSH) {
+        //     this.pushSelfDialogue(SPIRIT_NAME + " is lost to the Sea", 
+        //         DIALOGUE_TYPE['self-thinking']);
+        // }
+    }
+    
+    printSomething = () => {
+        console.log("123");
     }
 
     handleMouseEnter = (index: number) => {
@@ -242,6 +250,11 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     };
 
     render() {
+        if(!this.state.dialogueRunner) {
+            console.log("dialogueRunner is undefined");
+            return
+        }
+
         return (
             <div id="machinePage">
 
@@ -304,14 +317,14 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                             :
                                 
                             (   
-                                "options" in this.state.dialogueRunner.currentResult &&  
-                                this.state.generateState ==  GENERATE_WAIT_TYPE['dialogue']?
+                                !this.state.dialogueRunner.canContinue &&
+                                this.state.generateState ==  GENERATE_WAIT_TYPE['dialogue'] ?
 
-                                this.state.dialogueRunner.currentResult.options.map(
+                                this.state.dialogueRunner.currentChoices.map(
                                     (op:any,i:number) => {                      
                                         return (
                                             
-                                            op.isAvailable ? 
+                                            !op.isInvisibleDefault ? 
 
                                             <div className="button-div" key={i}><button key={i} 
                                                 type="button" className="dialogue-button"
@@ -391,10 +404,9 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
 
                 <div id="machineControl">
                     <ImageGenerator prompts = {this.state.promptList}
-                                    if_tutorial = {this.state.generateState == GENERATE_WAIT_TYPE['wait_for_lily1'] || this.state.generateState == GENERATE_WAIT_TYPE['wait_for_lily2']}
-                                    dialogueVar = {this.state.dialogueVar}
+                                    dialogueRunner = {this.state.dialogueRunner}
                                     setDialogueVar  = {this.setDialogueVar}
-                                    initiateScene = {this.handleDialogue} ></ImageGenerator>
+                                    initiateScene = {this.setToDialogue} ></ImageGenerator>
 
                     { 
                     

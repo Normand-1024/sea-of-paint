@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import './App.css'
-
+import { Story } from 'inkjs';
 
 import {PAGE_STATE} from './constants.tsx';
 
@@ -10,7 +10,7 @@ import PaintingPage from './pages/painting.tsx';
 
 function App() {
   const [pageState, setPageState] = useState(PAGE_STATE["intro"]);
-
+  
   return (
     <>
       {pageState == PAGE_STATE['intro'] && 

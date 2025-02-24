@@ -46,7 +46,9 @@ export class MarkovScrambler {
         return this.markovContent.generate();
     }
 
-    markovScramble(inprompt: string) {
+    markovScramble(inprompt: string | null) {
+        if (!inprompt) inprompt = "";
+
         this.markovContent.sentenceEnds = new Set(this.sentenceEndsOriginal);
 
         // Create tokenized list, choose a random word

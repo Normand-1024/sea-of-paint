@@ -177,6 +177,11 @@
             margin-left: 5%;
             color:chocolate;
           }
+
+          .threshold-line {
+            font-size: smaller;
+            color:grey;
+          }
       }
     }
      
