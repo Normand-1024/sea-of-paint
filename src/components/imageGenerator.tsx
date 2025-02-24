@@ -1,6 +1,7 @@
 //@ts-ignore
 import p5 from 'p5';
 import React, {createRef} from 'react';
+import { Story } from 'inkjs';
 
 import Candidate from './candidate';
 import SentenceTransformer from '../functions/sentenceTransformer.tsx';
@@ -16,8 +17,7 @@ let UNLOCK_SCORE = 1.2;
 
 type ImageGeneratorProps = {
 	prompts: Array<string>;
-	if_tutorial: boolean;
-    dialogueVar: Map<any, any>;
+    dialogueRunner: Story;
     setDialogueVar: Function;
 	initiateScene: Function;
 }
@@ -78,6 +78,8 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				let prompt = this.props.prompts[this.state.currentP5Index].toLowerCase();
 				let prompt_embed = await this.st.embed(prompt);
 
+				let if_tutorial = this.props.dialogueRunner.currentTags && this.props.dialogueRunner.currentTags.indexOf('generate') == -1
+
 				// get the similarity score for each image -KK
 				let similarities = [];
 				//console.log(this.props.prompts);
@@ -85,7 +87,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 					let name = imgd["name"];
 
 					// If during tutorial phase, don't show everything
-					if (!this.props.if_tutorial || name == "lily" || imgd["interpretations"].length == 0){
+					if (!if_tutorial || name == "lily" || imgd["interpretations"].length == 0){
 						// compare it to the prompt to get the similarity -KK
 						let similarity = this.st.cosineSimilarity(prompt_embed, this.imgEmbed[name]);
 						similarities.push({name: name, score: similarity});
@@ -216,7 +218,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 			// Check if this image has been unlocked, set the variables in yarn
 			// -2: not unlocked, -1: unlocked but waiting for interpretation
-			if(this.props.dialogueVar.get(first) == -2 && unlocked){
+			if(this.props.dialogueRunner.variablesState[first] == -2 && unlocked){
 				this.props.setDialogueVar(first, -1);
 			}
 
@@ -257,14 +259,13 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 					return (
 						<Candidate 
 							inprompt={this.props.prompts[index]}
-							if_tutorial={this.props.if_tutorial}
 							similarities={img[2]}
 							wordStat={img[3]}
                             imageurl={img[1]} 
 							imgName={img[0]}
 							imgData={this.imgData}
 
-							dialogueVar = {this.props.dialogueVar}
+							dialogueRunner = {this.props.dialogueRunner}
 							setDialogueVar  = {this.props.setDialogueVar}
 							initiateScene = {this.props.initiateScene}
 

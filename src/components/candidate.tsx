@@ -1,19 +1,19 @@
 import React, {useEffect} from 'react';
 import '../App.css'
+import { Story } from 'inkjs';
 
 import {IMAGE_DIM, HIGH_BOUND, LOW_BOUND} from '../constants.tsx';
 import { match } from 'assert';
 
 type CandidateProps = {
     inprompt: string;
-	if_tutorial: boolean;
     similarities: Array<any>;
     wordStat: Array<boolean>;
     imgName: string;
     imageurl: string;
     imgData: { [id: string] : any; };
     
-    dialogueVar: Map<any, any>;
+    dialogueRunner: Story;
     setDialogueVar: Function;
     initiateScene: Function;
 }
@@ -30,18 +30,22 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
 
     getMemInfo(image_name : string, image_score : number, if_locked : boolean, i : number) {
         let memName : string = this.props.imgData[image_name].memory_name;
-        let score : string = 
-                !this.props.dialogueVar.get("generate_lily2") ? (i + 1).toString()
-                    : image_score < LOW_BOUND ? "Too Dissonant" : this.distanceFunc(image_score);
+        let if_display_percentage = i < 2 && (
+            (this.props.dialogueRunner.currentTags && this.props.dialogueRunner.currentTags.indexOf('generate_lily2') > -1 )
+            || this.props.dialogueRunner.state.VisitCountAtPathString("A2_Start")
+            || this.props.dialogueRunner.state.VisitCountAtPathString("A2_Generation"))
+
+        let score : string = if_display_percentage ? this.distanceFunc(image_score) : (i + 1).toString();
 
         if (i > 1 || image_score < LOW_BOUND){
             return (<div>
-                <p>{score} --- {if_locked ? <u>&lt;&lt;{memName}&gt;&gt;</u> : <>[{memName}]</>} </p>
+                <p>{score} — {if_locked ? <u>&lt;&lt;{memName}&gt;&gt;</u> : <>[{memName}]</>} </p>
             </div>)
         }
 
         return <div>
-            <p><b>{score} --- {if_locked ? <u>&lt;&lt;{memName}&gt;&gt;</u> : <>[{memName}]</>} </b></p>
+            <p><b>{score} — {if_locked ? <u>&lt;&lt;{memName}&gt;&gt;</u> : <>[{memName}]</>} </b></p>
+            {i == 1 ? <p className='threshold-line'>————— Resonance Threshold —————</p> : null } 
         </div>;
     }
     
@@ -56,7 +60,6 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                 output = output.concat(" [" + keywords[i][0] + "] " + prompt_array[i + 1]);
             else 
                 output = output.concat(" [?] " + prompt_array[i + 1]);
-            console.log(i)
         }
 
         return <p className = "notif">"{output}"</p>
@@ -65,7 +68,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
     initiateScene() {
         this.props.setDialogueVar("scene_var", this.props.imgData[this.props.imgName]["scene"]);
         this.props.setDialogueVar(this.props.imgData[this.props.imgName]["path"], true);
-        console.log(this.props.dialogueVar.get("scene_var"));
+        console.log(this.props.dialogueRunner.variablesState["scene_var"]);
         this.props.initiateScene();
     }
 
@@ -75,7 +78,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
         // Check if the image is yet to be unlocked
         let if_locked : boolean = 
             this.props.imgData[imgName]["interpretations"].length > 0
-            && this.props.dialogueVar.get(imgName) == -2; 
+            && this.props.dialogueRunner.variablesState[imgName] == -2; 
 
         if (i > 0) {
             return (<div>{this.getMemInfo(imgName, score, if_locked, i)}</div>);
@@ -85,7 +88,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
             // Check if the scene for that image has been visited
             
             // TODO: descp IS PLACEHOLDER
-            if (this.props.dialogueVar.get(this.props.imgData[imgName]["path"])) {
+            if (this.props.dialogueRunner.variablesState[this.props.imgData[imgName]["path"]]) {
                 // has visited
                 return (<div>
                     {this.getMemInfo(imgName, score, if_locked, i)}
@@ -105,49 +108,25 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                 // has not visited
                 //      TODO: <p className = "notif"> 4 Words Missing - Inquiry Needed  </p>
 
-                if (this.props.if_tutorial){
-                    if (!this.props.dialogueVar.get("generate_lily2")){
+                if (this.props.dialogueRunner.state.VisitCountAtPathString("A2_Generation") == 0){
+                    return (<div>
+                        {this.getMemInfo(imgName, score, if_locked, i)}
+
+                        { this.props.imgName == "lily" ? 
+                            <p className = "notif"> Core Memory - 4 Words Missing - Inquiry Needed  </p>
+                            : <p className = "notif"> Non-core Memory </p>}
+
+                        {this.props.imgName == "lily" ? this.getPrompt() : (null)}
                         
-                        return (<div>
-                            {this.getMemInfo(imgName, score, if_locked, i)}
-
-                            { this.props.imgName == "lily" ? 
-                                <p className = "notif"> Core Memory - 4 Words Missing - Inquiry Needed  </p>
-                                : <p className = "notif"> Non-core Memory </p>}
-
-                            {this.props.imgName == "lily" ? this.getPrompt() : (null)}
-                            
-                            { this.props.imgName == "lily" ? 
-                                <button key={i} type="button"
-                                style={{'marginLeft': '5%'}}
-                                onClick = {() => this.initiateScene()}>
-                                Bring back Mey, Inquire about Memory
-                                </button> 
-                                : (null)
-                            }
-                        </div>)
-
-                    }
-                    else{
-                        return (<div>
-                                    {this.getMemInfo(imgName, score, if_locked, i)}
-
-                                    { this.props.imgName == "lily" ? 
-                                        <p className = "notif"> Core Memory - 4 Words Missing - Inquiry Needed  </p>
-                                        : <p className = "notif"> Non-core Memory </p>}
-
-                                    {this.getPrompt()}
-                                    
-                                    { this.props.imgName == "lily" ? 
-                                        <button key={i} type="button"
-                                        style={{'marginLeft': '5%'}}
-                                        onClick = {() => this.initiateScene()}>
-                                        Bring back Mey, Inquire about Memory
-                                        </button> 
-                                        : (null)
-                                    }
-                                </div>)
-                    }
+                        { this.props.imgName == "lily" ? 
+                            <button key={i} type="button"
+                            style={{'marginLeft': '5%'}}
+                            onClick = {() => this.initiateScene()}>
+                            Bring back Mey, Inquire about Memory
+                            </button> 
+                            : (null)
+                        }
+                    </div>)
                 }
                 else
                     return (<div>
@@ -228,7 +207,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                                 <big>Memory Resonance:</big> 
 
 
-                                { this.props.dialogueVar.get("p_lily_q") ? 
+                                { this.props.dialogueRunner.variablesState["p_lily_q"] ? 
                                  <><br></br><br></br><small>Reach {this.distanceFunc(HIGH_BOUND)} to Retrieve Memory</small></>
                                 : (null)}
                             </p>
@@ -245,10 +224,10 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                                 )}
                             </div>
                         </div>
-                : this.props.dialogueVar.get(imgName) > -1  ? 
+                : this.props.dialogueRunner.variablesState[imgName] > -1  ? 
                     <div>
                     <p className = "notif">Core Memory - "{this.props.imgData[imgName]["descp"]}"</p>
-                    <p style={{'marginTop': 0}}>{this.props.imgData[imgName]["interpretations"][this.props.dialogueVar.get(imgName)][1]}</p>
+                    <p style={{'marginTop': 0}}>{this.props.imgData[imgName]["interpretations"][this.props.dialogueRunner.variablesState[imgName]][1]}</p>
                     </div>
                 :   // The buttons for interpretations
                     <div>
