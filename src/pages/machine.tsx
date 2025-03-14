@@ -370,7 +370,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                                     
                                 <div className="button-div">
                                     <button type="button" className="continue-button" 
-                                        onClick = {() => this.handleDialogue()}>
+                                        onClick = {() => this.setToDialogue()}>
                                         Bring back Mey
                                     </button>
                                 </div>

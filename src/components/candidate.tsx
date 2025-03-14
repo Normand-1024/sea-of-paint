@@ -39,6 +39,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
 
         if (i > 1 || image_score < LOW_BOUND){
             return (<div>
+                {i == 1 ? <p className='threshold-line'>————— Resonance Threshold —————</p> : null } 
                 <p>{score} — {if_locked ? <u>&lt;&lt;{memName}&gt;&gt;</u> : <>[{memName}]</>} </p>
             </div>)
         }

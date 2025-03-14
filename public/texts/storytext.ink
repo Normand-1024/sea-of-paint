@@ -40,7 +40,7 @@ VAR act_1_lie_lily = false
 
 * Hello, Mey.
 
-//-> A2_Hub
+-> A1_Machine_Intro
 
 - What is this? Why is it so dark here?
 
@@ -242,8 +242,6 @@ Then she walked away. Her pace almost deliberately sped up. Then she started lig
 
 - I feel...maybe doubt?...and...envy? I don't know why. I can't make sense of it...
 
-I feel...maybe doubt?...and...envy? I don't know why. I can't make sense of it...
-
 * Do you doubt because you could've apologized?
 
 * Do you have doubts about whether you were in the wrong?
@@ -272,11 +270,13 @@ Wait...just a second before you do that.
 
 - Lily was supposed to give me a ride back that day...oh no...
 
-*  But the memory seems to show her walking away from your car.
+* \(Question\) But the memory seems to show her walking away from your car.
 
-- No, the memory was days before my death...we switch between who drivesx the other.
+    No, the memory was days before my death...we switch between who drives the other.
+    
+* \(Continue\) [Say Nothing]
 
-Have you heard anything about the accident? Whether anyone survived?
+- Have you heard anything about the accident? Whether anyone survived?
 
 * \(Lie\) I did hear about a survivor. It must be Lily.
 
