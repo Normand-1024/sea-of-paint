@@ -3,7 +3,6 @@ VAR integrity = 100
 VAR generate_count = 0
 VAR affirmation = 0
 VAR suspicion = 0
-VAR cruel = 0
 
 // Image Unlocked, the variable names match the image names
 // -2: not unlocked, -1: unlocked but waiting for interpretation
@@ -15,16 +14,16 @@ VAR ivan = -2
 VAR emma = -2 
 
 // Path Variables - tracking which path has been traversed
-VAR p_lily_q = false // enable this for tutorial
-// VAR p_lily = false
-// VAR p_stefan = false
-// VAR p_ivan = false
-// VAR p_emma = false
+VAR p_lily_q = false
+VAR p_lily = false
+VAR p_stefan = false
+VAR p_ivan = false
+VAR p_emma = false
 
-// VAR p_lily_o = false
-// VAR p_stefan_o = false
-// VAR p_ivan_o = false
-// VAR p_emma_o = false
+VAR p_lily_o = false
+VAR p_stefan_o = false
+VAR p_ivan_o = false
+VAR p_emma_o = false
 
 // Variable for jumping to different scenes
 VAR scene_var = "A2_Hub"
@@ -37,13 +36,11 @@ VAR informed_mum = false
 // A1_Lily
 VAR act_1_lie_lily = false
 
-//A2_Lily
-VAR X = false
-VAR if_emphasize = false
-
 ...Hello?
 
 * Hello, Mey.
+
+-> A1_Machine_Intro
 
 - What is this? Why is it so dark here?
 
@@ -104,6 +101,8 @@ What about my family? Where are they? Are they here?
 - I don't understand...I really want to talk to them...
 
 Can you at least tell me how they are doing?
+
+-> A1_Family
 
 == A1_Family ==
 
@@ -271,12 +270,11 @@ Wait...just a second before you do that.
 
 - Lily was supposed to give me a ride back that day...oh no...
 
-*  \(Question\) But the memory seems to show her walking away from your car.
+* \(Question\) But the memory seems to show her walking away from your car.
 
-    No, the memory was days before my death...we switch between who drives the other...did something happen?
+    No, the memory was days before my death...we switch between who drives the other.
     
-* \(Continue\) [Say Nothing...]
-
+* \(Continue\) [Say Nothing]
 
 - Have you heard anything about the accident? Whether anyone survived?
 
@@ -376,11 +374,8 @@ Well, ask away then.
 //===MEY INITIATION=======
 //========================
 
-{
-    -!A2_Concern_1 && suspicion == 3:
-        -> A2_Concern_1
-} 
-
+{!A2_Concern_1 && suspicion == 3 } 
+    -> A2_Concern_1
 
 //========================
 //===HUB DIALOGUES========
@@ -390,7 +385,7 @@ Well, ask away then.
 
     -> A2_Generation
 
-* {lily > -1 && !A2_Lily_U} Oh Mey, I forgot to mention. Lily's image looks good. 
+* Oh Mey, I forgot to mention. Lily's image looks good. {lily > -1 && !A2_Lily_U}
 
     -> A2_Lily_U
 
@@ -478,247 +473,7 @@ In any case, I have to be careful with affirmation. Otherwise the trust between 
 
 == A2_Lily ==
 
-* Welcome back, Mey. Do you need a minute?
-
-- Yes... give me a second.
-
-...
-
-Okay. I think I'm okay now. What's the matter?
-
-* I have found another memory. It seems like you and Lily are sitting together. Lily looks stressed.
-
-- That was a while ago. I always thought Lily was strong just because of the way she acted, so I stayed away, letting the younglings have their own fun.
-    
-But there's more going on under the surface. Lily's data work is... let's say more intense.
-    
-* Intense how?
-
-- They are for filtering and moderating purposes, a lot of very disturbing things you wouldn't see...
-    
-...abuse, torture, sexual exploitation, real death...
-    
-It's a part of the Sea, as it is always recording. I try not to imagine those things passing through me right now.
-    
-* Is it too much for her?
-
-- She burst out sobbing that day. The cry startled us. I still remember the way her voice trembled...
-
--> A2_Lily_Q
-
-== A2_Lily_Q ==
-~ p_lily_q = true
-
-* \(Question\) Shouldn't she have received psychological help?
-
-    They do...but they are formalities, solutions for solution's sake.
-
-    Breathing techniques, mindfulness...offered only when asked.
-
-    But stresses and depression are no different from anything you thought you could deal with, until suddenly you couldn't any more...
-    
-    -> A2_Lily_Q
-    
-
-* \(Question\) What made her so distressed?
-
-    It was a nice digital postcard, wishing her a good fortunate and a beautiful day. That was what broke her.
-
-    Because it appeared after hours and hours of depravity. All the mechanisms she built up to tolerate those things came crushing down on her.
-    
-    -> A2_Lily_Q
-    
-* \(Continue\) What then?
-
-- I went up to talk to her. But she turned to yell at me.
-
-"Why are you people so fucking annoying?" I was shocked at first, but insisted she needed a break, and led her outside.
-
-And we sat in silence until she was fine. I bought her tea the next day. We got close after that. I think she needed or someone more than I realized.
-
-* \(Affirm\) It's good that she has you as her friend.
-
-    ~affirmation++
-
-    I guess so...but I couldn't handle the way she copes...
-    
-    She likes to push buttons for reactions, like telling dark jokes about suicide...I told her I didn't want to hear those...but really it was how she dealt with the things she saw.
-
-* Does she not have other people to support her? Her family, perhaps?
-
-    Lily lost contact with her family. I don't know what happened between them, she wouldn't tell me.
-    
-    She really doesn't have a place of comfort to return to. I could still feel she didn't know how to open up more.
-
-
-- I know there are things she's suppressing because of our differences. She hated when I tried to describe what she might be feeling, because it never quite captured it.
-
-    
-{ A2_Lily_O:
-
-Her sparks would sometimes become intrusive thoughts...the twitching ,like her brains couldn't help but to be in a panic mode, trying to defend itself.
-}
-
-*How does it make you feel to think about this memory?
-
-- Hmmm...I feel a lot of sympathy for her...but also...doubt?
-
-* Why do you feel doubt?
-
-- I don't know...maybe it's something I did...but I don't know what...
-
-I just tried to encourage her to leave, because I thought it'd be good for her.
-
-Sometimes I would tell her about my writing progress, the potential publishers. It kept her thinking about what her bigger interests are.
-
-* { A2_Ivan } Didn't you say you couldn't write at home? 
-
-    Huh? Did I?
-    
-    ** Yes, when we were talking about Ivan.
-    
-    -- Oh yea...I think I wrote some too...that's what I told her about.
-    
-    That was strange...should I bring this up later? #self
-    
-    ** Thank you, I think we have talked enough about Lily. I don't want you to dwell on it for too long, Mey.
-
-* Thank you, I think we have talked enough about Lily. I don't want you to dwell on it for too long, Mey.
-
-- Yes, but I'm glad I remember that now. I miss her.
-
-Sorry...I need a few seconds. It hurts to think about her.
-
-...
-
--> A2_Hub
-
-== A2_Lily_O ==
-
-* There is another memory of Lily. It's a bit more abstract.
-
-- I think I might have an idea what it looks like...
-
-* Lily is surrounded by all the brightness and color. She looks confused and lost, even if the image is so vivid.
-
-    That's...an interesting read. I feel a lot of hope from your description, actually.
-
-* Overwhelming splashes of color around her. It's about the richness of her inner world.
-
-    Yes. I do think she has such a rich internality...or "inner culture", as I heard someone put it.
-
-* Lily's looking at something wonderful and fantastical. It seems to depict her outlook on life.
-
-    You are partly right about that. But sometimes I do think she's a bit...too free about her future. I'm not sure how I feel about it.
-
-- She really believes in her "sparks"....she only used that word a couple of times but it really stuck with me.
-
-Do you know what I'm referring to? The "spark"?
-
-* A moment of inspiration?
-
-    It's a little more than an inspiration...it's more like...an inclination towards life.
-
-* A burst of passion?
-
-    Yep, it is a bit like that. But what if it's more significant...like that bursting is a way to think about life generally?
-
-- Lily embodies this word a lot...like the moment she has a clever idea, a story, a recipe, or a new insult for Stefan. It seemed like it would come to her. All she had to do was to tune into their channels.
-
-The word fascinated me the more I thought about it. Can't we think about humans similarly? To have things come together in a flash. And the only reason is that we continue living and thinking. Sparks come from simply living.
-
-It must be the same reason she hates the Sea...she said that the Sea was not capable of new things, it probably means the spark is not there.
-
--> Lily_O_Q1
-
-= Lily_O_Q1
-
-* \(Question\) \(Affirm\) The spark is a fascinating idea, Mey. What does Lily think about them?
-
-    ~suspicion++
-    
-    I didn't mention that to her...she's much less conceptual than I am. I think she would say I'm thinking too much about it...
-    
-    -> Lily_O_Q1
-
-* (defend1) {!defend2} \(Question\) I don't understand. Why can't the Sea have sparks?
-
-    How can something that only remembers the past create sparks like a human...or like Lily does?
-    
-    The Sea doesn't understand. Data work injects understanding into it. The Sea needs us to understand anything. 
-    
-    -> Lily_O_Q1
-    
-* (defend2) {!defend1} \(Question\) The Sea is still in its infancy. I'm sure it'll be capable of a lot of things
-
-    How can something that only remembers the past create sparks like a human...or like Lily does?
-    
-    The Sea doesn't understand. Data work injects understanding into it. The Sea needs us to understand anything. 
-    
-    -> Lily_O_Q1
-    
-
-* {defend1 || defend2} \(Continue\) But the Sea also synthesizes information, it's not just recreating the past. The Sea is more like a brain this way.
-
-    ~cruel++
-
-    A brain...? How does it synthesize information?
-
-    ** It's like compression.
-    
-    ** It's like modeling. 
-    
-    ** It's like free association.
-    
-    ** It's like reducing surprises through prediction.
-
-    -- Okay...but how does it related to...living, you know?
-    
-    The pleasures that drive us blind. The drop of the chest. The pain. The self-denial. And then the turning in for the night. And the spark that came after the rest. Lily is defined by all of those things.
-    
-    I don't know much about the technology, and it doesn't seem like many do...or want to. What Lily means to me...nothing replaces that. I envy her. That's how I feel.
-
-* \(Continue\) I'm probably of a similar age as Lily. I also really enjoy my spark sometimes.
-
-    ~affirmation++
-    
-    ~if_emphasize = true
-
-    I'm glad to hear that you understand. What kind of sparks do you have?
-
-    ** I really like telling stories. Probably why I picked Machine Operator as a gig. I get a lot of inspirations from talking to folks.
-
-    Yes, I made her think about being a writer. She said she might try it out once she leaves.
-
-    When I think about her...it's envy and hope at the same time. We have our differences. But I get the chance to look at myself through her. Do I still have that spark? It made me think about those things.
-    
-- ...I envy her. That's how I feel, truly.
-
-{A2_Lily: 
-
-The place was snuffing her out. She would have intrusive thoughts and sudden reactions because of her work...it's like the sparks were turning against her.
-}
-
-{act_1_lie_lily:
-
-    I hope she recovers...and maybe talk to me soon...
-    
-    Regardless, I think we should move on.
-    
- - else:
- 
-    So much future, gone in an instant...I really don't want to think about it any more...
- 
-} 
-
-*  Yes, let's switch topics.
-
-{if_emphasize:
-    Thank you for chatting with me about this. I do realize how important Lily is to me now. 
-    
-    - else: 
-    Let's be a bit light on the technical debate next time, if it's alright with you.
-}
+Not Written yet
 
 -> A2_Hub
 
@@ -726,70 +481,25 @@ The place was snuffing her out. She would have intrusive thoughts and sudden rea
 
 Oh yea? What do you think about it?
 
-* { lily == 0 } I feel that she's a very self-determined person. She understands what she wants. 
+* I feel that she's a very self-determined person. She understands what she wants. { lily == 0 }
 
     She's very firm with her opinions, for sure. But I'm not quite sure about if she knows herself fully. She fights with herself quite a lot.
     
-* { lily == 1 } I feel that she's lonely. She doesn't have many people to confide in.
+* I feel that she's lonely. She doesn't have many people to confide in. { lily == 1 }
 
     It's true. I don't think I'm quite the person who can understand her fully.
     
-* { lily == 2 } I feel that she's very detached. She doesn't want to be too concerned with matters she can't control.
+* I feel that she's very detached. She doesn't want to be too concerned with matters she can't control.
 
     There's a reason for that. It's not that she doesn't want to.
     
 - Lily knew she's prone to negative thoughts. And those thoughts tend to stick with her. I think she was probably processing those thoughts at that moment.
 
-She told me that at her weaker moments, all the bad feelings she felt, like when she's annoyed, or when she felt misunderstood, come back to her. As if suddenly, the past is happening again...
+She told me that at her weaker moments, all the bad feelings she felt, like when she's annoyed, or when she felt misunderstood, come back to her. As if suddenly, she's fighting her own memories.
 
-* I had similar experience...
+It felt that she's quite ashamed of that part of her sometimes. That's why she doesn't like to hear what someone thinks about her, because she can be her best self by forgetting some part of her.
 
- **...a few co-workers of mine, they can be quite cruel, because they don't see Sea spirits as people. And they work with spirits as I do.
- 
-    *** I would imagine the way I confront them. But I wanted to keep the peace. But those thoughts and the anger lingers...
-    
-        I'm sorry to hear that...but I'm happy to hear that you are struggling with this because of your kindness, truly.
-        
-        *** I don't feel that way...I'm a bit terrified of my anger.
-        
-        ---...that's...what Lily said too. That's why she doesn't like to hear what someone thinks about her, because she can be her best self by forgetting some part of her.
-        
-        Thank you for sharing. But maybe it's best if we move on?
-        
-        *** Yes, let's.
-        
-        -> A2_Hub
+But anyway, thank you for bringing it up to me. Let's move on.
 
-* She sounds like she's fighting with herself.
-
-    She seemed quite ashamed of that part of her sometimes. That's why she doesn't like to hear what someone thinks about her, because she can be her best self by forgetting some part of her.
-    
-    So anyway, that's Lily. Thank you for bringing it up to me. Is there anything else you want to talk about?
-
-    -> A2_Hub
-
-== A2_Stefan ==
-
-asd
-
-== A2_Stefan_O ==
-
-asd
-
-== A2_Stefan_U ==
-
-asd
-
-== A2_Ivan ==
-
-asd
-
-== A2_Ivan_O ==
-
-asd
-
-== A2_Ivan_U ==
-
-asd
-
+-> A2_Hub
 
