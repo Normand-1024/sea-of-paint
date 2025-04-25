@@ -46,9 +46,8 @@ class IntroPage extends React.Component<IntroProps, IntroState> {
                     return (
                         index <= this.state.currentLine ? 
                             <p key={index} style={{'color': 'black'}}>{item}</p> :
-                            <p key={index} style={{'color': 'white',
-                                                    'user-select': 'none',
-                                                    '-webkit-user-select': 'none'}}>{item}</p>
+                            <p key={index} className="no-select"
+                                    style={{'color': 'white'}}>{item}</p>
                     )
                 })}
 

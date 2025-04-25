@@ -55,9 +55,9 @@ VAR act_1_lie_lily = false
 
 * Hello, Mey.
 
-// ~ p_lily_q = true
-// ~ lily = 0
-// -> A2_Hub
+~ p_lily_q = true
+~ lily = 0
+-> A2_Hub
 
 - What is this? Why is it so dark here?
 
@@ -386,11 +386,8 @@ So what now? Do we continue the search?
 
 Well, ask away then.
 
-YOU HAVE REACHED THE END OF THE INTRO!
 
--> END
-
-// -> A2_Hub
+-> A2_Hub
 
 == A2_Hub ==
 
