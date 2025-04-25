@@ -12,4 +12,4 @@ export const LOW_INTEGR_THRSH = 10;
 export const IMAGE_DIM = 500;
 
 export const HIGH_BOUND = 0.85;
-export const LOW_BOUND = 0.25;
+export const LOW_BOUND = 0.18;

@@ -12,7 +12,7 @@ import { MarkovScrambler } from '../functions/markovGeneration.tsx';
 import {PAGE_STATE, SPIRIT_NAME, MID_INTEGR_THRSH, LOW_INTEGR_THRSH} from '../constants.tsx';
 
 const DIALOGUE_TYPE = {'spirit': 0, 'self-speaking': 1, 'self-thinking': 2, 'machine': 3};
-const GENERATE_WAIT_TYPE = {'dialogue': -1, 'wait_for_first': 0, 'generated': 1, 'wait_for_lily1': 2, 'wait_for_lily2': 22, 'wait_for_interpretations': 3};
+const GENERATE_WAIT_TYPE = {'dialogue': -1, 'wait_for_first': 0, 'generated': 1, 'wait_for_lily1': 2, 'wait_for_lily2': 22, 'wait_for_interpretations': 3, 'only_continue_from_generate': 4};
 
 type MachineProps = {
     pageState: number;
@@ -90,7 +90,8 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         // Check if there's any interpretations left open
         if (this.state.generateState == GENERATE_WAIT_TYPE['wait_for_lily2'] &&
             this.state.dialogueRunner.variablesState["lily"] >= 0){
-            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['generated'] })); 
+            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['generated'] }));     
+            this.dialogueEndRef.current?.scrollIntoView(true);
         } 
 
         this.forceUpdate();
@@ -115,8 +116,15 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             // Check scrambling
             if (this.state.dialogueRunner.currentTags &&
                 this.state.dialogueRunner.currentTags.indexOf('scramble') > -1){
-                line = this.state.markovScrambler.markovScramble(this.state.dialogueRunner.currentText);
-                line = this.state.markovScrambler.markovScramble(line);
+
+                try {
+                    line = this.state.markovScrambler.markovScramble(this.state.dialogueRunner.currentText);
+                    line = this.state.markovScrambler.markovScramble(line);
+                }
+                catch (error) {
+                    console.log(error);
+                    line = this.state.markovScrambler.generate();
+                }
             }
         }
 
@@ -160,6 +168,11 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         }));
     }
 
+    fillPromptBox = (text : string) => {
+        if (this.textPromptRef.current) this.textPromptRef.current.value = text;
+        else console.log("fillPromptBox: textPromptRef.current returns false")
+    }
+
     handleDialogue = (option : number = -1) => {
         if(!this.state.dialogueRunner) {
             console.log("dialogueRunner is undefined");
@@ -198,8 +211,8 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         // If #generate is true, get into image generation mode
         if (this.state.dialogueRunner.currentTags &&
             this.state.dialogueRunner.currentTags.indexOf('generate') > -1) {
-            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['wait_for_first'] }));
-        }
+            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['only_continue_from_generate'] }));
+        } // TODO: add wait_for_first after the 3 core memories are found
         else if (this.state.dialogueRunner.currentTags &&
                 this.state.dialogueRunner.currentTags.indexOf('generate_lily1') > -1) {
             this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['wait_for_lily1'] }));
@@ -346,6 +359,16 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                                         
                                 :
 
+                                this.state.generateState ==  GENERATE_WAIT_TYPE['only_continue_from_generate']?  
+                                
+                                <div className="button-div">
+                                    <button type="button" className="continue-button" disabled>
+                                        Wake Mey Up from the Image Generator
+                                    </button>
+                                </div> 
+                                        
+                                :
+
                                 this.state.generateState ==  GENERATE_WAIT_TYPE['wait_for_lily2']?
                                         
                                 <div className="button-div">
@@ -406,7 +429,9 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                     <ImageGenerator prompts = {this.state.promptList}
                                     dialogueRunner = {this.state.dialogueRunner}
                                     setDialogueVar  = {this.setDialogueVar}
-                                    initiateScene = {this.setToDialogue} ></ImageGenerator>
+                                    initiateScene = {this.setToDialogue}
+                                    generateState = {this.state.generateState}
+                                    fillPromptBox = {this.fillPromptBox} ></ImageGenerator>
 
                     { 
                     

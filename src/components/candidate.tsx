@@ -5,6 +5,8 @@ import { Story } from 'inkjs';
 import {IMAGE_DIM, HIGH_BOUND, LOW_BOUND} from '../constants.tsx';
 import { match } from 'assert';
 
+const GENERATE_WAIT_TYPE = {'dialogue': -1, 'wait_for_first': 0, 'generated': 1, 'wait_for_lily1': 2, 'wait_for_lily2': 22, 'wait_for_interpretations': 3};
+
 type CandidateProps = {
     inprompt: string;
     similarities: Array<any>;
@@ -12,10 +14,13 @@ type CandidateProps = {
     imgName: string;
     imageurl: string;
     imgData: { [id: string] : any; };
+    imgButton: { [id: string] : Boolean;};
+    generateState: number;
     
     dialogueRunner: Story;
     setDialogueVar: Function;
     initiateScene: Function;
+    fillPromptBox: Function;
 }
 
 type CandidateState = {
@@ -28,26 +33,56 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
 
     private aboveHigh = this.props.similarities[0].score > HIGH_BOUND;
 
-    getMemInfo(image_name : string, image_score : number, if_locked : boolean, i : number) {
+    getMemInfo(  image_name : string,
+                 image_score : number,
+                 if_main : boolean,
+                 if_retrieved : boolean,
+                 if_tutorial : boolean,
+                 i : number) {
         let memName : string = this.props.imgData[image_name].memory_name;
-        let if_display_percentage = i < 2 && (
-            (this.props.dialogueRunner.currentTags && this.props.dialogueRunner.currentTags.indexOf('generate_lily2') > -1 )
-            || this.props.dialogueRunner.state.VisitCountAtPathString("A2_Start")
-            || this.props.dialogueRunner.state.VisitCountAtPathString("A2_Generation"))
+        let if_display_percentage = i < 2 && image_score > LOW_BOUND && (
+            (!if_tutorial
+            //|| this.props.dialogueRunner.state.VisitCountAtPathString("A2_Start")
+            || this.props.dialogueRunner.variablesState["p_lily_q"] ))
 
-        let score : string = if_display_percentage ? this.distanceFunc(image_score) : (i + 1).toString();
+        let score : string = if_display_percentage ? this.distanceFunc(image_score) : this.rankString(i);
 
         if (i > 1 || image_score < LOW_BOUND){
             return (<div>
                 {i == 1 ? <p className='threshold-line'>————— Resonance Threshold —————</p> : null } 
-                <p>{score} — {if_locked ? <u>&lt;&lt;{memName}&gt;&gt;</u> : <>[{memName}]</>} </p>
+                <div className='score-display'>{score}</div> {if_main ? 
+                                <div onClick = {() => this.fillPromptBox(memName)}
+                                        className="meminfo-button meminfo-button-main">{memName}</div> 
+                                : <div onClick = {() => this.fillPromptBox(memName)}
+                                        className="meminfo-button meminfo-button-nonmain">{memName}</div>
+                            } 
+                
             </div>)
         }
 
         return <div>
-            <p><b>{score} — {if_locked ? <u>&lt;&lt;{memName}&gt;&gt;</u> : <>[{memName}]</>} </b></p>
+            <div className='score-display'>{score}</div> {if_main ? 
+                                <div onClick = {() => this.fillPromptBox(memName)}
+                                        className="meminfo-button meminfo-button-main">{memName}</div> 
+                                : <div onClick = {() => this.fillPromptBox(memName)}
+                                        className="meminfo-button  meminfo-button-nonmain">{memName}</div>} 
+            
+
             {i == 1 ? <p className='threshold-line'>————— Resonance Threshold —————</p> : null } 
         </div>;
+    }
+
+    distanceFunc(score : number) {
+        return (Math.round((score) * 10000) / 100).toString() + "%";
+    }
+
+    rankString(rank : number) {
+        if (rank == 0) return "1st";
+        else if (rank == 1) return "2nd";
+        else if (rank == 2) return "3rd";
+        else if (rank == 3) return "4th";
+        else if (rank == 4) return "5th";
+        else return "rankUnknown";
     }
     
     getPrompt() {
@@ -63,107 +98,101 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                 output = output.concat(" [?] " + prompt_array[i + 1]);
         }
 
-        return <p className = "notif">"{output}"</p>
+        return <p className = "copiable-prompt" onClick = {() => this.fillPromptBox(output)}>"{output}"</p>
     }
 
-    initiateScene() {
-        this.props.setDialogueVar("scene_var", this.props.imgData[this.props.imgName]["scene"]);
-        this.props.setDialogueVar(this.props.imgData[this.props.imgName]["path"], true);
-        console.log(this.props.dialogueRunner.variablesState["scene_var"]);
-        this.props.initiateScene();
+    handleButton(if_main : boolean) {
+        this.props.imgButton[this.props.imgName] = true;
+
+        if (if_main){
+            console.log(this.props.imgData[this.props.imgName]);
+            this.props.setDialogueVar("scene_var", this.props.imgData[this.props.imgName]["scene"]);
+            console.log(this.props.dialogueRunner.variablesState["scene_var"]);
+            this.props.initiateScene();
+
+        }
+        else {
+            this.props.setDialogueVar(this.props.imgData[this.props.imgName]["d_var"], "true");
+        }
     }
 
+    fillPromptBox(text : string) {
+        this.props.fillPromptBox(text);
+    }
 
     getDistanceString(i : number, imgName : string, score : number, is_unlockable : boolean) {
 
         // Check if the image is yet to be unlocked
-        let if_locked : boolean = 
-            this.props.imgData[imgName]["interpretations"].length > 0
-            && this.props.dialogueRunner.variablesState[imgName] == -2; 
+        let if_main : boolean = this.props.imgData[imgName]["interpretations"].length > 0;
+        let if_retrieved : boolean = this.props.dialogueRunner.variablesState[imgName] >= 0; 
+        let visit_count = this.props.dialogueRunner.state.VisitCountAtPathString(this.props.imgData[imgName]["scene"]);
+        let if_visited : boolean = false;
+        let if_tutorial : boolean = this.props.dialogueRunner.state.VisitCountAtPathString("A2_Generation") == 0;
+
+        if (visit_count == null || visit_count == undefined)
+            console.log("WARNING: VISIT_COUNT IS NULL OR UNDEFINED");
+        else if_visited = visit_count > 0;
 
         if (i > 0) {
-            return (<div>{this.getMemInfo(imgName, score, if_locked, i)}</div>);
-        }
+            return (<div className="mem-entry">{this.getMemInfo(imgName, score, if_main, if_retrieved, if_tutorial, i)}</div>);
+        } 
         else{
+            // Only the top match displays more information
 
-            // Check if the scene for that image has been visited
-            
-            // TODO: descp IS PLACEHOLDER
-            if (this.props.dialogueRunner.variablesState[this.props.imgData[imgName]["path"]]) {
-                // has visited
-                return (<div>
-                    {this.getMemInfo(imgName, score, if_locked, i)}
+            //  Core Memory - X Words Missing - Inquiry Needed
+            //  Core Memory - N/X Words Found
+            //  Core Memory - Retrieved
+            //  Non-core Memory - N/X Words Found
+            //  Non-core Memory - Retrieved
 
-                    { if_locked ? 
-                        <p className = "notif"> Core Memory - Not Yet Retrieved </p>
-                        : <p className = "notif"> Core Memory - Retrieved </p>
+            // If in tutorial:
+                //  Core Memory - X Words Missing - Inquiry Needed
+                //  Core Memory - N/X Words Found
+                //  Core Memory - Retrieved
+                //  Non-core Memory
+
+            let memoryType = if_main ? "Core Memory" : "Non-core Memory";
+            let XWordsMissing = this.props.imgData[imgName]["keywords"].length.toString() + " Words Missing";
+            let NXWordsFound = this.props.wordStat.filter(x => x).length.toString() + 
+                                "/" + this.props.imgData[imgName]["keywords"].length.toString() +
+                                " Words Found";
+
+            let secondString = 
+                if_retrieved ? "Retrieved"
+                    : !if_visited ? XWordsMissing + " - Inquiry Needed"
+                        : NXWordsFound;
+
+            return (<div className="mem-entry top-display">
+                {this.getMemInfo(imgName, score, if_main, if_retrieved, if_tutorial, i)}
+
+                <div className="top-main-info">
+                    <p className = "notif"> {memoryType} </p>
+                    {if_tutorial && !if_main ? 
+                        (null)
+                        : <p className = "notif"> {secondString} </p>
                     }
 
-                    {this.getPrompt()}
-                </div>);
-                // TODO: SAY HOW MANY KEYWORDS REVEALED
-                //      <p className = "notif"> 0/4 Missing Words Found </p>
+                    {if_tutorial && !if_main ? 
+                        (null) : this.getPrompt()}
+                    
+                    {this.props.imgButton[imgName] || if_retrieved ||
+                    (if_tutorial && !if_main) || this.props.generateState == GENERATE_WAIT_TYPE['dialogue'] ?
+                        (null)
 
-            }
-            else {
-                // has not visited
-                //      TODO: <p className = "notif"> 4 Words Missing - Inquiry Needed  </p>
-
-                if (this.props.dialogueRunner.state.VisitCountAtPathString("A2_Generation") == 0){
-                    return (<div>
-                        {this.getMemInfo(imgName, score, if_locked, i)}
-
-                        { this.props.imgName == "lily" ? 
-                            <p className = "notif"> Core Memory - 4 Words Missing - Inquiry Needed  </p>
-                            : <p className = "notif"> Non-core Memory </p>}
-
-                        {this.props.imgName == "lily" ? this.getPrompt() : (null)}
+                        : 
                         
-                        { this.props.imgName == "lily" ? 
-                            <button key={i} type="button"
-                            style={{'marginLeft': '5%'}}
-                            onClick = {() => this.initiateScene()}>
-                            Bring back Mey, Inquire about Memory
-                            </button> 
-                            : (null)
-                        }
-                    </div>)
-                }
-                else
-                    return (<div>
-                                {this.getMemInfo(imgName, score, if_locked, i)}
-                                {this.getPrompt()}
-                                <button key={i} type="button"
-                                style={{'marginLeft': '5%'}}
-                                onClick = {() => this.initiateScene()}>
-                                Bring back Mey, Inquire about Memory
-                                </button> 
-                            </div>);
-            }
-
-            // if (!is_unlockable) 
-            //     return (this.getMemInfo(imgName, score, if_locked, i));
-            // else if (score < HIGH_BOUND) 
-            //     return (<div>
-            //                 {this.getMemInfo(imgName, score, if_locked, i)}
-            //                 <p className = "notif">Refine description to reach {this.distanceFunc(HIGH_BOUND)}</p>
-            //             </div>);
-            // else if (this.props.matched_keywords.filter(wrd => wrd != "").length == 0) 
-            //     return (<div>
-            //                 {this.getMemInfo(imgName, score, if_locked, i)}
-            //                 <p className = "notif">Core memory tainted. No keywords found</p>
-            //             </div>);
-            // else 
-            //     return (<div>
-            //                 {this.getMemInfo(imgName, score, if_locked, i)}
-            //                 <p className = "notif">Matched keywords: {this.getKeywordString()}</p>
-            //             </div>);
-
+                        <div key={i} className="interact-button"
+                        onClick = {() => this.handleButton(if_main)}>
+                            { if_main ?
+                            "Bring back Mey, Inquire about Memory"
+                            : "Note this Memory for Conversation Later"
+                            }
+                        </div>   
+                    }
+                </div>
+            </div>);
         }
-    }
 
-    distanceFunc(score : number) {
-        return (Math.round((score) * 10000) / 100).toString() + "%";
     }
 
     render() {
@@ -205,11 +234,11 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                         // Render the top five memories
                         <div className = "row">
                             <p   className = "column left" style={{'marginTop': 0}}> 
-                                <big>Memory Resonance:</big> 
+                                <big>Memories sorted by Resonance:</big> 
 
 
                                 { this.props.dialogueRunner.variablesState["p_lily_q"] ? 
-                                 <><br></br><br></br><small>Reach {this.distanceFunc(HIGH_BOUND)} to Retrieve Memory</small></>
+                                 <><br></br><br></br><small><center>Reach {this.distanceFunc(HIGH_BOUND)} to Retrieve Memory</center></small></>
                                 : (null)}
                             </p>
 
@@ -227,8 +256,10 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                         </div>
                 : this.props.dialogueRunner.variablesState[imgName] > -1  ? 
                     <div>
-                    <p className = "notif">Core Memory - "{this.props.imgData[imgName]["descp"]}"</p>
-                    <p style={{'marginTop': 0}}>{this.props.imgData[imgName]["interpretations"][this.props.dialogueRunner.variablesState[imgName]][1]}</p>
+                    <p className = "notif">Memory Unlocked - "{this.props.imgData[imgName]["descp"]}"</p>
+                    <p style={{'marginTop': 0}}>{this.props.imgData[imgName]["interpretations"].length > 0 ? 
+                            this.props.imgData[imgName]["interpretations"][this.props.dialogueRunner.variablesState[imgName]][1]
+                        : (null)}</p>
                     </div>
                 :   // The buttons for interpretations
                     <div>
@@ -238,11 +269,11 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                         this.props.imgData[imgName]["interpretations"].map(
                             (op:any,i:number) => {                      
                                 return (
-                                    <div key={i}><button key={i} type="button"
-                                        style={{'marginBottom': '1%'}}
+                                    <div key={i}><div key={i}
+                                        className="interpret-button"
                                         onClick = {() => this.props.setDialogueVar(imgName, i)}>
                                         {op[0]}
-                                    </button></div>
+                                    </div></div>
                                 );
                         }) 
                     }

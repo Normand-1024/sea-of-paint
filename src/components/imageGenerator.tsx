@@ -20,6 +20,8 @@ type ImageGeneratorProps = {
     dialogueRunner: Story;
     setDialogueVar: Function;
 	initiateScene: Function;
+	generateState: number;
+	fillPromptBox: Function;
 }
 
 type ImageGeneratorState = {
@@ -45,6 +47,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 	private imgData: { [id: string] : any; } = {}; // name : all other data in IMAGE_DATA
 	private imgEmbed: { [id: string] : any; } = {}; // Embeddings for each image
 	private imgWordStat: {[id: string] : any[]} = {} // For each image, store the state of unlocked keywords (marked by boolean)
+	private imgButtonClicked: {[id: string] : Boolean} = {} // For each image, store whether their corresponding button has been clicked
 
   Sketch = (p5:any) => {
 
@@ -58,6 +61,8 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				this.imgData[name] = imgd;
 				this.imgEmbed[name] = await this.st.embed(imgd["descp"]);
 				this.imgWordStat[name] = new Array(this.imgData[name]["keywords"].length).fill(false);
+				this.imgButtonClicked[name] = false;
+
 			}
 			this.rawImg["noise"] = p5.loadImage("./assets/images/noise.png");
 		}
@@ -99,17 +104,25 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 					similarities[0].score = UNLOCK_SCORE;
 				}
 
+				console.log(similarities);
+
 				// ----------------- //
 				// KEYWORD DETECTION //
 				// ----------------- //
 				let keywords = this.imgData[similarities[0].name]["keywords"]; 
 				let wordStat = this.imgWordStat[similarities[0].name];
 			
-				for (let i=0; i<wordStat.length; i++) {
-					if (wordStat[i]) continue;
-					for (let j=0; j < keywords[i].length; j++){
-						if (prompt.includes(keywords[i][j].toLowerCase())){
-							wordStat[i] = true;
+				let visit_count = this.props.dialogueRunner.state.VisitCountAtPathString(this.imgData[similarities[0].name]["scene"]);
+
+				if (visit_count == null || visit_count == undefined)
+					console.log("WARNING: VISIT_COUNT IS NULL OR UNDEFINED");
+				else if (visit_count > 0){
+					for (let i=0; i<wordStat.length; i++) {
+						if (wordStat[i]) continue;
+						for (let j=0; j < keywords[i].length; j++){
+							if (prompt.includes(keywords[i][j].toLowerCase())){
+								wordStat[i] = true;
+							}
 						}
 					}
 				}
@@ -166,6 +179,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				
 				raw1.loadPixels();
 				raw2.loadPixels();
+				// raw2.filter(p5.GRAY);
 				raw1_mask.loadPixels();
 
 				copyOver(raw1, img);
@@ -252,10 +266,13 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
                             imageurl={img[1]} 
 							imgName={img[0]}
 							imgData={this.imgData}
+							imgButton = {this.imgButtonClicked}
+							generateState = {this.props.generateState}
 
 							dialogueRunner = {this.props.dialogueRunner}
 							setDialogueVar  = {this.props.setDialogueVar}
 							initiateScene = {this.props.initiateScene}
+							fillPromptBox = {this.props.fillPromptBox}
 
 							key={index}>
 
