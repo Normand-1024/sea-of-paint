@@ -55,9 +55,9 @@ VAR act_1_lie_lily = false
 
 * Hello, Mey.
 
-~ p_lily_q = true
-~ lily = 0
--> A2_Hub
+// ~ p_lily_q = true
+// ~ lily = 0
+// -> A2_Hub
 
 - What is this? Why is it so dark here?
 
@@ -386,6 +386,9 @@ So what now? Do we continue the search?
 
 Well, ask away then.
 
+\=== That was the end of the Intro! Thank you for Playing! \===
+
+-> END
 
 -> A2_Hub
 
@@ -1240,7 +1243,7 @@ In any case, thanks for sharing. Maybe we should move on?
 
 - Yes, everything is coming back to me. It was the reason Lily and I argued. He said something to me.
 
-"You can go upstairs to make textiles. Maybe you'll be more comfortable spinning yarns."
+"You can go upstairs to make textiles. Maybe you'll be more comfortable making clothes."
 
 It was cruel. Lily heard it, and started yelling at him.
 
@@ -1336,11 +1339,15 @@ He really believed it. A new generation and all.
 
 * It sounds like he was corrupted by power.
 
-- Maybe, some would say power reveals rather than corrupts. Not sure which one is truer for Stefan.
+    Maybe, some would say power reveals rather than corrupts. Not sure which one is truer for Stefan.
 
-But we could tell he didn't know how to be in power. It was like he was trying to discover himself through it, and he knew he wasn't as sophisticated. And under pressure from the upper division, he found his manager persona.
+* It sounds like power revealed his true nature.
 
-He would still consider himself to be one of us, especially the young ones...but when we started openly criticizing him, he really didn't take that well, especially from Lily.
+    Maybe, or maybe power corrupted him by roping him into a different place. Not sure which one is truer for Stefan.
+
+- We could tell he didn't know how to be in power. It was like he was trying to discover himself through it, and he knew he wasn't as sophisticated. He hated to look uncertain and struggling in front of others, especially Lily.
+
+And under pressure from the upper division, he found his manager persona. But he would still consider himself to be one of us, especially the young ones...but when we started openly criticizing him, he really didn't take that well. Lily's turning on him definitely made him a more cynical person.
 
 * Was he...fond of Lily?
 

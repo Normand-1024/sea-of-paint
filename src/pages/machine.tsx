@@ -363,7 +363,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                                 
                                 <div className="button-div">
                                     <button type="button" className="continue-button" disabled>
-                                        Wake Mey Up from the Image Generator
+                                        Wake Mey Up from Core Memories
                                     </button>
                                 </div> 
                                         
@@ -383,7 +383,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                                 
                                 <div className="button-div">
                                     <button type="button" className="continue-button" disabled>
-                                        Find a Core Memory
+                                        Wake Mey Up from a Core Memory
                                     </button>
                                 </div>   
 
