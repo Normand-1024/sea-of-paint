@@ -199,6 +199,9 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 			// -2: not unlocked, -1: unlocked but waiting for interpretation
 			if(this.props.dialogueRunner.variablesState[first] == -2 && unlocked){
 				this.props.setDialogueVar(first, -1);
+
+				if (this.imgData[first]["interpretations"].length == 0)
+					this.props.setDialogueVar(first, 0); // For non-core memory
 			}
 
 			this.setState((state) => ({

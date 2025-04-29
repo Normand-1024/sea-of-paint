@@ -49,7 +49,7 @@ export const IMAGE_DATA : Array<any> = [
         "memory_name": "Stefan told Mey to...",
         "descp": "Stefan told Mey to work in textile because she refused contract, feeling of sympathy and spite",
         "descp2": ["Stefan told Mey to work in ", " because she ", " ", ", feeling of ", " and ", ""],
-        "keywords": [["textile"], ["refused"], ["contract", "work"], ["sympathy"], ["spite"]],
+        "keywords": [["textile"], ["refused", "rejected"], ["contract", "work"], ["sympathy"], ["spite"]],
         "interpretations": [
                             ["This is a scene of cruelty. Mey looks hurt after Stefan pressured her with harsh words.",
                                 "some text is supposed to be here"
@@ -66,6 +66,7 @@ export const IMAGE_DATA : Array<any> = [
         "descp": "Stefan stands still looking away in nervous resentment, just like Fay, feeling of sympathy and pity",
         "descp2": ["Stefan stands still looking away in nervous resentment, just like", ", feeling of ", " and ", ""],
         "keywords": [["Fay"], ["sympathy"], ["pity"]],
+        "info": "Something is supposed to be here.",
         "interpretations": [],
         "scene": "A2_Stefan_O",
         "d_var": "d_stefan_o"
@@ -95,6 +96,7 @@ export const IMAGE_DATA : Array<any> = [
         "descp": "Ivan becomes entangled in the forces in plants and paint, feelings of alienation and detachment",
         "descp2": ["Ivan becomes entangled in the", "in plants and paint, feelings of", "and", ""],
         "keywords": [["force", "vitality"], ["alienation"], ["detachment"]],
+        "info": "Something is supposed to be here",
         "interpretations": [],
         "scene": "A2_Ivan_O",
         "d_var": "d_ivan_o"

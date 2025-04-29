@@ -262,6 +262,19 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         });
     };
 
+    getObjectiveText = () => {
+        if (this.state.dialogueRunner?.variablesState["current_stage"] == 1)
+            return "Find a Core Memory";
+        else if (this.state.dialogueRunner?.variablesState["current_stage"] == 2)
+            return "Unlock the Memory of Lily";
+        else if (this.state.dialogueRunner?.variablesState["current_stage"] == 3)
+            return this.state.dialogueRunner?.variablesState["core_unlocked"] + " out of 3 Core Memories Retrieved";
+        else if (this.state.dialogueRunner?.variablesState["current_stage"] > 3)
+            return "Write more text";
+
+        return "No supposed to be here";
+    }
+
     render() {
         if(!this.state.dialogueRunner) {
             console.log("dialogueRunner is undefined");
@@ -363,7 +376,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                                 
                                 <div className="button-div">
                                     <button type="button" className="continue-button" disabled>
-                                        Wake Mey Up from Core Memories
+                                        Wake up Mey from Core Memories
                                     </button>
                                 </div> 
                                         
@@ -383,7 +396,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                                 
                                 <div className="button-div">
                                     <button type="button" className="continue-button" disabled>
-                                        Wake Mey Up from a Core Memory
+                                        Wake up Mey from a Core Memory
                                     </button>
                                 </div>   
 
@@ -440,11 +453,16 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                     <div id="prompt-control">
                         <input type="text" id="prompt" autoComplete="off" ref={this.textPromptRef}></input>
 
+
                         {this.state.generateState  == GENERATE_WAIT_TYPE['dialogue'] ?
                         <button type="button" id="promptSubmit" disabled>Mey is away</button>
                         :
                         <button type="button" id="promptSubmit"
                              onClick = {() => this.updatePromptList()}>Generate</button>}
+
+                        { this.state.dialogueRunner.variablesState["current_stage"] > 0 ?
+                            <p id="objective">{this.getObjectiveText()}</p> : (null)
+                        }
                     </div> 
                         
                     : 

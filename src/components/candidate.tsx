@@ -40,36 +40,40 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                  if_tutorial : boolean,
                  i : number) {
         let memName : string = this.props.imgData[image_name].memory_name;
-        let if_display_percentage = i < 2 && image_score > LOW_BOUND && (
-            (!if_tutorial
-            //|| this.props.dialogueRunner.state.VisitCountAtPathString("A2_Start")
-            || this.props.dialogueRunner.variablesState["p_lily_q"] ))
+        let visit_count = this.props.dialogueRunner.state.VisitCountAtPathString(this.props.imgData[image_name]["scene"]);
+        let if_display_percentage = i < 2 && image_score > LOW_BOUND && 
+                (!if_tutorial
+                //|| this.props.dialogueRunner.state.VisitCountAtPathString("A2_Start")
+                || this.props.dialogueRunner.variablesState["current_stage"] > 1 );
+        let if_show_inquiry_needed = !if_retrieved && i == 0 && visit_count == 0 && 
+                !(if_tutorial && !if_main) // non core memory during tutorial
 
-        let score : string = if_display_percentage ? this.distanceFunc(image_score) : this.rankString(i);
+        let score : string = if_show_inquiry_needed ? "Inquiry Needed" :
+            if_display_percentage ? this.distanceFunc(image_score) : this.rankString(i);
+        
 
         if (i > 1 || image_score < LOW_BOUND){
             return (<div>
                 {i == 1 ? <p className='threshold-line'>————— Resonance Threshold —————</p> : null } 
-                <div className='score-display'>{score}</div> {if_main ? 
-                                <div onClick = {() => this.fillPromptBox(memName)}
-                                        className="meminfo-button meminfo-button-main">{memName}</div> 
-                                : <div onClick = {() => this.fillPromptBox(memName)}
-                                        className="meminfo-button meminfo-button-nonmain">{memName}</div>
-                            } 
-                
+                <div className='score-display'>{score}</div> 
+                {this.displayMeminfo(memName, if_main, if_retrieved)} 
             </div>)
         }
 
         return <div>
-            <div className='score-display'>{score}</div> {if_main ? 
-                                <div onClick = {() => this.fillPromptBox(memName)}
-                                        className="meminfo-button meminfo-button-main">{memName}</div> 
-                                : <div onClick = {() => this.fillPromptBox(memName)}
-                                        className="meminfo-button  meminfo-button-nonmain">{memName}</div>} 
-            
-
+            <div className='score-display'>{score}</div> 
+            {this.displayMeminfo(memName, if_main, if_retrieved)} 
             {i == 1 ? <p className='threshold-line'>————— Resonance Threshold —————</p> : null } 
         </div>;
+    }
+
+    displayMeminfo(memName : string, if_main : boolean, if_retrieved : boolean){
+        if (if_retrieved)
+            return <div onClick = {() => this.fillPromptBox(memName)} className="meminfo-button meminfo-button-retrieved">{memName}</div> 
+        if (if_main)
+            return <div onClick = {() => this.fillPromptBox(memName)} className="meminfo-button meminfo-button-main">{memName}</div> 
+
+        return <div onClick = {() => this.fillPromptBox(memName)} className="meminfo-button  meminfo-button-nonmain">{memName}</div>
     }
 
     distanceFunc(score : number) {
@@ -120,14 +124,28 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
         this.props.fillPromptBox(text);
     }
 
-    getDistanceString(i : number, imgName : string, score : number, is_unlockable : boolean) {
+    seaDoesNotKnow() {
+        var output = "The Machine returned a noise, the Sea does not know how to respond.";
+
+        if (this.props.inprompt[this.props.inprompt.length - 1] == "?") 
+            output += "The Sea technically does not answer questions. It surfaces memories that resonate with the prompt."
+            
+        return <p style={{'marginTop': 0}}>{output}</p>
+    }
+
+    interpretMemory(imgName : string, i : number) {
+        this.props.setDialogueVar(imgName, i);
+        this.props.setDialogueVar("core_unlocked", this.props.dialogueRunner.variablesState["core_unlocked"] + 1);
+    }
+
+    getDistanceString(i : number, imgName : string, score : number) {
 
         // Check if the image is yet to be unlocked
-        let if_main : boolean = this.props.imgData[imgName]["interpretations"].length > 0;
         let if_retrieved : boolean = this.props.dialogueRunner.variablesState[imgName] >= 0; 
         let visit_count = this.props.dialogueRunner.state.VisitCountAtPathString(this.props.imgData[imgName]["scene"]);
         let if_visited : boolean = false;
         let if_tutorial : boolean = this.props.dialogueRunner.state.VisitCountAtPathString("A2_Generation") == 0;
+        let if_main : boolean = this.props.imgData[imgName]["interpretations"].length > 0;
 
         if (visit_count == null || visit_count == undefined)
             console.log("WARNING: VISIT_COUNT IS NULL OR UNDEFINED");
@@ -167,28 +185,30 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
 
                 <div className="top-main-info">
                     <p className = "notif"> {memoryType} </p>
-                    {if_tutorial && !if_main ? 
+                    {/* {if_tutorial && !if_main ? 
                         (null)
                         : <p className = "notif"> {secondString} </p>
-                    }
+                    } */}
 
-                    {if_tutorial && !if_main ? 
-                        (null) : this.getPrompt()}
-                    
-                    {this.props.imgButton[imgName] || if_retrieved ||
-                    (if_tutorial && !if_main) || this.props.generateState == GENERATE_WAIT_TYPE['dialogue'] ?
-                        (null)
-
-                        : 
+                    <div className="prompt-box">
+                        {if_tutorial && !if_main ? 
+                            (null) : this.getPrompt()}
                         
-                        <div key={i} className="interact-button"
-                        onClick = {() => this.handleButton(if_main)}>
-                            { if_main ?
-                            "Bring back Mey, Inquire about Memory"
-                            : "Note this Memory for Conversation Later"
-                            }
-                        </div>   
-                    }
+                        {this.props.imgButton[imgName] || if_retrieved ||
+                        (if_tutorial && !if_main) || this.props.generateState == GENERATE_WAIT_TYPE['dialogue'] ?
+                            (null)
+
+                            : 
+                            
+                            <div key={i} className="interact-button"
+                            onClick = {() => this.handleButton(if_main)}>
+                                { if_main ?
+                                "Bring back Mey, Inquire about Memory"
+                                : "Note this Memory for Conversation Later"
+                                }
+                            </div>   
+                        }
+                    </div>
                 </div>
             </div>);
         }
@@ -199,45 +219,26 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
 
         // check if paths to unlocked the image has been traversed
         let imgName = this.props.imgName;
-        let is_unlockable = imgName == "noise" ? false : this.props.imgData[imgName]["interpretations"].length > 0;
         let matched = this.aboveHigh;
+        let if_top_main : boolean = this.props.imgData[imgName]["interpretations"].length > 0;
 
         return (
             <div className = "candidate">
 
                 <img src={this.props.imageurl} style={{'width': '100%'}}></img>
                 <p style={{'marginTop': 0, 'color': 'gray', 'fontStyle': 'italic'}}>"{this.props.inprompt}"</p>
-                
-                {/* { // | noise | not core or interpreted | core (not in distance) | core (keyword)
-                
-                this.props.imgName == "noise"                       ? <p style={{'marginTop': 0}}>The Machine returned a noise, the Sea does not know how to respond.</p>
-                : !is_unlockable || (is_unlockable &&
-                    this.props.dialogueVar.get(imgName) > -1)       ? <p style={{'marginTop': 0}}></p>
-                : this.props.similarities[0]["score"] < HIGH_BOUND  ? 
-                    <p style={{'marginTop': 0}}>{"The closest is Mey's core memory, but it is still too far. Refine the description and get closer than " + this.distanceFunc(HIGH_BOUND) + "."}</p>
-                : <div>
-                    <p style={{'marginTop': 0}}> {"The closest is Mey's core memory, but tainted by another imagery. " + 
-                        (
-                            this.props.matched_keywords.filter(wrd => wrd != "").length == 0 ? 
-                            "No keywords matched in the prompt."
-                            : "Matched keywords: " + this.getKeywordString(this.props.matched_keywords)
-                        )
-                        }</p>
-                </div>
-
-                } */}
 
                 { // | noise | distance | unlocked & interpreted | unlocked & not yet interpreted 
 
-                this.props.imgName == "noise"               ? <p style={{'marginTop': 0}}>The Machine returned a noise, the Sea does not know how to respond.</p>
-                : !is_unlockable || !matched                ?
+                this.props.imgName == "noise" ? this.seaDoesNotKnow()
+                : !matched ?
                         // Render the top five memories
                         <div className = "row">
                             <p   className = "column left" style={{'marginTop': 0}}> 
                                 <big>Memories sorted by Resonance:</big> 
 
 
-                                { this.props.dialogueRunner.variablesState["p_lily_q"] ? 
+                                { this.props.dialogueRunner.variablesState["current_stage"] > 1 ? 
                                  <><br></br><br></br><small><center>Reach {this.distanceFunc(HIGH_BOUND)} to Retrieve Memory</center></small></>
                                 : (null)}
                             </p>
@@ -247,7 +248,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                                     (img:any, i:number) => {
                                         return(
                                             <div style={{'marginTop': 0, 'marginBottom': 0}} key={i}>
-                                                {this.getDistanceString(i, img.name, img.score, is_unlockable)}
+                                                {this.getDistanceString(i, img.name, img.score)}
                                             </div>
                                         );
                                     }
@@ -256,14 +257,14 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                         </div>
                 : this.props.dialogueRunner.variablesState[imgName] > -1  ? 
                     <div>
-                    <p className = "notif">Memory Unlocked - "{this.props.imgData[imgName]["descp"]}"</p>
-                    <p style={{'marginTop': 0}}>{this.props.imgData[imgName]["interpretations"].length > 0 ? 
-                            this.props.imgData[imgName]["interpretations"][this.props.dialogueRunner.variablesState[imgName]][1]
-                        : (null)}</p>
+                        <p className = "copiable-prompt-reveal">"{this.props.imgData[imgName]["descp"]}"</p>
+                        <p className = "interpret-line">{if_top_main ? 
+                                this.props.imgData[imgName]["interpretations"][this.props.dialogueRunner.variablesState[imgName]][1]
+                            : this.props.imgData[imgName]["info"]}</p>
                     </div>
                 :   // The buttons for interpretations
                     <div>
-                    <p className = "notif">Core Memory Retrieved - "{this.props.imgData[imgName]["descp"]}"</p>
+                    <p className = "copiable-prompt-reveal">"{this.props.imgData[imgName]["descp"]}"</p>
                     <p style={{'marginTop': 0}}>Core memory retrieved. But what is this picture saying? </p>
                     {   
                         this.props.imgData[imgName]["interpretations"].map(
@@ -271,7 +272,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                                 return (
                                     <div key={i}><div key={i}
                                         className="interpret-button"
-                                        onClick = {() => this.props.setDialogueVar(imgName, i)}>
+                                        onClick = {() => this.interpretMemory(imgName, i)}>
                                         {op[0]}
                                     </div></div>
                                 );
