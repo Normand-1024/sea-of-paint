@@ -1,11 +1,12 @@
 // Global Variables
+VAR current_stage = 0 // 0: talking, 1: find core memory, 2: unlock lily, 3: unlock 3 core, 4: get interpretations
+VAR core_unlocked = 0
 VAR integrity = 100 
 VAR generate_count = 0
 VAR affirmation = 0
 VAR total_affirmation = 0
 VAR suspicion = 0
 VAR cruel = 0
-VAR core_unlocked = 0
 VAR memorabilia = 0
 
 // Image Unlocked, the variable names match the image names
@@ -55,8 +56,9 @@ VAR act_1_lie_lily = false
 
 * Hello, Mey.
 
-// ~ p_lily_q = true
 // ~ lily = 0
+// ~ current_stage = 3
+// ~ core_unlocked = 1
 // -> A2_Hub
 
 - What is this? Why is it so dark here?
@@ -208,6 +210,8 @@ Mey is back to the Sea now. Time to find a memory. # self
 
 The Machine will dive into the Sea, where memories flow and pass through each other. My text input will resonate with the memories. The closer my description is, the higher the resonance. # self
 
+~current_stage = 1
+
 The core memories would appear different from others. Those are more concrete than the abstract and impressionistic ones. I'll focus on the core memories in this query. I have no ways to know what the Sea will return. Maybe we can try some names first. # self # generate_lily1
 
 * You are back, Mey. How are you feeling?
@@ -329,6 +333,7 @@ I'm still a bit terrified. But I'll get used to it.
 * See you in a bit, Mey.
 
 ~ p_lily_q = true
+~current_stage = 2
 
 Mey is back to the Sea again. I should have gathered enough information to retrive the memory now. Just need to fill in the missing words to get a high enough resonance. # self #generate_lily2
 
@@ -382,13 +387,15 @@ So what now? Do we continue the search?
 
 * Yes, let's keep searching your memory. I just need around three to get a good idea for memorabilia.
 
+~current_stage = 3
+
 - To be honest, I almost look forward to it. To find the past again. I can't remember much at all.
 
 Well, ask away then.
 
-\=== That was the end of the Intro! Thank you for Playing! \===
+// \=== That was the end of the Intro! Thank you for Playing! \===
 
--> END
+// -> END
 
 -> A2_Hub
 
@@ -900,6 +907,8 @@ It's a part of the Sea, as it is always recording. I try not to imagine those th
     
     ...I guess so? I don't feel a particular way about it. It's just a part of the job.
     
+    -> A2_Lily_Q1
+    
 * \(Question\) How do the Sea Weavers filter those things out? 
 
     Same with any other jobs dealing with the Sea, including yours.
@@ -930,17 +939,6 @@ It's a part of the Sea, as it is always recording. I try not to imagine those th
 
 ~ temp A2_Lily_Q2_ask = false
 
-* \(Question\) Shouldn't she have received psychological help?
-
-    They do...but they are formalities, solutions for solution's sake.
-
-    Breathing techniques, mindfulness...offered only when asked.
-
-    But stresses and depression are no different from anything you thought you could deal with, until suddenly you couldn't any more...
-    
-    -> A2_Lily_Q2
-    
-
 * \(Question\) What made her so distressed?
 
     ~A2_Lily_Q2_ask = true
@@ -948,6 +946,16 @@ It's a part of the Sea, as it is always recording. I try not to imagine those th
     It was a nice digital postcard, wishing her a good fortunate and a beautiful day. That was what broke her.
 
     Because it appeared after hours and hours of depravity. All the mechanisms she built up to tolerate those things came crushing down on her.
+    
+    -> A2_Lily_Q2
+
+* \(Question\) Does she receive psychological help?
+
+    They do...but they are formalities, solutions for solution's sake.
+
+    Breathing techniques, mindfulness...offered only when asked.
+
+    But stresses and depression are no different from anything you thought you could deal with, until suddenly you couldn't any more...
     
     -> A2_Lily_Q2
     
@@ -1253,9 +1261,9 @@ It was cruel. Lily heard it, and started yelling at him.
 
 * (asked_why) \(Question\) Why did he say that to you?
 
-    He has been wanting to push middle-aged folks like us out for a while. But I'm a good worker, so it shut him up for a while. But I  would give him leverage to pressure me...
+    He has been wanting to push middle-aged folks like us out for a while. But I'm a good worker, so it shut him up for a while. But I would give him leverage to pressure me...
     
-    I would say No to certain contracts. Like camera footage where I have to label whether someone broke work rules.
+    I would say no to certain contracts. Like camera footage where I have to label whether someone broke work rules.
     
     That day, I got a contract to identify Centuria accent from taped voices, because I'm Centurian.
     
@@ -1285,7 +1293,7 @@ It was cruel. Lily heard it, and started yelling at him.
         
         That's what he said to pressure me...
     
-        You are not wrong. But what's the line there? Should I say yes to everything? I can't imagine being so submissive like that.
+        You are not wrong. But am I really supposed to accept everything? I can't imagine being so submissive like that.
         
        -> A2_Stefan_Q1
         
@@ -1311,13 +1319,9 @@ It was cruel. Lily heard it, and started yelling at him.
     
    -> A2_Stefan_Q1
 
-*\(Continue\) Stefan sounds down right abusive. I'm glad Lily stepped in.
+*\(Continue\) Why did you and Lily got into a disagreement afterwards?
 
-    I'm really happy she did too. But I was also a little bit uncomfortable when Lily tried abuse him back...
-
-*\(Continue\) But why did you and Lily got into a disagreement afterwards?
-
-    I'm fortunate to have Lily to stand up for me. But some of the words she used...
+    I'm fortunate to have Lily to stand up for me, saying I had the right to refuse, and Stefan was being an assohole. But some of the words she used...
 
 - "Bootlicker", "brownnose", "rim gobbler"...I don't know, they are supposed to be funny I guess.
 
@@ -1801,6 +1805,12 @@ I don't want you to have the wrong impressions. You barely know me. Something ou
 - Blended image effect is affected by the ratio of resonance between the images that surface: typically the top two images. If resonance of the first image is significantly higher than the second, the image will lean more towards the top one. # self
 
 I can also bring back Mey whenever I want now # self
+
+~current_stage = 4
+
+\=== You have reached the end of the content! \====
+
+-> END
 
 -> A2_Hub
 
