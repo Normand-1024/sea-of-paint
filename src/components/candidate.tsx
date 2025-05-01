@@ -190,9 +190,9 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                         : <p className = "notif"> {secondString} </p>
                     } */}
 
+                    {if_tutorial && !if_main ? (null) : 
                     <div className="prompt-box">
-                        {if_tutorial && !if_main ? 
-                            (null) : this.getPrompt()}
+                        {this.getPrompt()}
                         
                         {this.props.imgButton[imgName] || if_retrieved ||
                         (if_tutorial && !if_main) || this.props.generateState == GENERATE_WAIT_TYPE['dialogue'] ?
@@ -208,7 +208,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                                 }
                             </div>   
                         }
-                    </div>
+                    </div>}
                 </div>
             </div>);
         }
@@ -220,7 +220,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
         // check if paths to unlocked the image has been traversed
         let imgName = this.props.imgName;
         let matched = this.aboveHigh;
-        let if_top_main : boolean = this.props.imgData[imgName]["interpretations"].length > 0;
+        let if_top_main : boolean = imgName != "noise" && this.props.imgData[imgName]["interpretations"].length > 0;
 
         return (
             <div className = "candidate">
@@ -230,7 +230,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
 
                 { // | noise | distance | unlocked & interpreted | unlocked & not yet interpreted 
 
-                this.props.imgName == "noise" ? this.seaDoesNotKnow()
+                imgName == "noise" ? this.seaDoesNotKnow()
                 : !matched ?
                         // Render the top five memories
                         <div className = "row">

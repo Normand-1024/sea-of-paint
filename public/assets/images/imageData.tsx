@@ -2,8 +2,8 @@ export const IMAGE_DATA : Array<any> = [
     {   
         "name": "lily",
         "memory_name": "Lily smoking while walking...",
-        "descp": "Lily smoking while walking away from Mey after argument about Stefan, feelings of doubt and envy",
-        "descp2": ["Lily smoking while walking away from", "after argument about", ", feelings of", "and", ""],
+        "descp": "Lily smoking while walking away from Mey after argument about Stefan, Mey feels doubt and envy toward Lily",
+        "descp2": ["Lily smoking while walking away from", "after argument about", ", Mey feels", "and", "toward Lily"],
         "keywords": [["Mey", " me ", "[me]"], ["Stefan", "manager", "boss"], ["doubt"], ["envy"]],
         "interpretations": [["This image shows Lily's self-reliance and determination.",
                                 "Lily's pace looks determined. There's a sense of speed in the movement. They show Lily's readiness to face anything."
@@ -20,8 +20,8 @@ export const IMAGE_DATA : Array<any> = [
     {   
         "name": "lily2",
         "memory_name": "Mey comforting Lily after...",
-        "descp": "Mey comforting Lily after Lily saw a digital postcard at work, feelings of sympathy and doubt",
-        "descp2": ["Mey comforting Lily after Lily saw a","","at",", feelings of", "and", ""],
+        "descp": "Mey comforting Lily after Lily saw a digital postcard at work, Mey feels sympathy and doubt toward Lily",
+        "descp2": ["Mey comforting Lily after Lily saw a","","at",", Mey feels", "and", "toward Lily"],
         "keywords": [["digital", "nice", "wholesome"], ["postcard"], ["work"], ["sympathy"], ["doubt"]],
         "interpretations": [
                             ["This is a moving image. Mey is attending to Lily's distress.",
@@ -36,8 +36,8 @@ export const IMAGE_DATA : Array<any> = [
     {   
         "name": "lily_spark",
         "memory_name": "Lily standing and looking...",
-        "descp": "Lily standing and looking afar, her sparks bursting out of her, feelings of envy and hope",
-        "descp2": ["Lily standing and looking afar, her","bursting out of her, feelings of", "and", ""],
+        "descp": "Lily standing and looking afar, her sparks bursting out of her, Mey feels envy and hope toward Lily",
+        "descp2": ["Lily standing and looking afar, her","bursting out of her, Mey feels", "and", "toward Lily"],
         "keywords": [["spark"], ["envy"], ["hope"]],
         "info": "Lily is covered in her \"spark\". This seems to have a significance for Mey.",
         "interpretations": [],
@@ -47,9 +47,9 @@ export const IMAGE_DATA : Array<any> = [
     {   
         "name": "stefan",
         "memory_name": "Stefan told Mey to...",
-        "descp": "Stefan told Mey to work in textile because she refused contract, feeling of sympathy and spite",
-        "descp2": ["Stefan told Mey to work in ", " because she ", " ", ", feeling of ", " and ", ""],
-        "keywords": [["textile"], ["refused", "rejected"], ["contract", "work"], ["sympathy"], ["spite"]],
+        "descp": "Stefan told Mey to work in textile because she rejected contract, Mey feels sympathy and spite toward Stefan",
+        "descp2": ["Stefan told Mey to work in", "because she", "", ", Mey feels", "and", "toward Stefan"],
+        "keywords": [["textile"], ["rejected", "refused", "said no"], ["contract"], ["sympathy"], ["spite", "angry"]],
         "interpretations": [
                             ["This is a scene of cruelty. Mey looks hurt after Stefan pressured her with harsh words.",
                                 "some text is supposed to be here"
@@ -63,8 +63,8 @@ export const IMAGE_DATA : Array<any> = [
     {   
         "name": "stefan2",
         "memory_name": "Stefan stands still looking...",
-        "descp": "Stefan stands still looking away in nervous resentment, just like Fay, feeling of sympathy and pity",
-        "descp2": ["Stefan stands still looking away in nervous resentment, just like", ", feeling of ", " and ", ""],
+        "descp": "Stefan stands still looking away in nervous resentment, just like Fay, Mey feels of sympathy and pity toward Stefan",
+        "descp2": ["Stefan stands still looking away in nervous resentment, just like", ", Mey feels", "and", "toward Stefan"],
         "keywords": [["Fay"], ["sympathy"], ["pity"]],
         "info": "Something is supposed to be here.",
         "interpretations": [],
@@ -74,8 +74,8 @@ export const IMAGE_DATA : Array<any> = [
     {   
         "name": "ivan",
         "memory_name": "Ivan and Mey together...",
-        "descp": "Ivan and Mey together before Mey suggested divorce due to estrangement, feeling of detached and spite",
-        "descp2": ["Ivan and Mey together before Mey suggested", "due to", ", feeling of", "and", ""],
+        "descp": "Ivan and Mey together before Mey suggested divorce due to estrangement, Mey feels detached and spite toward Ivan",
+        "descp2": ["Ivan and Mey together before Mey suggested", "due to", ", Mey feels", "and", "toward Ivan"],
         "keywords": [["divorce"], ["estrangement"], ["detached"], ["spite"]],
         "interpretations": [
                     ["Mey is falling into deep thoughts. Perhaps reflecting on her life choices.",
@@ -93,8 +93,8 @@ export const IMAGE_DATA : Array<any> = [
     {   
         "name": "ivan2",
         "memory_name": "Ivan becomes entangled in...",
-        "descp": "Ivan becomes entangled in the forces in plants and paint, feelings of alienation and detachment",
-        "descp2": ["Ivan becomes entangled in the", "in plants and paint, feelings of", "and", ""],
+        "descp": "Ivan becomes entangled in the forces in plants and paint, Mey feels alienation and detachment toward Ivan",
+        "descp2": ["Ivan becomes entangled in the", "in plants and paint, Mey feels", "and", "toward Ivan"],
         "keywords": [["force", "vitality"], ["alienation"], ["detachment"]],
         "info": "Something is supposed to be here",
         "interpretations": [],

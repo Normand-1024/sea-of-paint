@@ -116,6 +116,10 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 				if (visit_count == null || visit_count == undefined)
 					console.log("WARNING: VISIT_COUNT IS NULL OR UNDEFINED");
+				else if (similarities[0].score == UNLOCK_SCORE){
+					for (let i=0; i<wordStat.length; i++) 
+						wordStat[i] = true;
+				}
 				else if (visit_count > 0){
 					for (let i=0; i<wordStat.length; i++) {
 						if (wordStat[i]) continue;
