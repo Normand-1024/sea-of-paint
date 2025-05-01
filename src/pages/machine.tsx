@@ -28,6 +28,7 @@ type MachineState = {
     generateState: number;
     hoveredIndex: number | null;
     clickedIndices: number[];
+    partialSpiritLine: string | null;
 }
 
 class MachinePage extends React.Component<MachineProps, MachineState> {
@@ -40,16 +41,27 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         generateState: GENERATE_WAIT_TYPE['dialogue'],
         hoveredIndex: null,
         clickedIndices: [],
+        partialSpiritLine: null,
     };
 
     private dialogueEndRef = createRef<HTMLDivElement>();
     private textPromptRef = createRef<HTMLInputElement>();
+
+    private audioA1 = new Audio("./assets/audio/A1.mp3")    
+    private audioA2 = new Audio("./assets/audio/B1.mp3")
+
+    private clickSound = new Audio("./assets/audio/click.ogg");
+    private dialogueSound = new Audio("./assets/audio/dialogue.ogg");
+    private isAnimating = false;
+    private currentAnimatingText = "";
 
     componentDidMount() {
 
         // *********** Load the text into markov chain ***********
 
         this.state.markovScrambler.initialize("./assets/markovtext.txt");
+
+        window.addEventListener("keydown", this.handleKeyDown);
 
         // *********** Load the yarn ink into dialogueRunner ***********
         // fetch("./texts/dialogue.yarn")
@@ -71,13 +83,81 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             }))
         })
         .catch((e) => console.error(e));
-    }
 
+        this.audioA1.preload = "auto";
+        this.audioA2.preload = "auto";
+        this.playAudio();
+    }
+    
     componentDidUpdate(prevProps: MachineProps, prevState: MachineState): void {
-        if (prevState.dialogueList.length != this.state.dialogueList.length) {
-            this.dialogueEndRef.current?.scrollIntoView(false);
+        this.dialogueEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+
+        if (prevState.generateState !== this.state.generateState) {
+            this.playAudio();
         }
     }
+
+    componentWillUnmount() {
+        window.removeEventListener("keydown", this.handleKeyDown);
+    }
+
+    handleKeyDown = (e: KeyboardEvent) => {
+        if (e.code === "Space") {
+            e.preventDefault(); 
+            this.handleSkipAnimation();
+        }
+    };    
+
+    // KK: function to switch the current audio based on machine state (dialogue or image generation)
+    playAudio() {
+        if (!this.state.machineActive) return;
+    
+        const FADE_DURATION = 1000; // KK: these are in miliseconds
+        const STEP_TIME = 100;      
+        const STEPS = FADE_DURATION / STEP_TIME;
+    
+        const isDialogue = this.state.generateState === GENERATE_WAIT_TYPE['dialogue'];
+    
+        const fadeOut = (audio: HTMLAudioElement, callback: () => void) => {
+            const step = audio.volume / STEPS;
+            const fadeInterval = setInterval(() => {
+                audio.volume = Math.max(0, audio.volume - step);
+                if (audio.volume <= 0.01) {
+                    clearInterval(fadeInterval);
+                    audio.pause();
+                    callback();
+                }
+            }, STEP_TIME);
+        };
+    
+        const fadeIn = (audio: HTMLAudioElement) => {
+            audio.volume = 0;
+            audio.loop = true;
+            audio.play().catch(err => console.error("Audio failed to play:", err));
+    
+            const step = 1 / STEPS;
+            const fadeInterval = setInterval(() => {
+                audio.volume = Math.min(1, audio.volume + step);
+                if (audio.volume >= 0.99) {
+                    clearInterval(fadeInterval);
+                }
+            }, STEP_TIME);
+        };
+    
+        if (isDialogue) {
+            fadeOut(this.audioA2, () => {
+                this.audioA1.currentTime = 0;
+                fadeIn(this.audioA1);
+                console.log("Fading to A1 (dialogue)");
+            });
+        } else {
+            fadeOut(this.audioA1, () => {
+                this.audioA2.currentTime = 5;
+                fadeIn(this.audioA2);
+                console.log("Fading to A2 (generation)");
+            });
+        }
+    }  
 
     setDialogueVar = (v : string, value : any) => {
         if(!this.state.dialogueRunner) {
@@ -128,23 +208,89 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             }
         }
 
-        if(!line) line = "";
-        let new_entry : [number, string] = [dialogueType, line];
+        if (!line) line = "";
+        const newEntry: [number, string] = [dialogueType, line];
 
-        this.setState((state) => ({
-            dialogueList: [...state.dialogueList, new_entry]
-        }));
+        if (dialogueType === DIALOGUE_TYPE['spirit']) {
+            this.setState(
+                state => ({
+                    dialogueList: [...state.dialogueList, [DIALOGUE_TYPE['spirit'], ""]],
+                    partialSpiritLine: ""
+                }),
+                () => this.animateSpiritText(line!)
+            );            
+        } else {
+            this.setState(state => ({
+                dialogueList: [...state.dialogueList, newEntry]
+            }));
+        }
     }
 
+    // KK: shows the spirit dialogue letter by letter for a more engaging approach to dialogue
+    animateSpiritText = async (fullText: string) => {
+        const blipEvery = 3;    //KK: adjust to be faster/slower as needed
+        let current = "";
+    
+        this.isAnimating = true;
+        this.currentAnimatingText = fullText;
+    
+        for (let i = 0; i < fullText.length; i++) {
+            if (!this.isAnimating) {
+                break;
+            }
+    
+            const char = fullText[i];
+            current += char;
+            this.setState({ partialSpiritLine: current });
+    
+            if (i % blipEvery === 0 && /[a-zA-Z0-9]/.test(char)) {
+                this.dialogueSound.currentTime = 0;
+                this.dialogueSound.play().catch(() => {});
+            }
+    
+            // KK: pause at end of sentence
+            if (char === "." || char === "?" || char === "!") {
+                await new Promise(res => setTimeout(res, 250));
+            } else {
+                await new Promise(res => setTimeout(res, 45));
+            }
+        }
+    
+        this.setState(state => {
+            const updated = [...state.dialogueList];
+            updated[updated.length - 1] = [DIALOGUE_TYPE['spirit'], fullText];
+            return { dialogueList: updated, partialSpiritLine: null };
+        });
+    
+        this.isAnimating = false;
+        this.currentAnimatingText = "";
+    };
+
+    // KK: skips dialogue animation with button press
+    handleSkipAnimation = () => {
+        if (this.isAnimating && this.currentAnimatingText) {
+            this.isAnimating = false;
+    
+            this.setState(state => {
+                const updated = [...state.dialogueList];
+                updated[updated.length - 1] = [DIALOGUE_TYPE['spirit'], this.currentAnimatingText];
+                return { dialogueList: updated, partialSpiritLine: null };
+            });
+        }
+    };
+    
     activateMachine = () => {
         if(!this.state.dialogueRunner) {
             console.log("dialogueRunner is undefined")
             return
         }
 
-        this.setState(() => ({
-            machineActive: true
-        }));
+        this.setState(
+            { machineActive: true },
+            () => {
+                this.playAudio();
+            }
+        );
 
         //this.updatePromptList(); // generate a random image
         
@@ -174,6 +320,10 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     }
 
     handleDialogue = (option : number = -1) => {
+        this.clickSound.currentTime = 0;
+        this.clickSound.play().catch(() => {});
+        console.log("played click audio")
+
         if(!this.state.dialogueRunner) {
             console.log("dialogueRunner is undefined");
             return
@@ -308,13 +458,16 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                                     return (<p key={index} className='self-thinking-line'>{item[1]}</p>);
                                 else if (item[0] == DIALOGUE_TYPE['machine']) 
                                     return (<p key={index} className='machine-line'>{item[1]}</p>);
-                                else{ 
+                                else {
                                     let css = 'spirit-line';
                                     if (this.state.clickedIndices.includes(index)) {
-                                        css = 'spirit-line';//'spirit-line-highlighted';
+                                        css = 'spirit-line';
                                     } else if (this.state.hoveredIndex === index) {
-                                        css = 'spirit-line';//'spirit-line-hover';
+                                        css = 'spirit-line';
                                     }
+
+                                    const isLast = index === this.state.dialogueList.length - 1;
+                                    const shouldAnimate = item[0] === DIALOGUE_TYPE['spirit'] && this.state.partialSpiritLine !== null;
 
                                     return (
                                         <p
@@ -324,7 +477,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                                             onMouseLeave={this.handleMouseLeave}
                                             onClick={() => this.handleClick(index)}
                                         >
-                                            {item[1]}
+                                            {shouldAnimate && isLast ? this.state.partialSpiritLine : item[1]}
                                         </p>
                                     );
                                 }
@@ -332,105 +485,81 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                         </div>
 
                         <div id="button-container">
-                            {
-                            !this.state.machineActive ?
-
+                        {
+                            !this.state.machineActive ? (
                             <div className="button-div">
-                            <button type="button" className="dialogue-button" 
-                                onClick = {this.activateMachine}>
-                                Activate Machine, bring back Mey</button></div> 
-                                
-                            :
-                                
-                            (   
-                                !this.state.dialogueRunner.canContinue &&
-                                this.state.generateState ==  GENERATE_WAIT_TYPE['dialogue'] ?
-
-                                this.state.dialogueRunner.currentChoices.map(
-                                    (op:any,i:number) => {                      
-                                        return (
-                                            
-                                            !op.isInvisibleDefault ? 
-
-                                            <div className="button-div" key={i}><button key={i} 
-                                                type="button" className="dialogue-button"
-                                                onClick = {() => this.handleDialogue(i)}>
-                                                    {op.text}
-                                            </button></div> : <div></div>
-                                        );
-                                }) 
-                                
-                                :
-                                
-                                this.state.generateState ==  GENERATE_WAIT_TYPE['wait_for_first']?  
-                                
+                                <button type="button" className="dialogue-button" onClick={this.activateMachine}>
+                                Activate Machine, bring back Mey
+                                </button>
+                            </div>
+                            ) : (
+                            !this.state.dialogueRunner.canContinue &&
+                            this.state.generateState === GENERATE_WAIT_TYPE['dialogue'] ? (
+                                this.isAnimating ? null : (
+                                <>
+                                    {this.state.dialogueRunner.currentChoices.map((op: any, i: number) => {
+                                    if (op.isInvisibleDefault) return <div key={i}></div>;
+                                    return (
+                                        <div className="button-div" key={i}>
+                                        <button
+                                            type="button"
+                                            className="dialogue-button"
+                                            onClick={() => this.handleDialogue(i)}
+                                        >
+                                            {op.text}
+                                        </button>
+                                        </div>
+                                    );
+                                    })}
+                                </>
+                                )
+                            ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_first'] ? (
                                 <div className="button-div">
-                                    <button type="button" className="continue-button" disabled>
-                                        Generate one Image to Continue
-                                    </button>
-                                </div> 
-                                        
-                                :
-
-                                this.state.generateState ==  GENERATE_WAIT_TYPE['only_continue_from_generate']?  
-                                
+                                <button type="button" className="continue-button" disabled>
+                                    Generate one Image to Continue
+                                </button>
+                                </div>
+                            ) : this.state.generateState === GENERATE_WAIT_TYPE['only_continue_from_generate'] ? (
                                 <div className="button-div">
-                                    <button type="button" className="continue-button" disabled>
-                                        Wake up Mey from Core Memories
-                                    </button>
-                                </div> 
-                                        
-                                :
-
-                                this.state.generateState ==  GENERATE_WAIT_TYPE['wait_for_lily2']?
-                                        
+                                <button type="button" className="continue-button" disabled>
+                                    Wake up Mey from Core Memories
+                                </button>
+                                </div>
+                            ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_lily2'] ? (
                                 <div className="button-div">
-                                    <button type="button" className="continue-button" disabled>
-                                        Unlock Memory of Lily to Continue
-                                    </button>
-                                </div>   
-
-                                :
-
-                                this.state.generateState ==  GENERATE_WAIT_TYPE['wait_for_lily1']?
-                                
+                                <button type="button" className="continue-button" disabled>
+                                    Unlock Memory of Lily to Continue
+                                </button>
+                                </div>
+                            ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_lily1'] ? (
                                 <div className="button-div">
-                                    <button type="button" className="continue-button" disabled>
-                                        Wake up Mey from a Core Memory
-                                    </button>
-                                </div>   
-
-                                :
-
-                                this.state.generateState ==  GENERATE_WAIT_TYPE['generated']?
-                                    
+                                <button type="button" className="continue-button" disabled>
+                                    Wake up Mey from a Core Memory
+                                </button>
+                                </div>
+                            ) : this.state.generateState === GENERATE_WAIT_TYPE['generated'] ? (
                                 <div className="button-div">
-                                    <button type="button" className="continue-button" 
-                                        onClick = {() => this.setToDialogue()}>
-                                        Bring back Mey
+                                <button type="button" className="continue-button" onClick={() => this.setToDialogue()}>
+                                    Bring back Mey
+                                </button>
+                                </div>
+                            ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_interpretations'] ? (
+                                <div className="button-div">
+                                <button type="button" className="continue-button" disabled>
+                                    Finish Interpretations to Continue
+                                </button>
+                                </div>
+                            ) : (
+                                !this.isAnimating && (
+                                <div className="button-div">
+                                    <button type="button" className="continue-button" onClick={() => this.handleDialogue()}>
+                                    Continue
                                     </button>
                                 </div>
-
-                                :
-
-                                this.state.generateState ==  GENERATE_WAIT_TYPE['wait_for_interpretations']?
-
-                                <div className="button-div">
-                                    <button type="button" className="continue-button" disabled>
-                                        Finish Interpretations to Continue
-                                    </button>
-                                </div> 
-
-                                :
-                                    
-                                <div className="button-div">
-                                    <button type="button" className="continue-button" 
-                                        onClick = {() => this.handleDialogue()}>
-                                        Continue
-                                    </button>
-                                </div>
+                                )
                             )
-                            }
+                            )
+                        }
                         </div>
 
                         <div ref={this.dialogueEndRef}></div>
