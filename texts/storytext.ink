@@ -1,5 +1,5 @@
 // Global Variables
-VAR current_stage = 0 // 0: talking, 1: find core memory, 2: unlock lily, 3: unlock 3 core, 4: get interpretations
+VAR current_stage = 0 // 0: talking, 1: find core memory, 2: unlock lily, 3: unlock three core, 4: get interpretations
 VAR core_unlocked = 0
 VAR integrity = 100 
 VAR generate_count = 0
@@ -56,10 +56,10 @@ VAR act_1_lie_lily = false
 
 * Hello, Mey.
 
-// ~ lily = 0
-// ~ current_stage = 3
-// ~ core_unlocked = 1
-// -> A2_Hub
+~ lily = 0
+~ current_stage = 3
+~ core_unlocked = 1
+-> A2_Hub
 
 - What is this? Why is it so dark here?
 
@@ -212,7 +212,7 @@ The Machine will dive into the Sea, where memories flow and pass through each ot
 
 ~current_stage = 1
 
-The core memories would appear different from others. Those are more concrete than the abstract and impressionistic ones. I'll focus on the core memories in this query. I have no ways to know what the Sea will return. Maybe we can try some names first. # self # generate_lily1
+The core memories would appear blue. Those are more concrete than the abstract and impressionistic non-core memories. I'll focus on the core memories in this query. I have no ways to know what the Sea will return. Maybe we can try some names first. # self # generate_lily1
 
 * You are back, Mey. How are you feeling?
 
@@ -304,6 +304,8 @@ Wait...just a second before you do that.
 
 - We switch between who drives each other home. Lily was supposed to give me a ride back that day...oh no...
 
+* But the memory shows 
+
 Have you heard anything about the accident? Whether anyone survived?
 
 * \(Lie\) I did hear about a survivor. It must be Lily.
@@ -353,7 +355,7 @@ Mey is back to the Sea again. I should have gathered enough information to retri
 
 - Yes, I went through a basic training for my work. It didn't make things much clearer.
 
-Everyone says the Sea is very obscure. Nobody knows how it works exactly. "But it works. That's what matters."
+Both the Machine and the Sea are very obscure. Nobody knows how it works exactly. The Machine itself shifted its purposes over time...originally it was only used to model languages, but now it can surface the "spirits" from the Sea somehow..."But it works. That's what matters."
 
 Now that I'm part of it...I wish I knew what I am now.
 
@@ -419,7 +421,9 @@ Well, ask away then.
 
 { core_unlocked == 3 && not A2_Next_Step:
 
-    I unlocked something
+    I have found enough core memories. It's time to move on to the next step. # self
+    
+    I should inform Mey first before going any further. # self
 
 }
 
@@ -428,11 +432,11 @@ Well, ask away then.
 //========================
 
 { 
-- core_unlocked == 3 && not A2_Next_Step:
+    - core_unlocked == 3 && not A2_Next_Step:
 
-    * [\(Move to the Next Step\)] -> A2_Next_Step
+    * [\(Move on to the Next Step\)] -> A2_Next_Step
 
-- else:
+    - else:
 
     + [\(Submerge Mey, Start Generation\)] -> A2_Generation
 }
@@ -450,7 +454,7 @@ Well, ask away then.
 
     -> A2_Ivan_O
     
-* {generate_count >= 3 && informed_mum} Do you want to talk about your mother, Mey?
+* {generate_count >= 3} Do you want to talk about your mother, Mey?
 
     -> A2_Emma
     
@@ -534,7 +538,7 @@ Okay, I think I'm ready. Whatever happens happens I guess.
 
 * You always will. The Machine makes sure that you will recover.
 
-    ** The Machine has some level of control over the kind of spirits emerge from the Sea. Those without them would only respond according to the input without thinking, like the reflection of waves from the drop of a pebble.
+    ** The Machine has some level of control over the kind of spirits emerged from the Sea. Some soulless ones only respond according to human input without thinking, like the reflection of waves from the drop of a pebble.
     
 - Yes, I worked on datasets for those..."things" - machine assistants, bots. I can't believe I exist in the same machinery as those things now.
 
@@ -610,12 +614,20 @@ Okay. I think I'm okay now. What's the matter?
 
 - I think I'm getting the hang of it now...I feel fine.
 
-{informed_mum: 
+{
+
+    -informed_mum: 
 
     Thank you for telling me about my mother, by the way. Thinking about her made me feel more reassured somehow. Made it easier to recover who I am.
     
-    Maybe I could talk to her about her mother as well? # self
+    -else:
+    
+    Something that's been helping me is to think about my mother...it made me feel more reassured somehow.
+    
+
 }
+
+Maybe I could talk to her about her mother as well? # self
 
 What should we discuss now?
 
@@ -671,7 +683,7 @@ Hey...can I talk to you about something?
     
     ** Why? Is there something on your mind?
     
-- Sometimes I feel like...you aree just trying to be cheerful for the sake of it. I don't know how to respond to those.
+- Sometimes I feel like...you are just trying to be cheerful for the sake of it. I don't know how to respond to those.
 
 Because you need my memory right? And you need me to keep talking about my memories.
     
@@ -1321,7 +1333,7 @@ It was cruel. Lily heard it, and started yelling at him.
 
 *\(Continue\) Why did you and Lily got into a disagreement afterwards?
 
-    I'm fortunate to have Lily to stand up for me, saying I had the right to refuse, and Stefan was being an assohole. But some of the words she used...
+    I'm fortunate to have Lily to stand up for me, saying I had the right to not accept the contract, and Stefan was being an assohole. But some of the words she used...
 
 - "Bootlicker", "brownnose", "rim gobbler"...I don't know, they are supposed to be funny I guess.
 
@@ -1485,7 +1497,7 @@ asd
 
 * Yes, someone is sharing the meal with you. I believe it's Ivan.
 
-- I remember now...and all the time after that moment, when I continuously revisited it. I proposed to divorce at that dinner.
+- I remember now...and all the time after that moment, when I continuously revisited it. I said we should get a divorce at that dinner.
 
 The thought had been in my mind for months. Even so, it felt impulsive. And I don't know if I will be able to do it again.
 
@@ -1541,7 +1553,7 @@ I wanted to be an artist too...to write. But I gave it up for our relationship. 
 
 * \(Question\) Did you pursue writing seriously?
 
-    I was a literature major, mind you. That's why we got together…two young people with dreams to create...
+    I was a literature major, mind you. That's why we got together...two young people with dreams to create...
 
     I worked with a news outlet after graduation, working on both journalistic and entertainment articles..the short version is that I left and found the data worker job.
 
@@ -1778,11 +1790,21 @@ Maybe it'll take months, years and decades to find the proper words for it. But 
 
 == A2_Next_Step ==
 
-...but why do you need to do that?
+* Hey Mey, I have retrieved enough core memory to start making the memorabilia now.
+
+** A memorabilium needs two retrieved memories from our conversations - basically two retrieved images blended together, that capture who you are as a person.
+    
+- Huh? So you build memorabilia through the Machine as well?
+
+* That's correct.
+
+- ...but why do you need to do that?
 
 * The Sea records memories. But memories are just that: memories. You are more than those bits and pieces of your past.
 
 ** In order to know how the Sea keeps you together, I need to understand how these memories matter to you. So I have a better idea who you are as a person. This is important for producing the memoribilia.
+
+*** Our conversation so far has been essential for this process.
 
 - ...but why don't you just ask me? Why are you the one telling me who I am?
 
@@ -1802,9 +1824,9 @@ I don't want you to have the wrong impressions. You barely know me. Something ou
 
 * I will try, Mey. Thank you for your understanding.
 
-- Blended image effect is affected by the ratio of resonance between the images that surface: typically the top two images. If resonance of the first image is significantly higher than the second, the image will lean more towards the top one. # self
+- A memorabilium should consist of two retrieved memories blended together. A blended image is affected by the ratio of resonance between the images that surface: typically the top two images. If resonance of the first image is significantly higher than the second, the image will lean more towards the top one. # self
 
-I can also bring back Mey whenever I want now # self
+I only need one, but not more than three memorabilia for this contract. My understanding of what these memorabilia mean will also be important for this process. I can also bring back Mey whenever I want now to initiate conversations. # self
 
 ~current_stage = 4
 
