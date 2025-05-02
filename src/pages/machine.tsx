@@ -47,8 +47,10 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     private dialogueEndRef = createRef<HTMLDivElement>();
     private textPromptRef = createRef<HTMLInputElement>();
 
-    private audioA1 = new Audio("./assets/audio/A1.mp3")    
+    private audioA1 = new Audio("./assets/audio/A1.mp3")  
+    private audioA1prevTimestamp = 0;
     private audioA2 = new Audio("./assets/audio/B1.mp3")
+    private audioA2prevTimestamp = 0;
 
     private clickSound = new Audio("./assets/audio/click.ogg");
     private dialogueSound = new Audio("./assets/audio/dialogue.ogg");
@@ -144,15 +146,19 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             }, STEP_TIME);
         };
     
-        if (isDialogue) {
+        if (!isDialogue) {
             fadeOut(this.audioA2, () => {
-                this.audioA1.currentTime = 0;
+                this.audioA1.currentTime = this.audioA1prevTimestamp;
+                this.audioA2prevTimestamp = this.audioA2.currentTime;
+                console.log("starting A1 audio at: ", this.audioA1.currentTime);
                 fadeIn(this.audioA1);
                 console.log("Fading to A1 (dialogue)");
             });
         } else {
             fadeOut(this.audioA1, () => {
-                this.audioA2.currentTime = 5;
+                this.audioA2.currentTime = this.audioA2prevTimestamp;
+                this.audioA1prevTimestamp = this.audioA1.currentTime;
+                console.log("starting A2 audio at: ", this.audioA2.currentTime);
                 fadeIn(this.audioA2);
                 console.log("Fading to A2 (generation)");
             });
