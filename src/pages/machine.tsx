@@ -47,9 +47,9 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     private dialogueEndRef = createRef<HTMLDivElement>();
     private textPromptRef = createRef<HTMLInputElement>();
 
-    private audioA1 = new Audio("./assets/audio/A1.mp3")  
+    private audioA1 = new Audio("./assets/audio/B1.mp3")  
     private audioA1prevTimestamp = 0;
-    private audioA2 = new Audio("./assets/audio/B1.mp3")
+    private audioA2 = new Audio("./assets/audio/A1.mp3")
     private audioA2prevTimestamp = 0;
 
     private clickSound = new Audio("./assets/audio/click.ogg");
@@ -92,7 +92,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     }
     
     componentDidUpdate(prevProps: MachineProps, prevState: MachineState): void {
-        this.dialogueEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        this.dialogueEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end'});
 
         if (prevState.generateState !== this.state.generateState) {
             this.playAudio();
@@ -234,11 +234,29 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
 
     // KK: shows the spirit dialogue letter by letter for a more engaging approach to dialogue
     animateSpiritText = async (fullText: string) => {
-        const blipEvery = 3;    //KK: adjust to be faster/slower as needed
+        let blipEvery = 6;    //KK: adjust to be faster/slower as needed
+        let waitTime = 10;
         let current = "";
     
         this.isAnimating = true;
         this.currentAnimatingText = fullText;
+
+        // Adjust animation speed
+        if (this.state.dialogueRunner != undefined &&
+            this.state.dialogueRunner.currentTags != undefined){
+
+            if (this.state.dialogueRunner.currentTags.indexOf('anim--') > -1) {
+                waitTime = 45; 
+                blipEvery = 3;
+            }
+            // else if (this.state.dialogueRunner.currentTags.indexOf('anim') > -1) {
+            //     waitTime = 15; 
+            //     blipEvery = 6;
+            // }
+            // else {
+            //     this.isAnimating = false;
+            // }
+        }
     
         for (let i = 0; i < fullText.length; i++) {
             if (!this.isAnimating) {
@@ -258,7 +276,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             if (char === "." || char === "?" || char === "!") {
                 await new Promise(res => setTimeout(res, 250));
             } else {
-                await new Promise(res => setTimeout(res, 45));
+                await new Promise(res => setTimeout(res, waitTime));
             }
         }
     
@@ -454,7 +472,9 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                     </img>
 
                     <div id="dialogueCol"
-                        style={{height: this.state.machineActive ? "90%" : "60%"}}>
+                        style={{height: this.state.machineActive ? "90%" : "60%",
+                                overflowY: this.state.generateState==GENERATE_WAIT_TYPE["dialogue"]? "hidden" : "auto"
+                        }}>
                     
                         <div id="dialogue">
                             {this.state.dialogueList.map((item,index) => {
