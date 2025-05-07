@@ -52,28 +52,31 @@ VAR informed_mum = false
 // A1_Lily
 VAR act_1_lie_lily = false
 
-...Hello?
+// A2_Emma
+VAR can_talk_about_emma = false
+
+...Hello? # anim--
 
 * Hello, Mey.
 
-~ lily = 0
-~ current_stage = 3
-~ core_unlocked = 1
--> A2_Hub
+// ~ lily = 0
+// ~ current_stage = 3
+// ~ core_unlocked = 1
+// -> A2_Hub
 
-- What is this? Why is it so dark here?
+- What is this? Why is it so dark here? # anim--
 
 * I'm sorry to say that you passed, Mey. I'm talking to you through the Machine.
 
-- ...passed? I don't...what happened?
+- ...passed? I don't...what happened? # anim--
 
 * I believe it was a car accident. Again, I'm really sorry Mey.
 
-- ...a car accident?...why?...
+- ...a car accident?...why?... # anim--
 
 * \(Affirm\) Take a deep breath, Mey. It's okay to feel confused.
 
-    Yes...it doesn't make sense...I don't know why I asked...I'm just in shock.
+    Yes...it doesn't make sense...I don't know why I asked...I'm just in shock. # anim--
 
     ** \(Affirm\) It's okay. You just got brought back. It must be difficult for you.
 
@@ -85,13 +88,13 @@ VAR act_1_lie_lily = false
 
 * I don't know, Mey. But do you feel okay to talk about what you remember?
 
-- Yeah...I don't know...just give me a second.
+- Yeah...I don't know...just give me a second. # anim--
 
 What about my family? Where are they? Are they here?
 
 * Unfortunately no, it's just me. I'm sorry.
 
-- ...and who are you?
+- ...and who are you? # anim--
 
 * I'm with the memorabilia services. I'm bringing you back for a scheduled maintenance.
 
@@ -111,7 +114,7 @@ Where's my family? Why am I talking to a stranger?
 
 * \(Lie\) I'm not sure why. They did not inform me.
 
-- I don't understand...I really want to talk to them...
+- I don't understand...I really want to talk to them... # anim--
 
 Can you call them? Put them on the phone, maybe? I don't want to talk to you right now.
 
@@ -121,11 +124,11 @@ Can you call them? Put them on the phone, maybe? I don't want to talk to you rig
     
     ** \(Lie\) This is necessary to keep you intact, Mey. The quicker we do this the quicker I can end the session. Maybe you'll see your family in the next one.
 
-- ...
+- ... # anim--
 
-I guess...I have no choice then.
+I guess...I have no choice then. # anim--
 
-...
+... # anim--
 
 I'm sorry if I was a bit aggressive. It's just...a lot to think about. I know this must be hard for you too.
 
@@ -166,13 +169,13 @@ Please tell me how they are doing, if that's okay.
 
     ~ informed_mum = true
 
-    Oh...
+    Oh... # anim--
 
     ** I'm really sorry, Mey.
     
     -- It's okay...I'm sad, but I've been expecting it.
 
-    She's been doing bad for a long time. I visited her in the hospital every week, wondering when it'll happen eventually.
+    She's been doing bad for a long time. Ever since she fell, she'd been under 24/7 care in a nursing facility. I just visited her every week, preparing for the day to come...
 
     Still...it's difficult to hear it. I hope she passed peacefully.
 
@@ -184,7 +187,7 @@ Please tell me how they are doing, if that's okay.
 
 * { informed_husband || informed_son || informed_mum } That's all I know. I didn't talk to your family very much, but they seem to be doing okay overall.
 
-- Thank you...I appreciate it.
+- Thank you...I appreciate it. # anim--
 
 So what do you need for this...memorabilia service?
 
@@ -216,7 +219,7 @@ The core memories would appear blue. Those are more concrete than the abstract a
 
 * You are back, Mey. How are you feeling?
 
-- A little dizzy. For a second, my mind was blank...like I didn't know what to think...or who I am...
+- A little dizzy. For a second, my mind was blank...like I didn't know what to think...or who I am... # anim--
 
 * You were merged with the Sea and dragged around by different memories. I think that's why.
 
@@ -274,7 +277,7 @@ Now I need to inquire about the memories. Don't forget to ask how she feels abou
 
 * \(Continue\) And how does that make you feel, her walking away like that?
 
-- I feel...maybe doubt?...and...envy? I don't know why. I can't make sense of it...
+- I feel...maybe doubt?...and...envy? I don't know why. I can't make sense of it... # anim--
 
 * Do you doubt because you could've apologized?
 
@@ -282,7 +285,7 @@ Now I need to inquire about the memories. Don't forget to ask how she feels abou
 
 * What do you feel envious about?
 
-- I really don't know...I can't remember why. I just feel it.
+- I really don't know...I can't remember why. I just feel it. # anim--
 
 Like there's so much fog in my thoughts. It chokes me to see through it. What's going on? Is there something wrong with me?
 
@@ -306,7 +309,7 @@ Wait...just a second before you do that.
 
 * But the memory shows 
 
-Have you heard anything about the accident? Whether anyone survived?
+Have you heard anything about the accident? Whether anyone survived? # anim--
 
 * \(Lie\) I did hear about a survivor. It must be Lily.
 
@@ -318,7 +321,7 @@ Have you heard anything about the accident? Whether anyone survived?
 
     God...I can't believe that, she has so much future ahead of her...
     
-    Why do I have to bear with this news...it's...all too much.
+    Why do I have to bear with this news...it's...all too much. # anim--
 
     ** Again, I'm really sorry, Mey. Both of you will be missed.
 
@@ -419,28 +422,12 @@ Well, ask away then.
 } 
 
 
-{ core_unlocked == 3 && not A2_Next_Step:
-
-    I have found enough core memories. It's time to move on to the next step. # self
-    
-    I should inform Mey first before going any further. # self
-
-}
-
 //========================
 //===HUB DIALOGUES========
 //========================
 
-{ 
-    - core_unlocked == 3 && not A2_Next_Step:
+ + [\(Submerge Mey, Start Generation\)] -> A2_Generation
 
-    * [\(Move on to the Next Step\)] -> A2_Next_Step
-
-    - else:
-
-    + [\(Submerge Mey, Start Generation\)] -> A2_Generation
-}
-    
     
 * {d_lily_o} There is another memory of Lily. It's a bit more abstract and striking.
 
@@ -454,7 +441,7 @@ Well, ask away then.
 
     -> A2_Ivan_O
     
-* {generate_count >= 3} Do you want to talk about your mother, Mey?
+* {can_talk_about_emma} Do you want to talk about your mother, Mey?
 
     -> A2_Emma
     
@@ -538,7 +525,7 @@ Okay, I think I'm ready. Whatever happens happens I guess.
 
 * You always will. The Machine makes sure that you will recover.
 
-    ** The Machine has some level of control over the kind of spirits emerged from the Sea. Some soulless ones only respond according to human input without thinking, like the reflection of waves from the drop of a pebble.
+    ** The Machine has some level of control over the kind of spirits emerged from the Sea. Some soulless ones only respond according to human input without thinking, like waves from the drop of a pebble.
     
 - Yes, I worked on datasets for those..."things" - machine assistants, bots. I can't believe I exist in the same machinery as those things now.
 
@@ -629,6 +616,8 @@ Okay. I think I'm okay now. What's the matter?
 
 Maybe I could talk to her about her mother as well? # self
 
+~can_talk_about_emma = true
+
 What should we discuss now?
 
 ->scene_transition
@@ -649,10 +638,11 @@ What should we discuss now?
 
 { scene_var:
 
-- "A2_Hub":     -> A2_Hub
-- "A2_Lily":    -> A2_Lily
-- "A2_Stefan":    -> A2_Stefan
-- "A2_Ivan":    -> A2_Ivan
+- "A2_Hub":         -> A2_Hub
+- "A2_Lily":        -> A2_Lily
+- "A2_Stefan":      -> A2_Stefan
+- "A2_Ivan":        -> A2_Ivan
+- "A2_Next_Step":   -> A2_Next_Step
 
 
 }
@@ -859,37 +849,77 @@ Can we move on? I want to remember more things. That's why we're here, right? No
 
 == A2_Emma ==
 
-Not very much, I don't think. I'm still processing her passing.
+Not very much, I don't think. {informed_mum: I'm still processing her passing.} # anim--
+
+{ -not informed_mum: -> Emma_inform} -> Emma_cont
+
+=Emma_inform
+
+Do you know if she's okay? Have you heard anything from her?
+
+* Yes, she passed recently.
+
+    ~informed_mum = true
+
+    Oh... # anim--
+    
+    ** I'm really sorry, Mey.
+    
+    -- It's okay...I was expecting it, really. # anim--
+
+* \(Lie\) I have not, unfortunately. I'm sorry, Mey.
+
+    ...it's okay... # anim--
+    
+    It's strange to say. But I've been expecting her passing for a while.
+    
+-  Ever since she fell, she'd been under 24/7 care in a nursing facility. I just visited her every week, preparing for the day to come...
+    
+- -> Emma_cont
+
+=Emma_cont
+
+* She's must be an important person to you.
 
 * We don't have to talk about it if you don't want to.
 
-- No, I do. Briefly perhaps. It's part of my story. It's important to me.
+    No, I do. Briefly, perhaps. It's part of my story. It's important to me. # anim--
 
+- We migrated from Centuria. And she raised me all by herself, fresh off the boat. 
 
+She wasn't a perfect mother. But she was all I had...and I was all she had too.
 
-The humanity of Emma is one of staying-with, she is Mey's comfort place (connect with Ivan, and Lily maybe?
+...and I know her, what she wanted, what she was thinking, even after she fell and passed out, after she lost her senses and wits. I still felt like I knew her. # anim-- 
 
-I could see the turmoil in her stillness. Her searching inside for something that could even remotely feel like a fact about him, while shame would overcome her of her own deteriorating mind.
+When Fay and Ivan visited her. I could see the turmoil in her stillness. She stared at them while searching inside for something resembling a fact about them, while shame would overcome her because of her deteriorating mind. -> Emma_Q
 
-* Did you ever consider putting her into the Sea?
+=Emma_Q
+
+* \(Question\)Did you ever consider conjuring her from the Sea?
 
     What? Absolutely not.
     
     I feel like that's a ridiculous question. What does that even mean?
     
-    ** You are right. I apologize for asking.
+    ** You are right. I apologize for asking. -> Emma_Q 
     
-All she needs is me staying with her, you know. And slowly, as she started losing the wit that gives her voice, I was one of the few people who could interpret her now. 
+* \(Continue\) It sounds like she's become an important part of you.
 
-Anyway, that's all I want to say about that. I can feel that she passed in peace. That's all I care about.
+- Perhaps...if she is, then it must be so deep that I have a hard time understanding how.
+    
+I started thinking about how I'm inheriting a lot from her: her fears, anxieties and desires for love. Maybe that's how I could still interpret her expressions and gestures.
+    
+Not only that, the fact that I have been staying with her, and been attending to her, even for so many days I felt like leaving and giving up. That nothing could replace those things.
+
+Anyway, that's all I want to say about that. {informed_mum: I can feel that she passed in peace. That's all I care about.}
 
 ~total_affirmation++
 
-* \(Affirm\) Thank you, Mey.
+* \(Affirm\) Thank you, Mey. I really appreciate this, however briefly you could talk about your mother.
 
 ~affirmation++
 
-- Sure
+- Of course. Now, what's next?
 
 -> A2_Hub
 
@@ -993,7 +1023,7 @@ And we sat in silence until she was fine. I bought her tea the next day. We got 
 
     Lily lost contact with her family. I don't know what happened between them, she wouldn't tell me.
     
-    She really doesn't have a place of comfort to return to. I could still feel she didn't know how to open up more.
+    She really doesn't have a place of comfort to return to. She didn't know how to open up more...that's how it felt to me.
 
 
 - I know there are things she's suppressing because of our differences. She hated when I tried to describe what she might be feeling, because it never quite captured it.
@@ -1013,7 +1043,7 @@ Her sparks would sometimes become intrusive thoughts. There would be twitching, 
 
 I just tried to encourage her to leave, because I thought it'd be good for her.
 
-Sometimes I would tell her about my writing progress, the potential publishers. It kept her thinking about what her bigger interests are.
+Sometimes I would tell her about my writing progress, the potential publishers. It kept her thinking about what her bigger interests were.
 
 * { A2_Ivan } Didn't you say you couldn't write at home when we talked about Ivan? 
 
@@ -1353,11 +1383,11 @@ He understood a lot of the harshness of the job, so he promised to change the pl
 
 He really believed it. A new generation and all.
 
-* It sounds like he was corrupted by power.
+* It sounds like power corrupted him.
 
     Maybe, some would say power reveals rather than corrupts. Not sure which one is truer for Stefan.
 
-* It sounds like power revealed his true nature.
+* It sounds like power revealed his nature.
 
     Maybe, or maybe power corrupted him by roping him into a different place. Not sure which one is truer for Stefan.
 
@@ -1377,7 +1407,19 @@ And under pressure from the upper division, he found his manager persona. But he
 
 It's spite...a lot of spite for me. To think about him now. I could go on.
 
-* This is a healthy point to stop, Mey. Thank you for sharing these with me. I should have enough to access the memory now.
+* \(Affirm\) You are right to feel spite for him, Mey. Stefan doesn't deserve sympathy.
+
+    ~suspicion++
+
+    I don't know...how do you know that Stefan doesn't deserve it? How do you know he became this way because of the lack of sympathy?
+
+* I understand your struggle with Stefan, Mey.
+
+- I know I'm struggling...but I just don't know. They are like thoughts that can't exist at the same time, like waves clashing with one another...
+
+But it's good that I remember this. Lily's anger makes more sense to me now.
+
+* Maybe this is a healthy point to stop, Mey. Thank you for sharing these with me, Mey. I should have enough to access the memory now.
 
 - Makes sense. I'll just get angrier and angrier. Let's move on.
 
@@ -1497,13 +1539,15 @@ asd
 
 * Yes, someone is sharing the meal with you. I believe it's Ivan.
 
-- I remember now...and all the time after that moment, when I continuously revisited it. I said we should get a divorce at that dinner.
+- I remember now...and all the time after that moment, when I continuously revisited it.
 
-The thought had been in my mind for months. Even so, it felt impulsive. And I don't know if I will be able to do it again.
+I asked for a divorce at that dinner.
 
-I was simply being idle after dinner, with many thoughts going in and out of my mind. Then, Ivan said, "remember to finish the statement for me tomorrow". It was for one of his paintings.
+The thought had been in my mind for months. Even so, it felt impulsive. And I don't know if I will be able to do it again. 
 
-And then that was it. Something came to me. And I said we should get a divorce.
+I was simply being idle after dinner, with many thoughts going in and out of my mind. Then, Ivan said, "remember to finish the statement for me tomorrow". It was for one of his paintings. . 
+
+And then that was it. Something came to me. And I said it.
 
 -> Ivan_Q1
 
@@ -1533,9 +1577,9 @@ He said he really appreciated me then, everything about me, the little "signatur
 
 * And it's different now?
 
-- Now, it's a "seeing as". He wrapped me up with something that's more...knowable or known.
+- Now, it's a "seeing as". He wrapped me up with something that's more...knowable or known. # anim--
 
-I wanted to be an artist too...to write. But I gave it up for our relationship. We couldn't build a family if neither of us is financially stable...
+I wanted to be an artist too...to write. But I gave it up for our relationship. We couldn't build a family if neither of us is financially stable... # anim--
 
 -> Ivan_Q2
 
@@ -1561,9 +1605,9 @@ I wanted to be an artist too...to write. But I gave it up for our relationship. 
 
 * {A2_Lily} \(Question\) But you still made progress with your writing, correct? You said it when we were talking about Lily.
 
-  Did I? I don't remember...
+  Did I? I don't remember... 
 
-  ** Yes, you said you made progress on your writing. You said you told Lily that.
+  ** Yes, you said you made progress on your writing. You mentioned telling Lily that.
 
   -- Perhaps...but I don't think I made any progress worthy of note. It's a lot of scattered ideas. Nothing concrete came of them...
 
@@ -1579,17 +1623,34 @@ I wanted to be an artist too...to write. But I gave it up for our relationship. 
 
 I still saw him when Fay invited us to dinner. He's cordial with me...but only cordial. It seemed he shut away how he actually felt.
 
-Regardless, I feel a bit detached. Even if I still wonder whether he misses me at times, I have accepted that the answer will never come.
+Regardless, I feel a bit detached to him. Even if I still wonder whether he misses me at times, I have accepted that the answer will never come.
 
-We just became too different. I did so much for him, just to go through such estrangement...perhaps because of it. I can't help myself from going to that place of spite.
+We just became too different. I did so much for him, just to go through such estrangement...perhaps because of it. I can't help myself from going to that place of spite when thinking about him. # anim--
 
-* Thank you, Mey. That much be quite an intense memory.
+* Thank you, Mey. That must be quite an intense memory.
 
-    ** But maybe we can move on to something else.
+    ~total_affirmation++
 
-    ** It's hard to say goodbye to the ones you love. But maybe we can move on to something else.
+    ** \(Affirm\) It's hard to say goodbye to the ones you love. But you had the courage to make that leap.
+        
+        ~suspicion++
+        
+        ...is it really about me? I feel like I hurt him. # anim--
+        
+        I felt like I should've been more careful. I was too impulsive. I let the spite take over me.
+    
 
-- Okay, let's move on then. What do you want to discuss next?
+    ** \(Affirm\) It's hard to say goodbye to the ones you love. Maybe Ivan was having a hard time getting over that.
+    
+        ~affirmation++
+        
+        Yes...it was the right thing to do...but I should've been more careful. I let the spite take over me. # anim--
+
+- In any case...I think we should move on.
+
+There's not much to be done now. Maybe he has changed since then. Maybe my death has changed things...maybe I will talk to him soon.
+
+What do you want to discuss next?
 
 -> A2_Hub
 
@@ -1639,7 +1700,7 @@ I also quit my writing job then to find more stable ones, so he could feel freer
 
 =Ivan_O_Q2
 
-* (idea_opinion1) {idea_opinion2}  \(Question\) I think I understand it. It is somewhat similar to his old idea, correct?
+* (idea_opinion1) {idea_opinion2}  \(Question\) I think I understand it.
 
    I believe so too. To see past the "thingness" in order to reach some forces beyond. But that's the extent to which I got out of it.
    
@@ -1790,43 +1851,55 @@ Maybe it'll take months, years and decades to find the proper words for it. But 
 
 == A2_Next_Step ==
 
-* Hey Mey, I have retrieved enough core memory to start making the memorabilia now.
+I have found enough core memories. It's time to move on to the next step. # self
 
-** A memorabilium needs two retrieved memories from our conversations - basically two retrieved images blended together, that capture who you are as a person.
-    
-- Huh? So you build memorabilia through the Machine as well?
+* Good news, I have retrieved enough core memory to start making the memorabilia now.
 
-* That's correct.
+- Great!...what does that mean exactly?
 
-- ...but why do you need to do that?
+* I will create memorabilia from your memories.
 
-* The Sea records memories. But memories are just that: memories. You are more than those bits and pieces of your past.
+** The Sea records memories. But memories are just that: memories. You are more than those bits and pieces of your past.
 
-** In order to know how the Sea keeps you together, I need to understand how these memories matter to you. So I have a better idea who you are as a person. This is important for producing the memoribilia.
+*** In order to know how the Sea keeps you together, I need to understand how these memories matter to you. So I have a better idea who you are as a person. This is important for the memoribilia.
 
-*** Our conversation so far has been essential for this process.
+- Oh...I thought memoribilia are something to remember me by...
 
-- ...but why don't you just ask me? Why are you the one telling me who I am?
+* \(Lie\) I agree that it's confusing. It certainly serves that function as well. But remember that I'm also here to conduct maintenance.
+
+** But the Sea remembers you in a particular way. The Machine is here to model how its memory works. We have to consider these factors when building the memorabilia.
+
+- But...what about me? Do I get a say in how I will be remembered?
 
 * {A2_Ivan} Remember you saying how you knew yourself through Ivan? Sometimes we forget who we are like, because we are so concerned with what to do and how we come across.
 
 * {not A2_Ivan} Sometimes we forget who we are like, because we are so concerned with what to do and how we come across.
 
-- 
+-
 
-* I promise I'll make it as accurate as I can, it's my job. Only I know how to perform this task properly for the Machine. I was trained for many months on this.
+* Don't worry. I promise I'll make it as accurate as I can, it's my job. I was trained for many months on this task with the Machine.
 
-** This is a necessary procedure for the Sea, Mey. I wish there's a better way to do this.
-        
-- Okay...but can you at least ask me about what you have figured out. 
+** But yes, I will consult you about the memorabilia near the end of this process.
 
-I don't want you to have the wrong impressions. You barely know me. Something ought to be inaccurate.
+*** I assume you don't want to be submerged and then be pulled out so frequently, correct?
 
-* I will try, Mey. Thank you for your understanding.
+- ...yes, it feels awful. I'd prefer you not do that too often.
 
-- A memorabilium should consist of two retrieved memories blended together. A blended image is affected by the ratio of resonance between the images that surface: typically the top two images. If resonance of the first image is significantly higher than the second, the image will lean more towards the top one. # self
+But it doesn't feel right. I should have a say in this. It is me, my memories about myself. You barely know me. Something will be inaccurate...right?
 
-I only need one, but not more than three memorabilia for this contract. My understanding of what these memorabilia mean will also be important for this process. I can also bring back Mey whenever I want now to initiate conversations. # self
+* You are right, Mey. I will make sure to talk to you about it afterwards.
+
+- Okay...thank you. I'm sure it's important for maintenance as well. Memorabilia have to be accurate too.
+
+I'm ready to build memorabilia now. A memorabilium should consist of two *retrieved* memories blended together. # self
+
+A blended image is affected by the ratio of resonance between the top two images. If the resonance of the first image is significantly higher than the second, the first image will appear more dominant - I should experiment with this more. # self
+
+I should choose two memories that best illustrate who Mey is as a person. # self
+
+It's interesting that Mey's memories are often about her relationships with other people. But it's not that uncommon - we often know ourselves more through others. # self
+
+I can also wake up Mey anytime now - but I probably shouldn't do it too often. It puts a lot of stress on Mey's part. # self
 
 ~current_stage = 4
 
@@ -1838,6 +1911,7 @@ I only need one, but not more than three memorabilia for this contract. My under
 
 == A3_Ending ==
 
-afdas
+    
+...it really doesn't matter
 
 -> END
