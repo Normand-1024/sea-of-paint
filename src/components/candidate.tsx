@@ -2,10 +2,8 @@ import React, {useEffect} from 'react';
 import '../App.css'
 import { Story } from 'inkjs';
 
-import {IMAGE_DIM, HIGH_BOUND, LOW_BOUND} from '../constants.tsx';
+import {IMAGE_DIM, HIGH_BOUND, LOW_BOUND, GENERATE_WAIT_TYPE, LEANINIG_INTERVAL} from '../constants.tsx';
 import { match } from 'assert';
-
-const GENERATE_WAIT_TYPE = {'dialogue': -1, 'wait_for_first': 0, 'generated': 1, 'wait_for_lily1': 2, 'wait_for_lily2': 22, 'wait_for_interpretations': 3};
 
 type CandidateProps = {
     inprompt: string;
@@ -51,19 +49,9 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
         let score : string = if_show_inquiry_needed ? "Inquiry Needed" :
             if_display_percentage ? this.distanceFunc(image_score) : this.rankString(i);
         
-
-        if (i > 1 || image_score < LOW_BOUND){
-            return (<div>
-                {i == 1 ? <p className='threshold-line'>————— Resonance Threshold —————</p> : null } 
-                <div className='score-display'>{score}</div> 
-                {this.displayMeminfo(memName, if_main, if_retrieved)} 
-            </div>)
-        }
-
         return <div>
-            <div className='score-display'>{score}</div> 
+            <div className={'score-display'}>{score}</div> 
             {this.displayMeminfo(memName, if_main, if_retrieved)} 
-            {i == 1 ? <p className='threshold-line'>————— Resonance Threshold —————</p> : null } 
         </div>;
     }
 
@@ -105,7 +93,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
         return <p className = "copiable-prompt" onClick = {() => this.fillPromptBox(output)}>"{output}"</p>
     }
 
-    handleButton(if_main : boolean) {
+    initiateMemoryScene(if_main : boolean) {
         this.props.imgButton[this.props.imgName] = true;
 
         if (if_main){
@@ -118,6 +106,19 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
         else {
             this.props.setDialogueVar(this.props.imgData[this.props.imgName]["d_var"], "true");
         }
+    }
+
+    initiateMemoribilumScene() {
+        this.props.imgButton[this.props.imgName] = true;
+
+        this.props.setDialogueVar("scene_var", "A2_Memorabilia");
+        this.props.setDialogueVar("memora_first", this.props.similarities[0].name);
+        this.props.setDialogueVar("memora_second", this.props.similarities[1].name);
+        
+        let sim_diff = this.props.similarities[0].score - this.props.similarities[1].score;
+        this.props.setDialogueVar("memora_lean_first", (sim_diff > LEANINIG_INTERVAL).toString());
+
+        this.props.initiateScene();
     }
 
     fillPromptBox(text : string) {
@@ -147,7 +148,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
             
     }
 
-    getDistanceString(i : number, imgName : string, score : number) {
+    getTopDistanceString(i : number, imgName : string, score : number) {
 
         // Check if the image is yet to be unlocked
         let if_retrieved : boolean = this.props.dialogueRunner.variablesState[imgName] >= 0; 
@@ -160,68 +161,86 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
             console.log("WARNING: VISIT_COUNT IS NULL OR UNDEFINED");
         else if_visited = visit_count > 0;
 
-        if (i > 0) {
+        if (i > 0 && score < LOW_BOUND) 
+            return (null);
+        
+        if (i > 0) 
             return (<div className="mem-entry">{this.getMemInfo(imgName, score, if_main, if_retrieved, if_tutorial, i)}</div>);
-        } 
-        else{
-            // Only the top match displays more information
 
+        // Only the top match displays more information
+
+        //  Core Memory - X Words Missing - Inquiry Needed
+        //  Core Memory - N/X Words Found
+        //  Core Memory - Retrieved
+        //  Non-core Memory - N/X Words Found
+        //  Non-core Memory - Retrieved
+
+        // If in tutorial:
             //  Core Memory - X Words Missing - Inquiry Needed
             //  Core Memory - N/X Words Found
             //  Core Memory - Retrieved
-            //  Non-core Memory - N/X Words Found
-            //  Non-core Memory - Retrieved
+            //  Non-core Memory
 
-            // If in tutorial:
-                //  Core Memory - X Words Missing - Inquiry Needed
-                //  Core Memory - N/X Words Found
-                //  Core Memory - Retrieved
-                //  Non-core Memory
+        let memoryType = if_main ? "Core Memory" : "Non-core Memory";
+        let XWordsMissing = this.props.imgData[imgName]["keywords"].length.toString() + " Words Missing";
+        let NXWordsFound = this.props.wordStat.filter(x => x).length.toString() + 
+                            "/" + this.props.imgData[imgName]["keywords"].length.toString() +
+                            " Words Found";
 
-            let memoryType = if_main ? "Core Memory" : "Non-core Memory";
-            let XWordsMissing = this.props.imgData[imgName]["keywords"].length.toString() + " Words Missing";
-            let NXWordsFound = this.props.wordStat.filter(x => x).length.toString() + 
-                                "/" + this.props.imgData[imgName]["keywords"].length.toString() +
-                                " Words Found";
+        let secondString = 
+            if_retrieved ? "Retrieved"
+                : !if_visited ? XWordsMissing + " - Inquiry Needed"
+                    : NXWordsFound;
 
-            let secondString = 
-                if_retrieved ? "Retrieved"
-                    : !if_visited ? XWordsMissing + " - Inquiry Needed"
-                        : NXWordsFound;
+        return (<div className="mem-entry top-display">
+            {this.getMemInfo(imgName, score, if_main, if_retrieved, if_tutorial, i)}
 
-            return (<div className="mem-entry top-display">
-                {this.getMemInfo(imgName, score, if_main, if_retrieved, if_tutorial, i)}
+            <div className="top-main-info">
+                <p className = "notif"> {memoryType} </p>
+                {/* {if_tutorial && !if_main ? 
+                    (null)
+                    : <p className = "notif"> {secondString} </p>
+                } */}
 
-                <div className="top-main-info">
-                    <p className = "notif"> {memoryType} </p>
-                    {/* {if_tutorial && !if_main ? 
+                {if_tutorial && !if_main ? (null) : 
+                <div className="prompt-box">
+                    {this.getPrompt()}
+                    
+                    {this.props.imgButton[imgName] || if_retrieved ||
+                    (if_tutorial && !if_main) || this.props.generateState == GENERATE_WAIT_TYPE['dialogue'] ?
                         (null)
-                        : <p className = "notif"> {secondString} </p>
-                    } */}
 
-                    {if_tutorial && !if_main ? (null) : 
-                    <div className="prompt-box">
-                        {this.getPrompt()}
+                        : 
                         
-                        {this.props.imgButton[imgName] || if_retrieved ||
-                        (if_tutorial && !if_main) || this.props.generateState == GENERATE_WAIT_TYPE['dialogue'] ?
-                            (null)
+                        <div key={i} className="interact-button"
+                        onClick = {() => this.initiateMemoryScene(if_main)}>
+                            { if_main ?
+                            "Bring back Mey, Inquire about Memory"
+                            : "Note this Memory for Conversation Later"
+                            }
+                        </div>   
+                    }
+                </div>}
+            </div>
+        </div>);
+    }
 
-                            : 
-                            
-                            <div key={i} className="interact-button"
-                            onClick = {() => this.handleButton(if_main)}>
-                                { if_main ?
-                                "Bring back Mey, Inquire about Memory"
-                                : "Note this Memory for Conversation Later"
-                                }
-                            </div>   
-                        }
-                    </div>}
-                </div>
-            </div>);
-        }
+    getBottomDistanceString(i : number, imgName : string, score : number) {
 
+        // Check if the image is yet to be unlocked
+        let if_retrieved : boolean = this.props.dialogueRunner.variablesState[imgName] >= 0; 
+        let visit_count = this.props.dialogueRunner.state.VisitCountAtPathString(this.props.imgData[imgName]["scene"]);
+        let if_visited : boolean = false;
+        let if_tutorial : boolean = this.props.dialogueRunner.state.VisitCountAtPathString("A2_Generation") == 0;
+        let if_main : boolean = this.props.imgData[imgName]["interpretations"].length > 0;
+
+        if (visit_count == null || visit_count == undefined)
+            console.log("WARNING: VISIT_COUNT IS NULL OR UNDEFINED");
+        else if_visited = visit_count > 0;
+
+        if (i == 1 && score > LOW_BOUND) return (null);
+        
+        return (<div className="mem-entry">{this.getMemInfo(imgName, score, if_main, if_retrieved, if_tutorial, i)}</div>);
     }
 
     render() {
@@ -230,6 +249,10 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
         let imgName = this.props.imgName;
         let matched = this.aboveHigh;
         let if_top_main : boolean = imgName != "noise" && this.props.imgData[imgName]["interpretations"].length > 0;
+        let if_top_two_retrieved = 
+            this.props.similarities[0].name != "noise" && this.props.similarities[1].name != "noise"
+            && this.props.dialogueRunner.variablesState[this.props.similarities[0].name] >= 0
+            && this.props.dialogueRunner.variablesState[this.props.similarities[1].name] >= 0;
 
         return (
             <div className = "candidate">
@@ -253,15 +276,43 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                             </p>
 
                             <div className = "column right">
-                                {this.props.similarities.slice(0,5).map(
-                                    (img:any, i:number) => {
-                                        return(
-                                            <div style={{'marginTop': 0, 'marginBottom': 0}} key={i}>
-                                                {this.getDistanceString(i, img.name, img.score)}
-                                            </div>
-                                        );
-                                    }
-                                )}
+                                <div className = {"top-two" + " " +
+                                        (this.props.dialogueRunner.variablesState["current_stage"] < 4 
+                                            || this.props.dialogueRunner.variablesState["memorabilia"] >= 3 ? ""
+                                        : if_top_two_retrieved ? "top-two-clickable" : "top-two-locked")}>
+                                    
+                                    {this.props.dialogueRunner.variablesState["current_stage"] < 4 ? (null)
+                                    : this.props.dialogueRunner.variablesState["memorabilia"] >= 3 ?
+                                        <div id="memora-button-locked"> Memorabilia Count Full </div>
+                                    : if_top_two_retrieved ?
+                                        <div id="memora-button-clickable" onClick = {() => this.initiateMemoribilumScene()}> Make Memorabilium </div>
+                                    :   <div id="memora-button-locked"> Retrieve Both Memories for Memorabilium </div>}
+
+                                    {this.props.similarities.slice(0,2).map(
+                                        (img:any, i:number) => {
+                                            return(
+                                                <div style={{'marginTop': 0, 'marginBottom': 0}} key={i}>
+                                                    {this.getTopDistanceString(i, img.name, img.score)}
+                                                </div>
+                                            );
+                                        }
+                                    )}
+
+                                </div>
+
+                                <p className='threshold-line'>Resonance Threshold</p>
+
+                                <div className = "rest">
+                                    {this.props.similarities.slice(1,5).map(
+                                            (img:any, i:number) => {
+                                                return(
+                                                    <div style={{'marginTop': 0, 'marginBottom': 0}} key={i+1}>
+                                                        {this.getBottomDistanceString(i+1, img.name, img.score)}
+                                                    </div>
+                                                );
+                                            }
+                                    )}
+                                </div>
                             </div>
                         </div>
                 : this.props.dialogueRunner.variablesState[imgName] > -1  ? 
@@ -275,7 +326,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                             ...
 
                             {!if_top_main ? (null) : 
-                            this.props.dialogueRunner.variablesState["core_unlocked"] == 1 ? 
+                            this.props.dialogueRunner.variablesState["core_unlocked"] == 1 && this.props.generateState == GENERATE_WAIT_TYPE['wait_for_lily2'] ? 
                                 <p className = "interpret-line"> I can wake up Mey now.</p> : 
                             this.props.dialogueRunner.variablesState["core_unlocked"] == 2 ?
                                 <p className = "interpret-line"> One more to go. I should wake up Mey from another core memory.</p> : 

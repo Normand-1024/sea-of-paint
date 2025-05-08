@@ -199,7 +199,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				p5.image(img, 0, 0);
 			}
 
-			// Check if this image has been unlocked, set the variables in yarn
+			// Check if this image has been unlocked, set the variables in inky
 			// -2: not unlocked, -1: unlocked but waiting for interpretation
 			if(this.props.dialogueRunner.variablesState[first] == -2 && unlocked){
 				this.props.setDialogueVar(first, -1);

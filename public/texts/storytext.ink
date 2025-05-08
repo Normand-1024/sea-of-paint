@@ -1,5 +1,6 @@
 // Global Variables
-VAR current_stage = 0 // 0: talking, 1: find core memory, 2: unlock lily, 3: unlock three core, 4: get interpretations
+VAR current_stage = 0 
+    // 0: talking or ending, 1: find core memory, 2: unlock lily, 3: unlock three core, 4: get memorabilia, 5: ready for ending
 VAR core_unlocked = 0
 VAR integrity = 100 
 VAR generate_count = 0
@@ -7,7 +8,12 @@ VAR affirmation = 0
 VAR total_affirmation = 0
 VAR suspicion = 0
 VAR cruel = 0
+
+// For creating the memorabilia
 VAR memorabilia = 0
+VAR memora_first = ""
+VAR memora_second = ""
+VAR memora_lean_first = false
 
 // Image Unlocked, the variable names match the image names
 // -2: not unlocked, -1: unlocked but waiting for interpretation
@@ -60,8 +66,11 @@ VAR can_talk_about_emma = false
 * Hello, Mey.
 
 // ~ lily = 0
-// ~ current_stage = 3
-// ~ core_unlocked = 1
+// ~ lily2 = 0
+// ~ lily_spark = 0
+// ~ ivan = 0 
+// ~ current_stage = 4
+// ~ core_unlocked = 3
 // -> A2_Hub
 
 - What is this? Why is it so dark here? # anim--
@@ -307,7 +316,7 @@ Wait...just a second before you do that.
 
 - We switch between who drives each other home. Lily was supposed to give me a ride back that day...oh no...
 
-* But the memory shows 
+// * But the memory shows 
 
 Have you heard anything about the accident? Whether anyone survived? # anim--
 
@@ -550,6 +559,16 @@ I think I have a better idea what'll happen this time...
 ~ generate_count++
 
 Mey's back to the Sea again. # self # generate
+
+// For creating the memorabilia, Mey is still under the Sea
+
+{scene_var=="A2_Memorabilia"} ->A2_Memorabilia
+
+// Go to After Dive interaction if not
+
+-> A2_After_Dive
+
+== A2_After_Dive ==
 
 {
     -generate_count <= 1:
@@ -1909,7 +1928,34 @@ I can also wake up Mey anytime now - but I probably shouldn't do it too often. I
 
 -> A2_Hub
 
+== A2_Memorabilia ==
+
+First is {memora_first}, Second is {memora_second}, Leaning first is {memora_lean_first}
+
+Do you want to make this memorabilia?
+
+* Yes
+
+    Nice! # make_memora
+    
+    ~memorabilia++
+    ~current_stage = 5
+
+* No
+
+- Let's go back to the generator again. # self # generate
+
+// For creating the memorabilia, Mey is still under the Sea
+
+{scene_var=="A2_Memorabilia"} ->A2_Memorabilia
+
+// Go to After Dive interaction if not
+
+-> A2_After_Dive
+
 == A3_Ending ==
+
+~current_stage = 0
 
     
 ...it really doesn't matter
