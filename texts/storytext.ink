@@ -223,7 +223,7 @@ So what do you need for this...memorabilia service?
 
 - Alright, I guess I have no choice in this. Go ahead then.
 
-Mey is back to the Sea now. Time to find a memory. # self
+Mey is back to the Sea now. Time to find a memory. # self # mey_sea
 
 The Machine will dive into the Sea, where memories flow and pass through each other. My text input will resonate with the memories. The closer my description is, the higher the resonance. # self
 
@@ -231,7 +231,9 @@ The Machine will dive into the Sea, where memories flow and pass through each ot
 
 The core memories would appear blue. Those are more concrete than the abstract and impressionistic non-core memories. I'll focus on the core memories in this query. I have no ways to know what the Sea will return. Maybe we can try some names first. # self # generate_lily1
 
-* You are back, Mey. How are you feeling?
+# mey_def
+
+* You are back, Mey. How are you feeling? 
 
 - A little dizzy. For a second, my mind was blank...like I didn't know what to think...or who I am... # anim--
 
@@ -354,13 +356,15 @@ I'm still a bit terrified. But I'll get used to it.
 ~ p_lily_q = true
 ~current_stage = 2
 
-Mey is back to the Sea again. I should have gathered enough information to retrive the memory now. Just need to fill in the missing words to get a high enough resonance. # self #generate_lily2
+Mey is back to the Sea again. I should have gathered enough information to retrive the memory now. Just need to fill in the missing words to get a high enough resonance. # self #generate_lily2 # mey_sea
 
 -> A2_Start
 
 == A2_Start ==
 
-* Welcome back, Mey. Do you still feel okay?
+# mey_def
+
+* Welcome back, Mey. Do you still feel okay? 
 
 - I think so...Waking up is quite scary, to be honest. Everything is a hazy emptiness. I need to try really hard to recollect myself.
 
@@ -563,18 +567,11 @@ I think I have a better idea what'll happen this time...
 
 ~ generate_count++
 
-Mey's back to the Sea again. # self # generate
+Mey's back to the Sea again. # self # generate # mey_sea
 
 -> A2_After_Dive
 
 == A2_After_Dive ==
-
-// For creating the memorabilia, Mey is still under the Sea
-
-{   scene_var:
-
-    -"A2_Memorabilia": ->A2_Memorabilia
-}
 
 {
     -generate_count <= 1:
@@ -596,6 +593,8 @@ Mey's back to the Sea again. # self # generate
 
 =come_back_1
 
+# mey_def
+
 + Welcome back, Mey. How do you feel?
 
 ...
@@ -610,6 +609,8 @@ Anyway, how is it going?
 
 =come_back_2
 
+# mey_def
+
 + Welcome back, Mey. Do you need a minute?
     
 - Yes... give me a second.
@@ -621,6 +622,8 @@ Okay. I think I'm okay now. What's the matter?
 ->scene_transition
 
 =come_back_3
+
+# mey_def
 
 + Do you feel okay, Mey?
 
@@ -648,6 +651,8 @@ What should we discuss now?
 ->scene_transition
 
 =come_back_4
+
+# mey_def
 
 + How are you, Mey?
 
