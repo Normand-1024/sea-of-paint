@@ -20,7 +20,7 @@ export const SPIRIT_NAME = "Mey";
 export const MID_INTEGR_THRSH = 60;
 export const LOW_INTEGR_THRSH = 10;
 
-export const LEANINIG_INTERVAL = 0.2;
+export const LEANINIG_INTERVAL = 0.1;
 
 export const IMAGE_DIM = 500;
 

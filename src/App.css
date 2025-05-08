@@ -174,6 +174,48 @@
             margin-bottom: 1%;
           }
 
+/*           
+          .top-two {
+            border-radius: 5px;
+            padding: 1% 1% 1% 1%;
+          }
+
+          .top-two-locked {
+            border-right: 6px solid #a3a3a3;
+          }
+
+          .top-two-clickable {
+            border-right: 6px solid #c9b153;
+          }
+
+          #memora-button-locked {
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+            text-align: center;
+            padding: 1% 5% 1% 5%;
+            margin: -1% auto 1% 1.5%;
+            background-color: #a3a3a3;
+            width: 90%;
+            color: #f0f0f0;
+            font-family: Arial, Helvetica, sans-serif;
+            pointer-events: none;
+          }
+
+          #memora-button-clickable {
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+            text-align: center;
+            padding: 1% 5% 1% 5%;
+            margin: -1% auto 1% 1.5%;
+            width: 90%;
+            background-color: #c9b153;
+            color: #fff7d1;
+            font-family: Arial, Helvetica, sans-serif;
+            cursor: pointer;
+          }  
+            
+*/
+
           .top-two {
             /* text-align: center; */
             border-radius: 5px;
@@ -188,33 +230,36 @@
             background-color: #fff7d3;
           }
 
-          #memora-button-locked {
+          .memora-button {
             text-align: center;
             padding: 1% 5% 1% 5%;
             margin: 1% auto 1% auto;
-            color: #727272;
             font-family: Arial, Helvetica, sans-serif;
+          }
+
+          .memora-button-locked {
+            color: #727272;
             pointer-events: none;
           }
 
-          #memora-button-clickable {
+          .memora-button-clickable {
             border-radius: 5px;
-            text-align: center;
-            padding: 1% 5% 1% 5%;
-            margin: 1% auto 1% auto;
             width: 60%;
             background-color: #c9b153;
             color: #fff7d1;
-            font-family: Arial, Helvetica, sans-serif;
             cursor: pointer;
           }
-          #memora-button-clickable:hover {
+          .memora-button-clickable:hover {
             background-color: #dfc870;
             color: #fffdf3;
           }
-          #memora-button-clickable:active {
+          .memora-button-clickable:active {
             background-color: #fff7d1;
             color: #dfc870;
+          }
+          .memora-button-clickable-disabled {
+            color: #dfc870;
+            pointer-events: none;
           }
 
           .interpret-line {
@@ -286,9 +331,9 @@
 
           .prompt-box {
             background-color: #fff;
-            border: 1px solid #000000;
+            /* border: 1px solid #000000; */
             border-radius: 8px;
-            box-shadow: inset rgba(158, 158, 158, 0.5) 1px 1px 0px 2px;
+            /* box-shadow: inset rgba(158, 158, 158, 0.5) 1px 1px 0px 2px; */
             box-sizing: border-box;
             text-align: center;
             padding: 2% 5% 2% 5%;
@@ -309,7 +354,6 @@
           .copiable-prompt-reveal {
             /* margin-left: 5%; */
             margin-top: 5%;
-            cursor: pointer;
             font-family: Roobert,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
             font-weight: 500;
             text-align: center;

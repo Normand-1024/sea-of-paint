@@ -91,7 +91,9 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     }
     
     componentDidUpdate(prevProps: MachineProps, prevState: MachineState): void {
-        this.dialogueEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end'});
+        if (prevState.generateState !== this.state.generateState || prevState.dialogueList != this.state.dialogueList) {
+            this.dialogueEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end'});
+        }   
 
         if (prevState.generateState !== this.state.generateState) {
             this.playAudio();
@@ -189,6 +191,10 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     }
 
     setToDialogue = () => {
+        if (this.state.dialogueRunner?.variablesState["scene_var"] == "A2_Memorabilia"){
+            this.state.dialogueRunner.ChoosePathString("A2_Memorabilia");
+        }
+
         this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['dialogue'] }));
     }
 

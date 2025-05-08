@@ -109,8 +109,6 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
     }
 
     initiateMemoribilumScene() {
-        this.props.imgButton[this.props.imgName] = true;
-
         this.props.setDialogueVar("scene_var", "A2_Memorabilia");
         this.props.setDialogueVar("memora_first", this.props.similarities[0].name);
         this.props.setDialogueVar("memora_second", this.props.similarities[1].name);
@@ -285,8 +283,10 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                                     : this.props.dialogueRunner.variablesState["memorabilia"] >= 3 ?
                                         <div id="memora-button-locked"> Memorabilia Count Full </div>
                                     : if_top_two_retrieved ?
-                                        <div id="memora-button-clickable" onClick = {() => this.initiateMemoribilumScene()}> Make Memorabilium </div>
-                                    :   <div id="memora-button-locked"> Retrieve Both Memories for Memorabilium </div>}
+                                        (this.props.generateState == GENERATE_WAIT_TYPE['dialogue'] ? 
+                                        <div className= "memora-button memora-button-clickable-disabled " > <br></br> </div>
+                                        :<div className= "memora-button memora-button-clickable" onClick = {() => this.initiateMemoribilumScene()}> Make Memorabilium </div>)
+                                    :   <div className="memora-button memora-button-locked"> Retrieve Both Memories for Memorabilium </div>}
 
                                     {this.props.similarities.slice(0,2).map(
                                         (img:any, i:number) => {
@@ -321,17 +321,16 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                         <p className = "interpret-line">
                             {if_top_main ? 
                             this.props.imgData[imgName]["interpretations"][this.props.dialogueRunner.variablesState[imgName]][1]
-                            : this.props.imgData[imgName]["info"]} 
-                            
-                            ...
+                            : this.props.imgData[imgName]["info"]}
 
                             {!if_top_main ? (null) : 
-                            this.props.dialogueRunner.variablesState["core_unlocked"] == 1 && this.props.generateState == GENERATE_WAIT_TYPE['wait_for_lily2'] ? 
-                                <p className = "interpret-line"> I can wake up Mey now.</p> : 
+                            this.props.dialogueRunner.variablesState["core_unlocked"] == 1 && 
+                                    this.props.dialogueRunner.currentTags && this.props.dialogueRunner.currentTags.indexOf('generate_lily2') > -1 ? 
+                                <p className = "interpret-line"> ...I can wake up Mey now.</p> : 
                             this.props.dialogueRunner.variablesState["core_unlocked"] == 2 ?
-                                <p className = "interpret-line"> One more to go. I should wake up Mey from another core memory.</p> : 
+                                <p className = "interpret-line"> ...One more to go. I should wake up Mey from another core memory.</p> : 
                             this.props.dialogueRunner.variablesState["core_unlocked"] == 3 && this.props.dialogueRunner.variablesState["current_stage"] == 3 ?
-                                <p className = "interpret-line"> Time to move on to the next step. Mey is woken up now.</p> : (null)}
+                                <p className = "interpret-line"> ...Time to move on to the next step. Mey is woken up now.</p> : (null)}
                         </p>
                     </div>
                 :   // The buttons for interpretations
