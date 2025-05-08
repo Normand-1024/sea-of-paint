@@ -66,6 +66,11 @@ VAR can_talk_about_emma = false
 * Hello, Mey.
 
 // ~ lily = 0
+// ~ current_stage = 3
+// ~ core_unlocked = 1
+// -> A2_Hub
+
+// ~ lily = 0
 // ~ lily2 = 0
 // ~ lily_spark = 0
 // ~ ivan = 0 
@@ -562,7 +567,7 @@ Mey's back to the Sea again. # self # generate
 
 // For creating the memorabilia, Mey is still under the Sea
 
-{scene_var=="A2_Memorabilia"} ->A2_Memorabilia
+{scene_var=="A2_Memorabilia": ->A2_Memorabilia}
 
 // Go to After Dive interaction if not
 
@@ -958,39 +963,13 @@ But there's more going on under the surface. Lily's data work is...let's say mor
     
 It's a part of the Sea, as it is always recording. I try not to imagine those things passing through me right now.
 
--> A2_Lily_Q1
-
-= A2_Lily_Q1
-
 * \(Affirm\) This is why we need Sea Weavers. Your job is very necessary indeed.
 
     ~suspicion++
     
     ...I guess so? I don't feel a particular way about it. It's just a part of the job.
     
-    -> A2_Lily_Q1
-    
-* \(Question\) How do the Sea Weavers filter those things out? 
-
-    Same with any other jobs dealing with the Sea, including yours.
-    
-    They just mark those content as something undesirable. Perhaps giving the Sea a stronger signal for those more egregious ones. It's like the Sea is adopting through our inputs.
-    
-    But all we can do is still mere suggesting. The flows are never predictable. Voices can only shape the waves so much. There's no guarantee that the Sea won't give back similar things.
-    
-    ** Yes, sometimes you need to suggest many times to the Sea, so it knows which part to connect and which part to sever.
-    
-        *** There's also filters in the Machines to catch them when the Sea returns something undesirable. It's never perfect, of course.
-    
-            Yes, you know how the gig works.
-            
-            But that's enough technical jargons. Do you want to ask more questions?
-            
-            -> A2_Lily_Q1
-    
-    -> A2_Lily_Q1
-    
-* \(Continue\) So what happened that day?
+* So what happened that day?
 
 - She burst out sobbing that day. The cry startled us. I still remember the way her voice trembled...
 
@@ -1020,6 +999,24 @@ It's a part of the Sea, as it is always recording. I try not to imagine those th
     
     -> A2_Lily_Q2
     
+* \(Question\) How do the Sea Weavers filter those things out? 
+
+    Same with any other jobs dealing with the Sea, including yours.
+    
+    They just mark those content as something undesirable. Perhaps giving the Sea a stronger signal for those more egregious ones. It's like the Sea is adopting through our inputs.
+    
+    But all we can do is still mere suggesting. The flows are never predictable. Voices can only shape the waves so much. There's no guarantee that the Sea won't give back similar things.
+    
+    ** Yes, sometimes you need to suggest many times to the Sea, so it knows which part to connect and which part to sever.
+    
+        *** There's also filters in the Machines to catch them when the Sea returns something undesirable. It's never perfect, of course.
+    
+            Yes, you know how the gig works.
+            
+            But that's enough technical jargons. Do you want to ask more questions?
+            
+            -> A2_Lily_Q2
+    
 * \(Continue\) What then?
 
 - I went up to talk to her. But she turned to yell at me. {A2_Lily_Q2_ask: There's a wholesome digital postcard on her screen.}
@@ -1034,7 +1031,7 @@ And we sat in silence until she was fine. I bought her tea the next day. We got 
 
     ~affirmation++
 
-    I guess so...but I couldn't handle the way she copes...
+    Thank you...but sometimes I couldn't handle the way she copes... #anim--
     
     She likes to push buttons for reactions, like telling dark jokes about suicide...I told her I didn't want to hear those...but really it was how she dealt with the things she saw.
 
@@ -1054,11 +1051,11 @@ Her sparks would sometimes become intrusive thoughts. There would be twitching, 
 
 * How does it make you feel to think about this memory?
 
-- Hmmm...I feel a lot of sympathy for her...but also...doubt?
+- Hmmm...I feel a lot of sympathy for her...but also...doubt? #anim--
 
 * Why do you feel doubt?
 
-- I don't know...maybe it's something I did...but I don't know what...
+- I don't know...maybe it's something I did...but I don't know what... #anim--
 
 I just tried to encourage her to leave, because I thought it'd be good for her.
 
@@ -1084,7 +1081,7 @@ Sorry...I need a few seconds. It hurts to think about her.
 
 ...
 
-Okay, what now?
+Okay, what now? #anim--
 
 -> A2_Hub
 
@@ -1096,7 +1093,7 @@ I think I might have an idea what it looks like...
 
 * Lily is surrounded by all the brightness and color. She looks confused and lost, even if the image is so vivid.
 
-    That's...an interesting read. I feel a lot of hope from your description, actually.
+    That's...an interesting read. I feel a lot of hope from your description, actually. #anim--
 
 * Overwhelming splashes of color around her. It's about the richness of her inner world.
 
@@ -1104,7 +1101,7 @@ I think I might have an idea what it looks like...
 
 * Lily's looking at something wonderful and fantastical. It seems to depict her outlook on life.
 
-    I don't know...perhaps that's true. But it feels more...impulsive, perhaps.
+    I don't know...perhaps that's true. But it feels more...impulsive, perhaps. #anim--
 
 - She really believes in her "sparks"....she only used that word a couple of times but it really stuck with me.
 
@@ -1145,7 +1142,7 @@ It must be the same reason she hates the Sea...she said that the Sea was not cap
     -> Lily_O_Q1
 
 * \(Continue\) I also really enjoy my spark sometimes.
-    
+
     ~if_emphasize = true
 
     Oh? What kind of sparks do you have?
@@ -1185,24 +1182,24 @@ It must be the same reason she hates the Sea...she said that the Sea was not cap
 
 - When I think about her...it's envy and hope at the same time. We have our differences. But I get the chance to look at myself through her. Do I still have that spark? It made me think about those things.
     
-...I envy her. That's how I feel, truly.
+...I envy her. That's how I feel, truly. #anim--
 
 {A2_Lily: 
 
-The place was snuffing her out. She would have intrusive thoughts and sudden reactions because of her work...it's like the sparks were turning against her.
+The place was snuffing her out. She would have intrusive thoughts and sudden reactions because of her work...it's like the sparks were turning against her. #anim--
 }
 
 {act_1_lie_lily:
 
-    I hope she recovers...and maybe talk to me soon...
+    I hope she recovers...and maybe talk to me soon... #anim--
     
-    Regardless, I think we should move on.
+    Regardless, I think we should move on. #anim--
     
  - else:
  
-    So much future, gone in an instant...I really don't want to think about it any more...
+    So much future, gone in an instant...I really don't want to think about it any more... #anim--
     
-    I think we should move on.
+    I think we should move on. #anim--
  
 } 
 
@@ -1212,7 +1209,7 @@ The place was snuffing her out. She would have intrusive thoughts and sudden rea
 
 *  Yes, let's switch topics then.
 
-{if_emphasize != true:
+{not if_emphasize:
     Let's be a bit light on the technical debate next time, if it's alright with you.
 }
 
@@ -1224,7 +1221,7 @@ Oh yea? What do you think about it?
 
 * { lily == 0 } I feel that she's a very self-determined person. She understands what she wants. 
 
-    Not quite. She's very firm with her opinions, for sure. But I don't think she knows herself fully.
+    Not quite. She's very firm with her opinions, for sure. But I don't think she knows herself fully. #anim--
     
 * { lily == 1 } I feel that she's lonely. She doesn't have many people to confide in.
 
@@ -1232,7 +1229,7 @@ Oh yea? What do you think about it?
     
 * { lily == 2 } I feel that she's very detached. She doesn't want to be too concerned with matters she can't control.
 
-    It's...close. But not quite true. It's not that she doesn't want to. Lily would never want to self-isolate. She's just protecting herself.
+    It's...close. But not quite true. It's not that she doesn't want to. Lily would never want to self-isolate. She's just protecting herself. #anim--
     
 - Lily knew she's prone to negative thoughts. And those thoughts tend to stick with her.
 
@@ -1266,7 +1263,7 @@ Great! Tell me about it.
 
     Huh...we were sitting near the sidewalk. There are only so many trees on the street. Maybe the Sea is making things up again.
     
-    It was peaceful, sure. But to be honest, I was quite distracted. I couldn't help but started wondering...
+    It was peaceful, sure. But to be honest, I was quite distracted. I couldn't help but started wondering... #anim--
     
 * {lily2 == 1} You both sit among the trees in silence. But it seems like you are distracted. Was something bothering you?
 
@@ -1298,9 +1295,9 @@ Great! Tell me about it.
     
     ** {!act_1_lie_lily} The point is that I sympathize with you, Mey. It must not be easy seeing Lily suffering like that, and imagining the kind of person she might turn into.
     
-- Yes. That was my worry...it almost felt like...I needed to do something about it...
+- Yes. That was my worry...it almost felt like...I needed to do something about it... #anim--
 
-In any case, thanks for sharing. Maybe we should move on?
+In any case, thanks for sharing. Maybe we should move on? #anim--
 
 * Yes, let's talk about something else.
 
@@ -1312,7 +1309,7 @@ In any case, thanks for sharing. Maybe we should move on?
 
 - Yes, everything is coming back to me. It was the reason Lily and I argued. He said something to me.
 
-"You can go upstairs to make textiles. Maybe you'll be more comfortable making clothes."
+"You can go upstairs to make textiles. Maybe you'll be more comfortable making clothes." #anim--
 
 It was cruel. Lily heard it, and started yelling at him.
 
@@ -1342,7 +1339,7 @@ It was cruel. Lily heard it, and started yelling at him.
     
     ** Wouldn't there be people who will do the work anyways?
     
-       Theoretically yes.
+       Theoretically yes. #anim--
     
        But guess what, I was the only Centursian there. So I got to decide. Too bad for the little piglet.
        
@@ -1352,7 +1349,7 @@ It was cruel. Lily heard it, and started yelling at him.
     
         ~cruel++
         
-        That's what he said to pressure me...
+        That's what he said to pressure me... #anim--
     
         You are not wrong. But am I really supposed to accept everything? I can't imagine being so submissive like that.
         
@@ -1376,7 +1373,7 @@ It was cruel. Lily heard it, and started yelling at him.
 
     -- They also have places where people can go for work. It's more stable that way. We can get regular salaries as long as the company gets contracts.
 
-    And the managers would have more control that way...
+    And the managers would have more control that way... #anim--
     
    -> A2_Stefan_Q1
 
@@ -1388,9 +1385,9 @@ It was cruel. Lily heard it, and started yelling at him.
 
 * To be honest, I like "rim gobbler".
 
-    Well yes, You're right, but...
+    Well yes, You're right, but... #anim--
     
-    Hahaha, sorry, it is pretty funny. Strange that I was uncomfortable with those words at that moment.
+    Hahaha, sorry, it is pretty funny. Strange that I was uncomfortable with those words at that moment. #anim--
 
 * Why did you feel uncomfortable?
 
@@ -1400,7 +1397,7 @@ He was one of us back then. Really nice to me and everyone. Everything changed a
 
 He understood a lot of the harshness of the job, so he promised to change the place for the better as a manager.
 
-He really believed it. A new generation and all.
+He really believed it. A new generation and all. #anim--
 
 * It sounds like power corrupted him.
 
@@ -1419,12 +1416,14 @@ And under pressure from the upper division, he found his manager persona. But he
     Haha, I think so. Lily has a confidence in her that men were drawn to.
     
     Especially for a guy like Stefan, approval from Lily would probably mean a lot.
+    
+    But not for Lily, she always felt like Stefan never saw her for who she is, like his wants are more about himself than her.
 
 * He sounds like someone who craves other's approval.
 
-- The more I think about him...all the things he did reek of his pathetic insecurity.
+- The more I think about him...all the things he did reek of his pathetic insecurity. #anim--
 
-It's spite...a lot of spite for me. To think about him now. I could go on.
+It's spite...a lot of spite for me. To think about him now. I could go on. #anim--
 
 * \(Affirm\) You are right to feel spite for him, Mey. Stefan doesn't deserve sympathy.
 
