@@ -277,7 +277,7 @@ Now I need to inquire about the memories. Don't forget to ask how she feels abou
 
     He said something to me at work. It was harsh. Lily said I should've stood up to him. I disagreed...but I don't remember why.
 
-    It's strange...I don't remember what he said to me. It's like a fog in my brain.
+    It's strange...I don't remember what he said to me. It's like a fog in my brain. # anim--
 
     -> A1_Lily_Q
 
@@ -285,7 +285,7 @@ Now I need to inquire about the memories. Don't forget to ask how she feels abou
 
     I don't think so. Lily just needs her space. She butt heads with people. I'm used to the way she acts.
 
-    It felt like smoking was a way for her to process things. But part of it also felt like she was showing that to me, that she was stressed.
+    Smoking was a way for her to process things, obviously. But part of it also felt like she was showing that to me, that she was stressed.
 
     -> A1_Lily_Q
 
@@ -333,13 +333,13 @@ Have you heard anything about the accident? Whether anyone survived? # anim--
 
 * I don't think so...I'm so sorry, Mey.
 
-    God...I can't believe that, she has so much future ahead of her...
+    God...I can't believe that, she has so much future ahead of her... # anim--
     
     Why do I have to bear with this news...it's...all too much. # anim--
 
     ** Again, I'm really sorry, Mey. Both of you will be missed.
 
-    -- I will miss her...I just need some time...maybe the Sea will reset me somehow.
+    -- I will miss her...I just need some time...maybe the Sea will reset me somehow. # anim--
 
 - You can put me back now.
 
@@ -467,7 +467,7 @@ Well, ask away then.
 
     -> A2_Lily_U2
     
-* {ivan > -1} I got access to the memory of you with Ivan during dinner, before the moment you proposed the divorce.
+* {ivan > -1} I retrieved the memory of your divorce with Ivan, Mey.
 
     -> A2_Ivan_U
     
@@ -565,15 +565,16 @@ I think I have a better idea what'll happen this time...
 
 Mey's back to the Sea again. # self # generate
 
-// For creating the memorabilia, Mey is still under the Sea
-
-{scene_var=="A2_Memorabilia": ->A2_Memorabilia}
-
-// Go to After Dive interaction if not
-
 -> A2_After_Dive
 
 == A2_After_Dive ==
+
+// For creating the memorabilia, Mey is still under the Sea
+
+{   scene_var:
+
+    -"A2_Memorabilia": ->A2_Memorabilia
+}
 
 {
     -generate_count <= 1:
@@ -595,7 +596,7 @@ Mey's back to the Sea again. # self # generate
 
 =come_back_1
 
-* Welcome back, Mey. How do you feel?
++ Welcome back, Mey. How do you feel?
 
 ...
 
@@ -609,7 +610,7 @@ Anyway, how is it going?
 
 =come_back_2
 
-* Welcome back, Mey. Do you need a minute?
++ Welcome back, Mey. Do you need a minute?
     
 - Yes... give me a second.
 
@@ -621,7 +622,7 @@ Okay. I think I'm okay now. What's the matter?
 
 =come_back_3
 
-* Do you feel okay, Mey?
++ Do you feel okay, Mey?
 
 - I think I'm getting the hang of it now...I feel fine.
 
@@ -1003,7 +1004,7 @@ It's a part of the Sea, as it is always recording. I try not to imagine those th
 
     Same with any other jobs dealing with the Sea, including yours.
     
-    They just mark those content as something undesirable. Perhaps giving the Sea a stronger signal for those more egregious ones. It's like the Sea is adopting through our inputs.
+    They just mark those content as something undesirable. Perhaps giving the Sea a stronger signal for those more egregious ones. It's like the Sea is adapting to our inputs.
     
     But all we can do is still mere suggesting. The flows are never predictable. Voices can only shape the waves so much. There's no guarantee that the Sea won't give back similar things.
     
@@ -1027,7 +1028,7 @@ And we sat in silence until she was fine. I bought her tea the next day. We got 
 
 ~total_affirmation++
 
-* \(Affirm\) It's good that she has you as her friend.
+* \(Affirm\) It's good that she {act_1_lie_lily: has|had} you as her friend.
 
     ~affirmation++
 
@@ -1354,14 +1355,6 @@ It was cruel. Lily heard it, and started yelling at him.
         You are not wrong. But am I really supposed to accept everything? I can't imagine being so submissive like that.
         
        -> A2_Stefan_Q1
-        
-* {asked_why} \(Question\) You could have accepted the work but intentionally mess it up.
-
-    Haha. It would've been fun, but I don't think it would work.
-    
-    They have hidden test data to see if we did it correctly. They wouldn't pay if I try to get things wrong.
-    
-   -> A2_Stefan_Q1
     
 * \(Question\) Did you work in a factory?
 
@@ -1376,8 +1369,16 @@ It was cruel. Lily heard it, and started yelling at him.
     And the managers would have more control that way... #anim--
     
    -> A2_Stefan_Q1
+   
+* {asked_why} \(Question\) Have you thought about accepting the contract and then messing it up?
 
-*\(Continue\) Why did you and Lily got into a disagreement afterwards?
+    Haha. It would've been fun, but I don't think it would work.
+    
+    They have hidden test data to see if we did it correctly. They wouldn't pay if I try to get things wrong.
+    
+   -> A2_Stefan_Q1
+
+*\(Continue\) Why did you and Lily get into a disagreement afterwards?
 
     I'm fortunate to have Lily to stand up for me, saying I had the right to not accept the contract, and Stefan was being an assohole. But some of the words she used...
 
@@ -1409,7 +1410,7 @@ He really believed it. A new generation and all. #anim--
 
 - We could tell he didn't know how to be in power. It was like he was trying to discover himself through it, and he knew he wasn't as sophisticated. He hated to look uncertain and struggling in front of others, especially Lily.
 
-And under pressure from the upper division, he found his manager persona. But he would still consider himself to be one of us, especially the young ones...but when we started openly criticizing him, he really didn't take that well. Lily's turning on him definitely made him a more cynical person.
+And under pressure from the upper division, he found his manager persona. But he would still consider himself to be one of us, especially the young ones...but when we started openly criticizing him, he really didn't take that well. Lily turning on him definitely made him a more cynical person.
 
 * Was he...fond of Lily?
 
@@ -1933,22 +1934,18 @@ First is {memora_first}, Second is {memora_second}, Leaning first is {memora_lea
 
 Do you want to make this memorabilia?
 
-* Yes
++ Yes
 
     Nice! # make_memora
     
     ~memorabilia++
     ~current_stage = 5
 
-* No
++ No
+
+~scene_var="A2_Hub"
 
 - Let's go back to the generator again. # self # generate
-
-// For creating the memorabilia, Mey is still under the Sea
-
-{scene_var=="A2_Memorabilia"} ->A2_Memorabilia
-
-// Go to After Dive interaction if not
 
 -> A2_After_Dive
 
