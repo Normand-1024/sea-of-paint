@@ -15,6 +15,11 @@ export const GENERATE_WAIT_TYPE = {
     'only_continue_from_generate': 4
 };
 
+export const MEY_PORTRAIT_PATH = {
+    'mey_def': './assets/images/mey_default.png',
+    'mey_sea': './assets/images/mey_sea.png'
+}
+
 export const SPIRIT_NAME = "Mey";
 
 export const MID_INTEGR_THRSH = 60;

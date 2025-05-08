@@ -9,7 +9,7 @@ import ImageGenerator from '../components/imageGenerator.tsx';
 
 import { MarkovScrambler } from '../functions/markovGeneration.tsx';
 
-import {PAGE_STATE, SPIRIT_NAME, MID_INTEGR_THRSH, LOW_INTEGR_THRSH, GENERATE_WAIT_TYPE} from '../constants.tsx';
+import {PAGE_STATE, SPIRIT_NAME, MID_INTEGR_THRSH, LOW_INTEGR_THRSH, GENERATE_WAIT_TYPE, MEY_PORTRAIT_PATH} from '../constants.tsx';
 
 const DIALOGUE_TYPE = {'spirit': 0, 'self-speaking': 1, 'self-thinking': 2, 'machine': 3};
 
@@ -28,6 +28,7 @@ type MachineState = {
     hoveredIndex: number | null;
     clickedIndices: number[];
     partialSpiritLine: string | null;
+    meyPortraitState: string;
 }
 
 class MachinePage extends React.Component<MachineProps, MachineState> {
@@ -41,6 +42,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         hoveredIndex: null,
         clickedIndices: [],
         partialSpiritLine: null,
+        meyPortraitState: "mey_def"
     };
 
     private dialogueEndRef = createRef<HTMLDivElement>();
@@ -415,6 +417,16 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['dialogue'] }));
         }
 
+        // Change Mey's portrait here
+        for (let mey_tag of Object.keys(MEY_PORTRAIT_PATH)){
+            console.log("Checking " + mey_tag + " " + this.state.dialogueRunner.currentTags?.indexOf(mey_tag));
+            if (this.state.dialogueRunner.currentTags && this.state.dialogueRunner.currentTags.indexOf(mey_tag) > -1) {
+                console.log("Changing Mey to " + mey_tag);
+                this.setState(() => ({ meyPortraitState: mey_tag }));
+                break;
+            }
+        }
+
         // Handle announcement when thresholds are crossed
         // if (original_integr > MID_INTEGR_THRSH &&
         //         this.state.dialogueRunner.variablesState["integrity"] < MID_INTEGR_THRSH) {
@@ -480,9 +492,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                     <img id="nameCard"
                         src={!this.state.machineActive ? 
                                 "./assets/images/namecard.png" 
-                                : this.state.generateState == GENERATE_WAIT_TYPE['dialogue'] ?
-                                    "./assets/images/mey_dialogue_1.png"
-                                    : "./assets/images/mey_dialogue_2.png"
+                                : MEY_PORTRAIT_PATH[this.state.meyPortraitState as keyof typeof MEY_PORTRAIT_PATH]
                             }
                         style={{position: this.state.machineActive ? "absolute" : "relative",
                                 right: this.state.machineActive ? "82%" : "0",
