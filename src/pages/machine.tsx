@@ -9,9 +9,10 @@ import ImageGenerator from '../components/imageGenerator.tsx';
 
 import { MarkovScrambler } from '../functions/markovGeneration.tsx';
 
-import {PAGE_STATE, SPIRIT_NAME, MID_INTEGR_THRSH, LOW_INTEGR_THRSH, GENERATE_WAIT_TYPE, MEY_PORTRAIT_PATH} from '../constants.tsx';
+import {PAGE_STATE, SPIRIT_NAME, MID_INTEGR_THRSH, LOW_INTEGR_THRSH} from '../constants.tsx';
 
 const DIALOGUE_TYPE = {'spirit': 0, 'self-speaking': 1, 'self-thinking': 2, 'machine': 3};
+const GENERATE_WAIT_TYPE = {'dialogue': -1, 'wait_for_first': 0, 'generated': 1, 'wait_for_lily1': 2, 'wait_for_lily2': 22, 'wait_for_interpretations': 3, 'only_continue_from_generate': 4};
 
 type MachineProps = {
     pageState: number;
@@ -28,7 +29,6 @@ type MachineState = {
     hoveredIndex: number | null;
     clickedIndices: number[];
     partialSpiritLine: string | null;
-    meyPortraitState: string;
 }
 
 class MachinePage extends React.Component<MachineProps, MachineState> {
@@ -42,15 +42,14 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         hoveredIndex: null,
         clickedIndices: [],
         partialSpiritLine: null,
-        meyPortraitState: "mey_def"
     };
 
     private dialogueEndRef = createRef<HTMLDivElement>();
     private textPromptRef = createRef<HTMLInputElement>();
 
-    private audioA1 = new Audio("./assets/audio/B1.mp3")  
+    private audioA1 = new Audio("./assets/audio/A1.mp3")  
     private audioA1prevTimestamp = 0;
-    private audioA2 = new Audio("./assets/audio/A1.mp3")
+    private audioA2 = new Audio("./assets/audio/B1.mp3")
     private audioA2prevTimestamp = 0;
 
     private clickSound = new Audio("./assets/audio/click.ogg");
@@ -93,9 +92,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     }
     
     componentDidUpdate(prevProps: MachineProps, prevState: MachineState): void {
-        if (prevState.generateState !== this.state.generateState || prevState.dialogueList != this.state.dialogueList) {
-            this.dialogueEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end'});
-        }   
+        this.dialogueEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
 
         if (prevState.generateState !== this.state.generateState) {
             this.playAudio();
@@ -104,11 +101,10 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
 
     componentWillUnmount() {
         window.removeEventListener("keydown", this.handleKeyDown);
-        this.stopAudio();
     }
 
     handleKeyDown = (e: KeyboardEvent) => {
-        if (e.code === "Space" && this.isAnimating) {
+        if (e.code === "Space") {
             e.preventDefault(); 
             this.handleSkipAnimation();
         }
@@ -156,6 +152,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                 this.audioA2prevTimestamp = this.audioA2.currentTime;
                 console.log("starting A1 audio at: ", this.audioA1.currentTime);
                 fadeIn(this.audioA1);
+                console.log("Fading to A1 (dialogue)");
             });
         } else {
             fadeOut(this.audioA1, () => {
@@ -163,16 +160,10 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                 this.audioA1prevTimestamp = this.audioA1.currentTime;
                 console.log("starting A2 audio at: ", this.audioA2.currentTime);
                 fadeIn(this.audioA2);
+                console.log("Fading to A2 (generation)");
             });
         }
     }  
-
-    stopAudio() {
-        this.audioA1.pause();
-        this.audioA1.currentTime = 0;
-        this.audioA2.pause();
-        this.audioA2.currentTime = 0;
-    }
 
     setDialogueVar = (v : string, value : any) => {
         if(!this.state.dialogueRunner) {
@@ -193,10 +184,6 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     }
 
     setToDialogue = () => {
-        if (this.state.dialogueRunner?.variablesState["scene_var"] == "A2_Memorabilia"){
-            this.state.dialogueRunner.ChoosePathString("A2_Memorabilia");
-        }
-
         this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['dialogue'] }));
     }
 
@@ -247,29 +234,11 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
 
     // KK: shows the spirit dialogue letter by letter for a more engaging approach to dialogue
     animateSpiritText = async (fullText: string) => {
-        let blipEvery = 6;    //KK: adjust to be faster/slower as needed
-        let waitTime = 10;
+        const blipEvery = 3;    //KK: adjust to be faster/slower as needed
         let current = "";
     
         this.isAnimating = true;
         this.currentAnimatingText = fullText;
-
-        // Adjust animation speed
-        if (this.state.dialogueRunner != undefined &&
-            this.state.dialogueRunner.currentTags != undefined){
-
-            if (this.state.dialogueRunner.currentTags.indexOf('anim--') > -1) {
-                waitTime = 45; 
-                blipEvery = 3;
-            }
-            // else if (this.state.dialogueRunner.currentTags.indexOf('anim') > -1) {
-            //     waitTime = 15; 
-            //     blipEvery = 6;
-            // }
-            // else {
-            //     this.isAnimating = false;
-            // }
-        }
     
         for (let i = 0; i < fullText.length; i++) {
             if (!this.isAnimating) {
@@ -289,7 +258,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             if (char === "." || char === "?" || char === "!") {
                 await new Promise(res => setTimeout(res, 250));
             } else {
-                await new Promise(res => setTimeout(res, waitTime));
+                await new Promise(res => setTimeout(res, 45));
             }
         }
     
@@ -398,12 +367,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         // If #generate is true, get into image generation mode
         if (this.state.dialogueRunner.currentTags &&
             this.state.dialogueRunner.currentTags.indexOf('generate') > -1) {
-            
-            if (this.state.dialogueRunner.variablesState["current_stage"] < 4)
-                this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['only_continue_from_generate'] }));
-            else
-                this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['wait_for_first'] }));
-
+            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['only_continue_from_generate'] }));
         } // TODO: add wait_for_first after the 3 core memories are found
         else if (this.state.dialogueRunner.currentTags &&
                 this.state.dialogueRunner.currentTags.indexOf('generate_lily1') > -1) {
@@ -415,16 +379,6 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         }
         else {
             this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['dialogue'] }));
-        }
-
-        // Change Mey's portrait here
-        for (let mey_tag of Object.keys(MEY_PORTRAIT_PATH)){
-            console.log("Checking " + mey_tag + " " + this.state.dialogueRunner.currentTags?.indexOf(mey_tag));
-            if (this.state.dialogueRunner.currentTags && this.state.dialogueRunner.currentTags.indexOf(mey_tag) > -1) {
-                console.log("Changing Mey to " + mey_tag);
-                this.setState(() => ({ meyPortraitState: mey_tag }));
-                break;
-            }
         }
 
         // Handle announcement when thresholds are crossed
@@ -471,10 +425,8 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             return "Unlock the Memory of Lily";
         else if (this.state.dialogueRunner?.variablesState["current_stage"] == 3)
             return this.state.dialogueRunner?.variablesState["core_unlocked"] + " out of 3 Core Memories Retrieved";
-        else if (this.state.dialogueRunner?.variablesState["current_stage"] == 4)
-            return "Make a Memorabilium";
-        else if (this.state.dialogueRunner?.variablesState["current_stage"] == 5)
-            return "Conclude Contract when Ready, Memorabilia Count: " + this.state.dialogueRunner?.variablesState["memorabilia"];
+        else if (this.state.dialogueRunner?.variablesState["current_stage"] > 3)
+            return "Write more text";
 
         return "No supposed to be here";
     }
@@ -492,7 +444,9 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                     <img id="nameCard"
                         src={!this.state.machineActive ? 
                                 "./assets/images/namecard.png" 
-                                : MEY_PORTRAIT_PATH[this.state.meyPortraitState as keyof typeof MEY_PORTRAIT_PATH]
+                                : this.state.generateState == GENERATE_WAIT_TYPE['dialogue'] ?
+                                    "./assets/images/mey_dialogue_1.png"
+                                    : "./assets/images/mey_dialogue_2.png"
                             }
                         style={{position: this.state.machineActive ? "absolute" : "relative",
                                 right: this.state.machineActive ? "82%" : "0",
@@ -500,12 +454,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                     </img>
 
                     <div id="dialogueCol"
-                        style={{height: this.state.machineActive ? "90%" : "60%",
-                                overflowY: this.state.generateState==GENERATE_WAIT_TYPE["dialogue"] 
-                                && (this.state.dialogueRunner.canContinue 
-                                    //|| this.state.dialogueRunner.currentChoices.length < 2
-                                    || this.isAnimating) ? "hidden" : "auto"
-                        }}>
+                        style={{height: this.state.machineActive ? "90%" : "60%"}}>
                     
                         <div id="dialogue">
                             {this.state.dialogueList.map((item,index) => {

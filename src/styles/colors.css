@@ -1,0 +1,29 @@
+/* colors.css */
+
+:root {
+    --background-primary: #dddddd;
+    --background-secondary: #9a9a9a;
+    --background-lighter: #ffffff;
+    --menu-background:#171717;
+    --menu-icon: #555555;
+    --menu-hover: #646464;
+    --intro-text: #cecece;
+    --text: #000000;
+    /** --background-primary: #b3b8b3;
+    --background-secondary: #858a85;
+    --background-lighter: #c9cdc9;
+    --menu-background:#201616;
+    --menu-icon: #514040;
+    --menu-hover: #796868;
+    --intro-text: #FFFFFF;
+    --text: #000000; */
+  }
+
+  .MuiButton-root {
+    font-family: 'Courier New', Courier, monospace !important;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: var(--menu-icon) !important;
+    border: 2px solid var(--menu-icon) !important;
+  }
+  

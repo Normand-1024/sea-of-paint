@@ -1,0 +1,86 @@
+/** Machine.css */
+
+.machine-page {
+    display: flex;
+    height: 100%;
+    width: 100%;
+  }
+  
+  .machine-display,
+  .control-display,
+  .middle-toggle {
+    transition: all 0.3s ease;
+    color: var(--text);
+    overflow: hidden; 
+  } 
+
+  .machine-display,
+  .control-display {
+    display: flex;
+    flex-direction: column;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .machine-button-container {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .machine-button {
+    color: var(--menu-icon) !important;
+    border: 2px solid var(--menu-icon) !important;
+    font-size: 1rem;
+    padding: 0.5rem 2rem;
+    font-family: 'Courier New', Courier, monospace !important;
+    text-transform: none !important;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
+  
+  .machine-button:hover {
+    border-color: var(--intro-text) !important;
+    color: var(--intro-text) !important;
+  }
+  
+  .machine-mode .machine-display {
+    width: 70%;
+    background-color: var(--background-primary);
+  }
+  
+  .machine-mode .control-display {
+    width: 25%;
+    background-color: var(--background-secondary);
+  }
+  
+  .control-mode .machine-display {
+    width: 25%;
+    background-color: var(--background-secondary);
+  }
+  
+  .control-mode .control-display {
+    width: 70%;
+    background-color: var(--background-primary);
+  }
+  
+  .middle-toggle {
+    width: 5%;
+    background-color: var(--background-primary);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 1rem;
+  }
+  
+  .middle-toggle button {
+    background: none;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  .middle-toggle button:hover {
+    background-color: var(--background-lighter);
+  }
+  

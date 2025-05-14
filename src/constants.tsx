@@ -1,9 +1,11 @@
 export const PAGE_STATE = {
     "intro": 0,
-    "machine": 1,
-    "painting": 2
-}
-
+    "activate": 1,
+    "machine": 2,
+    "info": 3,
+    "settings": 4,
+    "painting": 5
+  };
 
 export const GENERATE_WAIT_TYPE = {
     'dialogue': -1,
@@ -16,7 +18,7 @@ export const GENERATE_WAIT_TYPE = {
 };
 
 export const MEY_PORTRAIT_PATH = {
-    'mey_def': './assets/images/mey_default.png',
+    'mey_def': './assets/images/mey_default_new.png',
     'mey_sea': './assets/images/mey_sea.png'
 }
 

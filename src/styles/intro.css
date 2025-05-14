@@ -1,0 +1,50 @@
+/** Intro.css */
+
+#storyPage {
+    height: 100vh;
+    width: 100vw;
+    padding: 2rem;
+    background-color: var(--menu-background);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--intro-text);
+    text-align: center;
+    box-sizing: border-box;
+}
+  
+#storyPage h1 {
+    margin-bottom: 2rem;
+}
+
+#storyPage p {
+    font-size: 1.2rem;
+    max-width: 80%;
+    margin-bottom: 1rem;
+}
+
+#storyPage .inactive-line {
+    color: var(--menu-background);
+}
+  
+.intro-button-container {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+  
+.intro-button {
+    color: var(--menu-icon);
+    border: 2px solid var(--menu-icon);
+    font-size: 1rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.intro-button:hover {
+    border-color: var(--intro-text) !important;
+    color: var(--intro-text) !important;
+}
+  
