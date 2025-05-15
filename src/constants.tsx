@@ -20,7 +20,7 @@ export const GENERATE_WAIT_TYPE = {
 };
 
 export const MEY_PORTRAIT_PATH = {
-    'mey_def': './assets/images/mey_default_new.png',
+    'mey_def': './assets/images/mey_default.png',
     'mey_sea': './assets/images/mey_sea.png'
 }
 

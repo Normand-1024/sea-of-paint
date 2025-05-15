@@ -13,7 +13,7 @@ html, body, #root {
 .app-container {
   display: flex;
   height: 100%;
-  border: 10px solid var(--menu-background);
+  border: 20px solid var(--menu-background);
   box-sizing: border-box;
 }
 
@@ -61,7 +61,7 @@ html, body, #root {
 }
 
 
-/************************************* OLD STUFF BELOW */
+/************ OLD STUFF BELOW ***************/
 
 #machinePage {
   width: 80%;
@@ -90,53 +90,9 @@ html, body, #root {
         width: 80%;
         padding-bottom: 4%;
 
-        .spirit-line {
-          width: 60%;
-          float:left;
-          text-align: left;
-          background: white;
-          border: 2px solid white;
-        }
+  
 
-        .spirit-line-hover {
-          width: 60%;
-          float:left;
-          text-align: left;
-          background: white;
-          border: 2px solid yellow;
-        }
-
-        .spirit-line-highlighted {
-          width: 60%;
-          float:left;
-          text-align: left;
-          background: yellow;
-          border: 2px solid yellow;
-        }
-
-        .self-speaking-line {
-          width: 60%;
-          float: right;
-          text-align: right;
-        }
-        
-        .self-thinking-line {
-          width: 52%;
-          color: gray;
-          font-style: italic;
-          float: right;
-          text-align: right;
-        }
-
-        .machine-line {
-          width: 90%;
-          text-align: center;
-          display: inline-block;
-          color:chocolate;
-          font-size: smaller;
-          font-style: oblique;
-          font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-        }
+      
       }
     }
     
@@ -144,31 +100,6 @@ html, body, #root {
       display: inline-block;
       width: 80%;
       padding-top: 4%;
-
-      .button-div {
-        width: 100%;
-
-        .dialogue-button {
-          display: block;
-          margin-left: auto;
-          margin-right: 0;
-          margin-bottom: 1%;
-        }
-        .continue-button {
-          display: block;
-          margin-left: auto;
-          margin-right: auto;
-          margin-bottom: 1%;
-          font-style: oblique;
-        }
-        .machine-button {
-          display: block;
-          margin-left: auto;
-          margin-right: 0;
-          margin-bottom: 1%;
-          font-style: oblique;
-        }
-      }
     }
   }
 

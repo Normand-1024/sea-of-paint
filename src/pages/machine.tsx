@@ -1,18 +1,28 @@
+/**
+ * machine.tsx
+ * renders the machine page, which serves as the primary game interface
+ * toggles between the machine dialogue view and the machine image generator view
+ */
+// @ts-ignore
+
 import React, {createRef, useState} from 'react';
 import { Story } from 'inkjs';
 
-import '../App.css';
+/** Styles */
+import '../styles/machine.css';
+import IconButton from '@mui/material/IconButton';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 
-// @ts-ignore
-import YarnBound from 'yarn-bound';
+/** Helper Components */
 import ImageGenerator from '../components/imageGenerator.tsx';
-
 import { MarkovScrambler } from '../functions/markovGeneration.tsx';
 
+/** Managers */
 import { AudioManager } from '../managers/audio'
 import { AnimationManager } from '../managers/animation'
 
-import {PAGE_STATE, SPIRIT_NAME, MID_INTEGR_THRSH, LOW_INTEGR_THRSH, GENERATE_WAIT_TYPE, MEY_PORTRAIT_PATH, DIALOGUE_TYPE} from '../constants.tsx';
+import {GENERATE_WAIT_TYPE, MEY_PORTRAIT_PATH, DIALOGUE_TYPE} from '../constants.tsx';
+
 
 type MachineProps = {
     pageState: number;
@@ -30,6 +40,7 @@ type MachineState = {
     clickedIndices: number[];
     partialSpiritLine: string | null;
     meyPortraitState: string;
+    mode: 'machine' | 'control';
 }
 
 class MachinePage extends React.Component<MachineProps, MachineState> {
@@ -43,7 +54,8 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         hoveredIndex: null,
         clickedIndices: [],
         partialSpiritLine: null,
-        meyPortraitState: "mey_def"
+        meyPortraitState: "mey_def",
+        mode: 'machine'
     };
 
     private dialogueEndRef = createRef<HTMLDivElement>();
@@ -312,28 +324,30 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     render() {
         if(!this.state.dialogueRunner) {
             console.log("dialogueRunner is undefined");
-            return
+            return null;
         }
+        const { mode } = this.state;
 
         return (
-            <div id="machinePage">
+            <div className={`machine-page ${mode}-mode`}>
 
-                <div id="machineDisplay">
-                    <img id="nameCard"
-                        src={ MEY_PORTRAIT_PATH[this.state.meyPortraitState as keyof typeof MEY_PORTRAIT_PATH] }
-                        style={{position:"absolute", right: "82%" }}>
-                    </img>
+                {/** LEFT PANEL: machine dialogue */}
+                <div className="machine-display">
+                    <img
+                        id="nameCard"
+                        src={MEY_PORTRAIT_PATH[this.state.meyPortraitState as keyof typeof MEY_PORTRAIT_PATH]}
+                        style={{ position: "absolute", right: "82%" }}
+                    />
 
                     <div id="dialogueCol"
-                        style={{height: this.state.machineActive ? "90%" : "60%",
-                                overflowY: this.state.generateState==GENERATE_WAIT_TYPE["dialogue"] 
-                                && (this.state.dialogueRunner.canContinue 
-                                    //|| this.state.dialogueRunner.currentChoices.length < 2
-                                    || (this.state.partialSpiritLine !== null)) ? "hidden" : "auto"
+                        style={{
+                            height: this.state.machineActive ? "90%" : "60%",
+                            overflowY: this.state.generateState === GENERATE_WAIT_TYPE["dialogue"] &&
+                                (this.state.dialogueRunner.canContinue || this.state.partialSpiritLine !== null) ? "hidden" : "auto"
                         }}>
                     
                         <div id="dialogue">
-                            {this.state.dialogueList.map((item,index) => {
+                            {this.state.dialogueList.map((item, index) => {
                                 if (item[0] == DIALOGUE_TYPE['self-speaking'])
                                     return (<p key={index} className='self-speaking-line'>{item[1]}</p>);
                                 else if (item[0] == DIALOGUE_TYPE['self-thinking'])
@@ -366,8 +380,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                             })}
                         </div>
 
-                        <div id="button-container">
-                        {
+                        <div id="button-container"> {
                             !this.state.dialogueRunner.canContinue &&
                             this.state.generateState === GENERATE_WAIT_TYPE['dialogue'] ? (
                                 (this.state.partialSpiritLine !== null) ? null : (
@@ -435,46 +448,57 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                             )
                         }
                         </div>
-
-                        <div ref={this.dialogueEndRef}></div>
-                    
+                        <div ref={this.dialogueEndRef} />
                     </div>
                 </div>
 
-                <div id="machineControl">
-                    <ImageGenerator prompts = {this.state.promptList}
-                                    dialogueRunner = {this.state.dialogueRunner}
-                                    setDialogueVar  = {this.setDialogueVar}
-                                    initiateScene = {this.setToDialogue}
-                                    generateState = {this.state.generateState}
-                                    fillPromptBox = {this.fillPromptBox} ></ImageGenerator>
-
-                    { 
-                    
-                    this.state.machineActive ?
-
-                    <div id="prompt-control">
-                        <input type="text" id="prompt" autoComplete="off" ref={this.textPromptRef}></input>
-
-
-                        {this.state.generateState  == GENERATE_WAIT_TYPE['dialogue'] ?
-                        <button type="button" id="promptSubmit" disabled>Mey is away</button>
-                        :
-                        <button type="button" id="promptSubmit"
-                             onClick = {() => this.updatePromptList()}>Generate</button>}
-
-                        { this.state.dialogueRunner.variablesState["current_stage"] > 0 ?
-                            <p id="objective">{this.getObjectiveText()}</p> : (null)
-                        }
-                    </div> 
-                        
-                    : 
-                    
-                    <div></div>
-
-                    }
+                {/** MIDDLE TOGGLE: switch between dialogue & image generation */}
+                <div className="middle-toggle">
+                    <IconButton
+                    onClick={() => this.setState({ mode: mode === "machine" ? "control" : "machine" })}
+                    sx={{
+                        color: "var(--text)",
+                        backgroundColor: "transparent",
+                        "&:hover": { backgroundColor: "var(--background-primary)" }
+                    }}
+                    >
+                    <SwapHorizIcon />
+                    </IconButton>
                 </div>
 
+                {/** RIGHT PANEL: machine image generation */}
+                <div className="control-display">
+                    <ImageGenerator
+                        prompts={this.state.promptList}
+                        dialogueRunner={this.state.dialogueRunner}
+                        setDialogueVar={this.setDialogueVar}
+                        initiateScene={this.setToDialogue}
+                        generateState={this.state.generateState}
+                        fillPromptBox={this.fillPromptBox}
+                    />
+                    
+                    {this.state.machineActive && (
+                    <div id="prompt-control">
+                        <input type="text" id="prompt" autoComplete="off" ref={this.textPromptRef} />
+                        {this.state.generateState === GENERATE_WAIT_TYPE["dialogue"] ? (
+                        <button type="button" id="promptSubmit" disabled>
+                            Mey is away
+                        </button>
+                        ) : (
+                        <button
+                            type="button"
+                            id="promptSubmit"
+                            onClick={() => this.updatePromptList()}
+                        >
+                            Generate
+                        </button>
+                        )}
+                        {this.state.dialogueRunner.variablesState["current_stage"] > 0 && (
+                        <p id="objective">{this.getObjectiveText()}</p>
+                        )}
+                    </div>
+                    )}
+                </div>
             </div>
         );
     }

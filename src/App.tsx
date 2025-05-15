@@ -50,9 +50,10 @@ function App() {
         {pageState === PAGE_STATE['activate'] && 
           <ActivateMachine onActivate={() => { setPageState(PAGE_STATE.machine); }} />}
         
-        {/**  {pageState == PAGE_STATE['machine'] && <MachinePageTemp />}  */}
         {pageState == PAGE_STATE['machine'] && 
-          <MachinePage pageState={pageState} setPageState={setPageState}></MachinePage>}
+          <MachinePageTemp pageState={pageState} setPageState={setPageState}></MachinePageTemp>}
+        {/* {pageState == PAGE_STATE['machine'] && 
+          <MachinePage pageState={pageState} setPageState={setPageState}></MachinePage>} */}
 
         {pageState == PAGE_STATE['painting'] && 
           <PaintingPage pageState={pageState} setPageState={setPageState}></PaintingPage>}

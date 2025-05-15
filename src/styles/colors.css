@@ -1,10 +1,11 @@
 /* colors.css */
 
 :root {
-    --background-primary: #dddddd;
-    --background-secondary: #9a9a9a;
+    --background-primary: #fdfdfd;
+    --background-secondary: #cfcfcf;
     --background-lighter: #ffffff;
-    --menu-background:#171717;
+    --background-darker: #616161;
+    --menu-background:#202020;
     --menu-icon: #555555;
     --menu-hover: #646464;
     --intro-text: #cecece;

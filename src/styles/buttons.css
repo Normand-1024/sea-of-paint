@@ -1,0 +1,23 @@
+/** buttons.css */
+
+.dialogue-button,
+.continue-button,
+.machine-button {
+  display: block;
+  margin-left: auto;
+  margin-bottom: 1%;
+}
+
+.dialogue-button {
+  margin-right: 0;
+}
+
+.continue-button {
+  margin-right: auto;
+  font-style: oblique;
+}
+
+.machine-button {
+  margin-right: 0;
+  font-style: oblique;
+}
