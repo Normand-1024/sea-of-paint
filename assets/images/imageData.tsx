@@ -56,10 +56,10 @@ export const IMAGE_DATA : Array<any> = [
         "keywords": [["textile"], ["rejected", "refused", "said no"], ["contract"], ["sympathy"], ["spite", "angry"]],
         "interpretations": [
                             ["This is a scene of cruelty. Mey looks hurt after Stefan pressured her with harsh words.",
-                                "some text is supposed to be here"
+                                "Mey looks genuinely affected by Stefan's outright bigotry. Her look at Stefan is one of distress, not sure what to do after her manager just showed what he could do."
                             ],
                             ["This is a scene of disorientation. Mey looks confused after Stefan pressured her with harsh words.",
-                                "Some text is supposed to be here"
+                                "Mey looks unaffected by Stefan's words. Instead, she almost looks concerned for him, in a way."
                             ]
                             ],
         "scene": "A2_Stefan"

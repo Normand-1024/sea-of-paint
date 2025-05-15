@@ -471,6 +471,10 @@ Well, ask away then.
 
     -> A2_Lily_U2
     
+* {stefan > -1} I recovered the memory of you and Stefan, Mey.
+
+    -> A2_Stefan_U
+    
 * {ivan > -1} I retrieved the memory of your divorce with Ivan, Mey.
 
     -> A2_Ivan_U
@@ -514,7 +518,11 @@ Well, ask away then.
     
         ->going_in_2
         
-    -generate_count >= 3:
+    -generate_count == 3:
+        
+        ->going_in_3
+        
+    -generate_count > 3:
     
         Okay, sounds good. I'm ready.
 } 
@@ -556,6 +564,26 @@ Anyways, thank you for reassuring me. You can put me down now.
 I think I have a better idea what'll happen this time...
 
 * I'm glad to hear that. See you soon, Mey.
+
+->diving
+
+=going_in_3
+
+Okay. I still need to take a breath. But I feel alright now.
+
+By the way...what do you mean by core memories? I was wondering how you know what to focus on.
+
+* It's a term from the training manuel. It just means that memories that are more representative of the past, more objective, if that makes sense. It's a rawer material for us to work with.
+
+    ** Non-core memories tend to be messier, but subjective memories that are more like someone's impression of something. It's a bit less reliable, harder to spot where the Machine or the Sea distort it.
+    
+- I never thought about it like that...
+
+...but I'm a bit confused, it feels like we should value both things to understand someone.
+
+* Perhaps, but we should go to the Sea now.
+
+- Okay then. I'm ready.
 
 ->diving
 
@@ -869,7 +897,7 @@ It's like she blamed herself for staying? It just became a bit worrying...like s
     
 I don't think I ever lied the way I did to Lily, however. I guess that's also the reason it was very difficult for me to be content with what I did.
 
-And good news for you, there's probably no other lie for you catch, detective.
+And good news for you, there's probably no other lie for you catch.
 
 Can we move on? I want to remember more things. That's why we're here, right? Not...whatever this is.
 
@@ -1375,7 +1403,7 @@ It was cruel. Lily heard it, and started yelling at him.
     
    -> A2_Stefan_Q1
    
-* {asked_why} \(Question\) Have you thought about accepting the contract and then messing it up?
+* {asked_why} \(Question\) Have you thought about accepting the contract and then intentionally messing it up?
 
     Haha. It would've been fun, but I don't think it would work.
     
@@ -1427,7 +1455,7 @@ And under pressure from the upper division, he found his manager persona. But he
 
 * He sounds like someone who craves other's approval.
 
-- The more I think about him...all the things he did reek of his pathetic insecurity. #anim--
+- The more I think about him...all the things he did reek of his pathetic insecurity. How can an insecure person turn into someone so capable of harm? #anim--
 
 It's spite...a lot of spite for me. To think about him now. I could go on. #anim--
 
@@ -1550,7 +1578,93 @@ I don't know who we are talking about anymore...but asking more question might m
 
 == A2_Stefan_U ==
 
-asd
+* {ivan == 0} Stefan is a terrible person here. You look calm, but you must be hurt greatly inside.
+
+    I don't know...I don't think I was hurt. His words almost felt ridiculous to me. Like textile? Really? That's the best you can do?
+
+* {ivan == 1} You look...confused about how you were supposed to feel about him, despite his outright cruelty.
+
+    That's right. I'm surprised you could see that from just the image.
+    
+    Bigoted words don't affect me, especially the way Stefan delivered it. It almost felt ridiculous to me. Like textile? Really? That's the best you can do?
+    
+- It's about the amateurish nature of it that's bothering me...like he's still a child. He's delivering something that he saw, but didn't genuinely possess.
+
+Like what's up with that? It didn't feel hostile to me...
+
+...almost like...reaching out for help... # anim--
+
+* But he's still a bad manager, yes?
+
+- Yes...the way he put pressure on us with a patronizing smile, like a gross mixture of charisma and power.
+
+He made a lot of changes to make the rising quota: limited bathroom breaks, cameras to prevent us from chatting, employee rankings and all that.
+
+When he wanted older folks to quit, he would measure our performances by groups. But Lily and others would help some of us hit the quota.
+
+* I have heard about some of these practices.
+
+Yes, they were obvious solutions. He promised to change the place when he was promoted. Guess he wasn't as committed than he said he is. It came down on us older folks especially hard, mothers and grandmothers. 
+
+But there's something underneath that he couldn't hide...the mask is still a mask. It's not part of him yet. The Stefan I knew was still there. He hesitated to lashing out, even the things he said to me, I knew he wasn't committed to it.
+
+I wonder a lot...is he worth the effort for me to still remember the good part in him?
+
+~total_affirmation++
+
+~affirmation++
+
+* \(Affirm\) If it causes too much hurt, then you should forget about that part of him.
+
+    Perhaps you are right. Perhaps I am holding onto something that's hurting me. Lily couldn't see that in Stefan. His hestitation was just pathetic to her.
+    
+    Maybe there's a way to help me forget, to see a simpler version of him. So he doesn't take up my energies.
+    
+    ** We can make up names for him.
+    
+        Hahaha, that's a good idea. So I can just remind myself of that name when I think about him.
+        
+        I'm kinda bad at it...do you have any suggestion?
+        
+        ~ temp good = false
+        
+        *** "Insecure manchild"
+        
+            Hmmm...it sounds a bit vanilla...don't you think? Not sure it has sticking power. I'll probably stick to Lily's nicknames rather than this one.
+        
+        *** "Oversize baby"
+        
+            ~ good = true
+            
+            Hahaha, I like that one. It is a versatile insult, for sure, but also impressionable.
+        
+        *** "Walking daddy issues"
+        
+            Hmmm...I'm not sure if he has daddy issues. I don't see it, at least. I'll probably stick to Lily's nicknames rather than this one.
+        
+        *** "Fart sucker"
+        
+            ~ good = true
+            
+            Nice spin on a common nickname! It synegizes really well with "rim gobbler" - a nice combo!
+        
+        *** I don't think we could do better than "little piglet" and "rim gobbler", to be honest.
+        
+            Hahaha, yes. Nobody could beat Lily on this front. Maybe that's what I'll remember from now on.
+        
+        -- Well, it was a fun exercise. {good: Thanks for that. It was a good one.|At least you tried.}
+        
+        *** Yes, but perhaps we should move on, Mey.
+    
+    ** I'm not sure, Mey. Maybe we should move on?
+
+* \(Affirm\) I don't think so. Believing in the good of others is what defines you, Mey.
+
+    Perhaps you are right. 
+
+- Yes, we have talked about Stefan long enough. There's more to remember, I'm sure.
+
+So what's next?
 
 -> A2_Hub
 
@@ -1927,15 +2041,11 @@ I can also wake up Mey anytime now - but I probably shouldn't do it too often. I
 
 ~current_stage = 4
 
-\=== You have reached the end of the content! \====
-
--> END
-
 -> A2_Hub
 
 == A2_Memorabilia ==
 
-First is {memora_first}, Second is {memora_second}, Leaning first is {memora_lean_first}
+NOTICE: THIS IS NOT FINISHED YET. First is {memora_first}, Second is {memora_second}, Leaning first is {memora_lean_first}
 
 Do you want to make this memorabilia?
 
@@ -1958,7 +2068,40 @@ Do you want to make this memorabilia?
 
 ~current_stage = 0
 
+Okay that's great! That means you can put me 
+
+// Choices to overview the memorabilia
+
+So...what now? It's time to put me back to the Sea...correct?
+
+I wonder what'll happen the next time I wake up...perhaps I can finally talk to Fay and Ivan...
+
+* I'm sorry that I lied to you, Mey...
+
+    ** "which passage"
     
-...it really doesn't matter
+        ajskd
+    
+    ** truth?
+    
+- what?
+
+* "again"
+
+* truth
+
+- jklsjad
+
+// Reveal the truth
+
+- ...but that's not right. I just started rethinking so much of my memories, and discovering new things about the past... # anim--
+
+...
+
+If this is what it means: to be subjected to so much bullshit from the Sea and the Machine, and to be something that an entire industry creates, and yet having no clear idea of where my being starts and ends, and becoming a burden to my family...
+
+Then what's the point? If it means disappearing into the Sea to escape these things, then I would choose it, welcome it, even. # anim--
+    
+// To either dissolve or affirm
 
 -> END
