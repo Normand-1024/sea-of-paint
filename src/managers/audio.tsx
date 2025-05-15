@@ -19,7 +19,7 @@ export class AudioManager {
 
   /** KK: function to switch the current audio based on machine state (dialogue or image generation) */
   public play(isDialogue: boolean) {
-    const FADE_DURATION = 1000; // KK: these are in miliseconds
+    const FADE_DURATION = 2000; // KK: these are in miliseconds
     const STEP_TIME = 100;  
     
     const STEPS = FADE_DURATION / STEP_TIME;

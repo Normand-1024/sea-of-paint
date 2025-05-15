@@ -7,6 +7,8 @@ export const PAGE_STATE = {
     "painting": 5
   };
 
+export const DIALOGUE_TYPE = {'spirit': 0, 'self-speaking': 1, 'self-thinking': 2, 'machine': 3};
+
 export const GENERATE_WAIT_TYPE = {
     'dialogue': -1,
     'wait_for_first': 0,
