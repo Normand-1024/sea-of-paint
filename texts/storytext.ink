@@ -1618,6 +1618,8 @@ I wonder a lot...is he worth the effort for me to still remember the good part i
 
     Perhaps you are right. Perhaps I am holding onto something that's hurting me. Lily couldn't see that in Stefan. His hestitation was just pathetic to her.
     
+    And what's the point anyway? It's not like I ever talk to him again.
+    
     Maybe there's a way to help me forget, to see a simpler version of him. So he doesn't take up my energies.
     
     ** We can make up names for him.
@@ -1660,7 +1662,11 @@ I wonder a lot...is he worth the effort for me to still remember the good part i
 
 * \(Affirm\) I don't think so. Believing in the good of others is what defines you, Mey.
 
-    Perhaps you are right. 
+    Perhaps you are right. Even if his job will require him becoming something else, and forgetting where he was and came from. I can still hold onto that part of him, and for him.
+    
+    Even if I won't be able to talk to him again. It's about who I am as a person. All I can do is to wish him the best, and find his way out of this dark path.
+    
+    ** That's very admirable, Mey. But perhaps we should move on.
 
 - Yes, we have talked about Stefan long enough. There's more to remember, I'm sure.
 
