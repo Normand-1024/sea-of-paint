@@ -585,7 +585,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                             ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_lily2'] ? (
                                 <div className="button-div">
                                 <button type="button" className="continue-button" disabled>
-                                    Unlock Memory of Lily to Continue
+                                    Unlock the Core Memory of Lily to Continue
                                 </button>
                                 </div>
                             ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_lily1'] ? (
