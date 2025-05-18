@@ -42,7 +42,7 @@ export const IMAGE_DATA : Array<any> = [
         "descp": "Lily standing and looking afar, her sparks bursting out of her, Mey feels envy and hope toward Lily",
         "descp2": ["Lily standing and looking afar, her","bursting out of her, Mey feels", "and", "toward Lily"],
         "keywords": [["spark"], ["envy"], ["hope"]],
-        "info": "Lily is covered in her \"spark\". This seems to have a significance for Mey.",
+        "info": "Lily is covered in her \"spark\". It seems like a significant thing for Mey. Almost like she's blinded by it.",
         "interpretations": [],
         "scene": "A2_Lily_O",
         "d_var": "d_lily_o"
@@ -68,10 +68,10 @@ export const IMAGE_DATA : Array<any> = [
         "name": "stefan2",
         "id": 12,
         "memory_name": "Stefan stands still looking...",
-        "descp": "Stefan stands still looking away in nervous resentment, just like Fay, Mey feels of sympathy and pity toward Stefan",
+        "descp": "Stefan stands still looking away in nervous resentment, just like Fay, Mey feels guilt and pity toward Stefan",
         "descp2": ["Stefan stands still looking away in nervous resentment, just like", ", Mey feels", "and", "toward Stefan"],
-        "keywords": [["Fay"], ["sympathy"], ["pity"]],
-        "info": "Something is supposed to be here.",
+        "keywords": [["Fay"], ["guilt"], ["pity"]],
+        "info": "Non-core Memories Unlocked. It makes sense now why Stefan is obscured in the memories. Not that it matters now...",
         "interpretations": [],
         "scene": "A2_Stefan_O",
         "d_var": "d_stefan_o"
@@ -103,7 +103,7 @@ export const IMAGE_DATA : Array<any> = [
         "descp": "Ivan becomes entangled in the forces in plants and paint, Mey feels alienation and detachment toward Ivan",
         "descp2": ["Ivan becomes entangled in the", "in plants and paint, Mey feels", "and", "toward Ivan"],
         "keywords": [["force", "vitality"], ["alienation"], ["detachment"]],
-        "info": "Something is supposed to be here",
+        "info": "Ivan's own obsession is swallowing him whole. At least that's what Mey sees in him.",
         "interpretations": [],
         "scene": "A2_Ivan_O",
         "d_var": "d_ivan_o"
