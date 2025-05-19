@@ -8,7 +8,7 @@ import SentenceTransformer from '../functions/sentenceTransformer.tsx';
 import { normalBlend, overlayBlend, hardlightBlend, cmykBlend } from '../functions/blending.tsx';
 import { brightness, randomCMYK, randomHue, saturation, copyOver } from '../functions/imageProcessing.tsx';
 
-import '../App.css';
+import '../styles/candidate.css';
 
 import { IMAGE_DIM, HIGH_BOUND, LOW_BOUND, LEANINIG_INTERVAL } from '../constants.tsx';
 import { IMAGE_DATA } from '../../public/assets/images/imageData.tsx';

@@ -1,9 +1,9 @@
-import React, {useEffect} from 'react';
-import '../App.css'
+import React from 'react';
 import { Story } from 'inkjs';
 
-import {IMAGE_DIM, HIGH_BOUND, LOW_BOUND, GENERATE_WAIT_TYPE, LEANINIG_INTERVAL} from '../constants.tsx';
-import { match } from 'assert';
+import '../styles/candidate.css';
+
+import { HIGH_BOUND, LOW_BOUND, GENERATE_WAIT_TYPE, LEANINIG_INTERVAL} from '../constants.tsx';
 
 type CandidateProps = {
     inprompt: string;

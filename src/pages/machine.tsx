@@ -10,7 +10,6 @@ import { Story } from 'inkjs';
 
 /** Styles */
 import '../styles/machine.css';
-import IconButton from '@mui/material/IconButton';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 
 /** Helper Components */
@@ -453,17 +452,11 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                 </div>
 
                 {/** MIDDLE TOGGLE: switch between dialogue & image generation */}
-                <div className="middle-toggle">
-                    <IconButton
+                <div
+                    className="middle-toggle"
                     onClick={() => this.setState({ mode: mode === "machine" ? "control" : "machine" })}
-                    sx={{
-                        color: "var(--text)",
-                        backgroundColor: "transparent",
-                        "&:hover": { backgroundColor: "var(--background-primary)" }
-                    }}
                     >
-                    <SwapHorizIcon />
-                    </IconButton>
+                    <SwapHorizIcon className="toggle-icon" />
                 </div>
 
                 {/** RIGHT PANEL: machine image generation */}

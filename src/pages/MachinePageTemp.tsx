@@ -79,9 +79,10 @@ class MachinePageTemp extends React.Component<MachineProps, MachineState> {
             this.setState(() => ({ 
                 dialogueRunner: new Story(json)
             }));
-            this.audio.play(true);
         })
         .catch((e) => console.error(e));
+
+        this.audio.play(true);
     }
 
     componentDidUpdate(prevProps: MachineProps, prevState: MachineState): void {
@@ -433,22 +434,45 @@ class MachinePageTemp extends React.Component<MachineProps, MachineState> {
                 </div>
 
                 {/** MIDDLE TOGGLE: switch between dialogue & image generation */}
-                <div className="middle-toggle">
-                    <IconButton
+                <div
+                    className="middle-toggle"
                     onClick={() => this.setState({ mode: mode === "machine" ? "control" : "machine" })}
-                    sx={{
-                        color: "var(--text)",
-                        backgroundColor: "transparent",
-                        "&:hover": { backgroundColor: "var(--background-primary)" }
-                    }}
                     >
-                    <SwapHorizIcon />
-                    </IconButton>
+                    <SwapHorizIcon className="toggle-icon" />
                 </div>
 
                 {/** RIGHT PANEL: machine image generation */}
                 <div className="machine-control-display">
-                  <h2>Image Generator</h2>
+                    <ImageGenerator
+                        prompts={this.state.promptList}
+                        dialogueRunner={this.state.dialogueRunner}
+                        setDialogueVar={this.setDialogueVar}
+                        initiateScene={this.setToDialogue}
+                        generateState={this.state.generateState}
+                        fillPromptBox={this.fillPromptBox}
+                    />
+                    
+                    {this.state.machineActive && (
+                    <div id="prompt-control">
+                        <input type="text" id="prompt" autoComplete="off" ref={this.textPromptRef} />
+                        {this.state.generateState === GENERATE_WAIT_TYPE["dialogue"] ? (
+                        <button type="button" id="promptSubmit" disabled>
+                            Mey is away
+                        </button>
+                        ) : (
+                        <button
+                            type="button"
+                            id="promptSubmit"
+                            onClick={() => this.updatePromptList()}
+                        >
+                            Generate
+                        </button>
+                        )}
+                        {this.state.dialogueRunner.variablesState["current_stage"] > 0 && (
+                        <p id="objective">{this.getObjectiveText()}</p>
+                        )}
+                    </div>
+                    )}
                 </div>
             </div>
         );
