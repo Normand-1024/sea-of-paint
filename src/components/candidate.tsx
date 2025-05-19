@@ -256,8 +256,9 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
             <div className = "candidate">
 
                 <img src={this.props.imageurl} style={{'width': '100%'}}></img>
-                <p style={{'marginTop': 0, 'color': 'gray', 'fontStyle': 'italic'}}>"{this.props.inprompt}"</p>
-
+                <p style={{ marginTop: 0, color: 'gray', fontStyle: 'italic', textAlign: 'center' }}>
+                    "{this.props.inprompt}"
+                </p>
                 { // | noise | distance | unlocked & interpreted | unlocked & not yet interpreted 
 
                 imgName == "noise" ? this.seaDoesNotKnow()

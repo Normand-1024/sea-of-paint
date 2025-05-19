@@ -1,0 +1,14 @@
+/** image.css */
+
+.p5Container {
+  position: relative;
+  top: 13%;
+}
+
+#candidateCol {
+  height: 88%;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  box-sizing: border-box;
+  padding-left: 0.5rem;
+}

@@ -453,21 +453,23 @@ class MachinePageTemp extends React.Component<MachineProps, MachineState> {
                     />
                     
                     {this.state.machineActive && (
-                    <div id="prompt-control">
-                        <input type="text" id="prompt" autoComplete="off" ref={this.textPromptRef} />
-                        {this.state.generateState === GENERATE_WAIT_TYPE["dialogue"] ? (
-                        <button type="button" id="promptSubmit" disabled>
-                            Mey is away
-                        </button>
-                        ) : (
-                        <button
-                            type="button"
-                            id="promptSubmit"
-                            onClick={() => this.updatePromptList()}
-                        >
-                            Generate
-                        </button>
-                        )}
+                    <div className="prompt-control">
+                        <div className="prompt-wrapper">
+                            <input type="text" id="prompt" autoComplete="off" ref={this.textPromptRef} />
+                            {this.state.generateState === GENERATE_WAIT_TYPE["dialogue"] ? (
+                            <button type="button" id="promptSubmit" disabled>
+                                Mey is away
+                            </button>
+                            ) : (
+                            <button
+                                type="button"
+                                id="promptSubmit"
+                                onClick={() => this.updatePromptList()}
+                            >
+                                Generate
+                            </button>
+                            )}
+                        </div>
                         {this.state.dialogueRunner.variablesState["current_stage"] > 0 && (
                         <p id="objective">{this.getObjectiveText()}</p>
                         )}
