@@ -14,7 +14,6 @@ import SettingsModal from './modals/settings';
 /** App Pages */
 import IntroPage from './pages/intro';
 import ActivateMachine from './pages/activate';
-import MachinePageTemp from './pages/MachinePageTemp';
 import MachinePage from './pages/machine.tsx'
 import PaintingPage from './pages/painting.tsx';
 
@@ -51,9 +50,7 @@ function App() {
           <ActivateMachine onActivate={() => { setPageState(PAGE_STATE.machine); }} />}
         
         {pageState == PAGE_STATE['machine'] && 
-          <MachinePageTemp pageState={pageState} setPageState={setPageState}></MachinePageTemp>}
-        {/* {pageState == PAGE_STATE['machine'] && 
-          <MachinePage pageState={pageState} setPageState={setPageState}></MachinePage>} */}
+          <MachinePage pageState={pageState} setPageState={setPageState}></MachinePage>}
 
         {pageState == PAGE_STATE['painting'] && 
           <PaintingPage pageState={pageState} setPageState={setPageState}></PaintingPage>}

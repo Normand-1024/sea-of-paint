@@ -9,7 +9,7 @@
 .machine-page .machine-dialogue-display,
 .machine-page .machine-control-display,
 .machine-page .middle-toggle {
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
   overflow: hidden;
 }
 
@@ -74,7 +74,7 @@
 }
 .portrait-wrapper img {
   display: block;
-  max-width: 200px;
+  /* max-width: 200px; */
   height: auto;
 }
 
@@ -129,7 +129,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 12%;
+  height: 10%;
   padding: 0.5rem;
   box-sizing: border-box;
 }

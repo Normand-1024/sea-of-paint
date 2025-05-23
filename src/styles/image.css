@@ -6,9 +6,9 @@
 }
 
 #candidateCol {
-  height: 88%;
+  height: 90%;
   overflow-y: auto;
   scroll-behavior: smooth;
   box-sizing: border-box;
-  padding-left: 0.5rem;
+  padding: 0.5rem;
 }
