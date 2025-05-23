@@ -61,6 +61,27 @@
   .toggle-icon { display: none; }
 }
 
+/** KK: blink styling */
+@keyframes blink-color {
+  0%, 100% {
+    background-color: var(--background-primary);
+  }
+  50% {
+    background-color: var(--middle-toggle-highlight);
+  }
+}
+
+.middle-toggle.blinking {
+  animation: blink-color 1.5s ease-in-out infinite;
+  transition: none;
+}
+
+.middle-toggle.blinking:hover {
+  animation: none;
+  background-color: var(--middle-toggle-highlight);
+  cursor: pointer;
+}
+
 /** LEFT PANEL: machine dialogue */
 .machine-dialogue-display {
   display: flex;

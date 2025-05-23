@@ -42,6 +42,7 @@ type MachineState = {
     partialSpiritLine: string | null;
     meyPortraitState: string;
     mode: 'machine' | 'control';
+    blinking: boolean;
 }
 
 class MachinePage extends React.Component<MachineProps, MachineState> {
@@ -56,7 +57,8 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         clickedIndices: [],
         partialSpiritLine: null,
         meyPortraitState: "mey_def",
-        mode: 'machine'
+        mode: 'machine',
+        blinking: false
     };
 
     private dialogueEndRef = createRef<HTMLDivElement>();
@@ -64,6 +66,8 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
 
     private audio = new AudioManager();
     private animator = new AnimationManager();
+
+    private dialogueWrapperRef = React.createRef<HTMLDivElement>();
 
     /********** Load the text into markov chain **********/
     componentDidMount() {
@@ -94,7 +98,11 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         /** KK: only switch audio when crossing between "dialogue" and "non-dialogue" */
         const wasDialogue = prevState.generateState === GENERATE_WAIT_TYPE['dialogue'];
         const isDialogue  = this.state.generateState === GENERATE_WAIT_TYPE['dialogue'];
-        if (wasDialogue !== isDialogue) { this.audio.play(isDialogue); }
+        if (wasDialogue !== isDialogue) { 
+            if ((this.state.mode == 'control' && isDialogue) || (this.state.mode == 'machine' && !isDialogue)) this.setState({ blinking: true });
+            this.audio.play(isDialogue); 
+        }
+
     }
 
     componentWillUnmount() {
@@ -138,6 +146,21 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             partial => this.setState({ partialSpiritLine: partial })
         );
     };
+
+    handleToggleClick = () => {
+        this.setState(
+            prev => ({
+                mode: prev.mode === 'machine' ? 'control' : 'machine',
+                blinking: false,
+            }),
+            () => {
+                const dialogue_position = this.dialogueWrapperRef.current;
+                if (dialogue_position) {
+                dialogue_position.scrollTop = dialogue_position.scrollHeight;
+                }
+            }
+        );
+    }
 
     /********** handle dialogue **********/
 
@@ -328,7 +351,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             console.log("dialogueRunner is undefined");
             return null;
         }
-        const { mode } = this.state;
+        const { mode, blinking } = this.state;
 
         return (
             <div className={`machine-page ${mode}-mode`}>
@@ -339,7 +362,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                     <img src={MEY_PORTRAIT_PATH[this.state.meyPortraitState as keyof typeof MEY_PORTRAIT_PATH]} />
                   </div>
 
-                  <div className="dialogue-column-wrapper"
+                  <div ref={this.dialogueWrapperRef} className="dialogue-column-wrapper"
                     style={{ overflowY: this.state.generateState === GENERATE_WAIT_TYPE["dialogue"] &&
                             (this.state.dialogueRunner.canContinue || this.state.partialSpiritLine !== null) ? "hidden" : "auto"
                           }}>
@@ -433,8 +456,8 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
 
                 {/** MIDDLE TOGGLE: switch between dialogue & image generation */}
                 <div
-                    className="middle-toggle"
-                    onClick={() => this.setState({ mode: mode === "machine" ? "control" : "machine" })}
+                    className={`middle-toggle${blinking ? ' blinking' : ''}`}
+                    onClick={this.handleToggleClick}
                     >
                     <SwapHorizIcon className="toggle-icon" />
                 </div>
