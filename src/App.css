@@ -248,6 +248,7 @@
             background-color: #c9b153;
             color: #fff7d1;
             cursor: pointer;
+            box-shadow: rgba(0, 0, 0, 0.5) 4px 4px 2px;
           }
           .memora-button-clickable:hover {
             background-color: #dfc870;
@@ -256,9 +257,13 @@
           .memora-button-clickable:active {
             background-color: #fff7d1;
             color: #dfc870;
+            box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 2px;
           }
           .memora-button-clickable-disabled {
-            color: #dfc870;
+            border-radius: 5px;
+            width: 60%;
+            background-color: #f1e09a;
+            color: #9b8119;
             pointer-events: none;
           }
 

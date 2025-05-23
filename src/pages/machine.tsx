@@ -16,6 +16,8 @@ const DIALOGUE_TYPE = {'spirit': 0, 'self-speaking': 1, 'self-thinking': 2, 'mac
 type MachineProps = {
     pageState: number;
     setPageState: Function;
+    memorabilia: (string | number)[][]; // [id1, id2, interpt1, interpt2, imageURL] x 3
+    setMemorabilia: Function;
 }
 
 type MachineState = {
@@ -42,7 +44,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         hoveredIndex: null,
         clickedIndices: [],
         partialSpiritLine: null,
-        meyPortraitState: "mey_def"
+        meyPortraitState: "mey_def",
     };
 
     private dialogueEndRef = createRef<HTMLDivElement>();
@@ -57,6 +59,8 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     private dialogueSound = new Audio("./assets/audio/dialogue.ogg");
     private isAnimating = false;
     private currentAnimatingText = "";
+    
+	private tempMemData : (string | number)[] = []; // [index, id1, id2, interpt1, interpt2, imageURL]
 
     componentDidMount() {
 
@@ -192,9 +196,10 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         this.forceUpdate();
     }
 
-    setToDialogue = () => {
+    setToDialogue = (memData : (string | number)[] = []) => {
         if (this.state.dialogueRunner?.variablesState["scene_var"] == "A2_Memorabilia"){
             this.state.dialogueRunner.ChoosePathString("A2_Memorabilia");
+            this.tempMemData = memData;
         }
 
         this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['dialogue'] }));
@@ -395,6 +400,24 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         //         this.pushDialogue(this.state.dialogueRunner.Continue());
         // }
 
+        // If make_memora is true, then start inputting memorabilia
+        if (this.state.dialogueRunner.currentTags &&
+            this.state.dialogueRunner.currentTags.indexOf('make_memora') > -1) {
+                this.tempMemData[3] = this.state.dialogueRunner.variablesState["mem_1_interp"];
+                this.tempMemData[4] = this.state.dialogueRunner.variablesState["mem_2_interp"];
+
+                this.props.setMemorabilia(
+                    this.props.memorabilia.map((mem, index) => {
+                        if (index == this.tempMemData[0]){
+                            return this.tempMemData.slice(1);
+                        }
+                        else {
+                            return mem;
+                        }
+                    }
+                ))
+        }
+
         // If #generate is true, get into image generation mode
         if (this.state.dialogueRunner.currentTags &&
             this.state.dialogueRunner.currentTags.indexOf('generate') > -1) {
@@ -419,7 +442,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
 
         // Change Mey's portrait here
         for (let mey_tag of Object.keys(MEY_PORTRAIT_PATH)){
-            console.log("Checking " + mey_tag + " " + this.state.dialogueRunner.currentTags?.indexOf(mey_tag));
+            // console.log("Checking " + mey_tag + " " + this.state.dialogueRunner.currentTags?.indexOf(mey_tag));
             if (this.state.dialogueRunner.currentTags && this.state.dialogueRunner.currentTags.indexOf(mey_tag) > -1) {
                 console.log("Changing Mey to " + mey_tag);
                 this.setState(() => ({ meyPortraitState: mey_tag }));
@@ -472,9 +495,9 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         else if (this.state.dialogueRunner?.variablesState["current_stage"] == 3)
             return this.state.dialogueRunner?.variablesState["core_unlocked"] + " out of 3 Core Memories Retrieved";
         else if (this.state.dialogueRunner?.variablesState["current_stage"] == 4)
-            return "Make a Memorabilium";
+            return "Make one Memorabilium";
         else if (this.state.dialogueRunner?.variablesState["current_stage"] == 5)
-            return "Conclude Contract when Ready, Memorabilia Count: " + this.state.dialogueRunner?.variablesState["memorabilia"];
+            return "Conclude Contract when Ready";
 
         return "No supposed to be here";
     }
@@ -644,7 +667,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                         <button type="button" id="promptSubmit" disabled>Mey is away</button>
                         :
                         <button type="button" id="promptSubmit"
-                             onClick = {() => this.updatePromptList()}>Generate</button>}
+                             onClick = {() => this.updatePromptList()}>Retrieve</button>}
 
                         { this.state.dialogueRunner.variablesState["current_stage"] > 0 ?
                             <p id="objective">{this.getObjectiveText()}</p> : (null)
