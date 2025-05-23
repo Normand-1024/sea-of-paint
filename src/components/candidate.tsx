@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import '../App.css'
+import '../styles/candidate.css'
 import { Story } from 'inkjs';
 
 import {IMAGE_DIM, HIGH_BOUND, LOW_BOUND, GENERATE_WAIT_TYPE, LEANINIG_INTERVAL, UNLOCK_SCORE} from '../constants.tsx';
