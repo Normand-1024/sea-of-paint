@@ -11,6 +11,8 @@
     --intro-text: #cecece;
     --text: #000000;
     --middle-toggle-highlight: #f5de99;
+    --scrollbar-track: var(--background-secondary);
+    --scrollbar-thumb: var(--background-primary);
     /** --background-primary: #b3b8b3;
     --background-secondary: #858a85;
     --background-lighter: #c9cdc9;
