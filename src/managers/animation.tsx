@@ -5,6 +5,7 @@
 
 import { DIALOGUE_TYPE } from '../constants';
 import { AudioManager } from './audio.tsx'
+import { getSpeedMode, SpeedMode } from '../globals';
 
 
 export class AnimationManager {
@@ -12,6 +13,17 @@ export class AnimationManager {
   public currentAnimatingText: string = '';
 
   private audio = new AudioManager();
+
+  private getTimings(mode: SpeedMode): { waitTime: number, blipEvery: number } {
+    switch (mode) {
+      case 'very-slow':  return { waitTime: 100, blipEvery: 20 };
+      case 'slow':       return { waitTime: 60,  blipEvery: 12 };
+      case 'normal':     return { waitTime: 20,  blipEvery: 6  };
+      case 'fast':       return { waitTime: 10,  blipEvery: 4  };
+      case 'very-fast':  return { waitTime: 5,   blipEvery: 2  };
+      default:           return { waitTime: 20,  blipEvery: 6  };
+    }
+  }
 
   /** KK: shows the spirit dialogue letter by letter for a more engaging approach to dialogue */
   async animateSpiritText(
@@ -21,8 +33,7 @@ export class AnimationManager {
     setDialogueList: (list: [number, string][]) => void,
     setPartialSpiritLine: (line: string | null) => void
   ) {
-    let blipEvery = 6;    //KK: adjust to be faster/slower as needed
-    let waitTime = 20;
+    const { waitTime, blipEvery } = this.getTimings(getSpeedMode());
     let current = "";
 
     this.isAnimating = true;

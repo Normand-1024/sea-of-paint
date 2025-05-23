@@ -3,6 +3,8 @@
  * helps manage audio on the machine page
  */
 
+import { getVolume, subscribeVolume } from '../globals';
+
 export class AudioManager {
   private audioA1 = new Audio("./assets/audio/B1.mp3");
   private audioA2 = new Audio("./assets/audio/A1.mp3");
@@ -12,19 +14,29 @@ export class AudioManager {
   private a1Prev = 0;
   private a2Prev = 0;
 
+  private unsubscribeVol: () => void;
+
   constructor() {
     this.audioA1.preload = "auto";
     this.audioA2.preload = "auto";
+
+    const initialVol = getVolume();
+    [this.audioA1, this.audioA2, this.clickSound, this.dialogueSound]
+      .forEach(a => { a.volume = initialVol; });
+
+    this.unsubscribeVol = subscribeVolume(vol => {
+      [this.audioA1, this.audioA2, this.clickSound, this.dialogueSound]
+        .forEach(audio => { audio.volume = vol; });
+    });
   }
 
   /** KK: function to switch the current audio based on machine state (dialogue or image generation) */
   public play(isDialogue: boolean) {
     const FADE_DURATION = 2000; // KK: these are in miliseconds
     const STEP_TIME = 100;  
-    
     const STEPS = FADE_DURATION / STEP_TIME;
+    const targetVol = getVolume();
 
-    
     const fadeOut = (audio: HTMLAudioElement, callback: () => void) => {
         const step = audio.volume / STEPS;
         const fadeInterval = setInterval(() => {
@@ -42,10 +54,10 @@ export class AudioManager {
         audio.loop = true;
         audio.play().catch(err => console.error("Audio failed to play:", err));
 
-        const step = 1 / STEPS;
+        const step = targetVol / STEPS;
         const fadeInterval = setInterval(() => {
-            audio.volume = Math.min(1, audio.volume + step);
-            if (audio.volume >= 0.99) {
+            audio.volume = Math.min(targetVol, audio.volume + step);
+            if (audio.volume >= targetVol - 0.01) {
                 clearInterval(fadeInterval);
             }
         }, STEP_TIME);
@@ -83,5 +95,9 @@ export class AudioManager {
   public playDialogueBlip() {
     this.dialogueSound.currentTime = 0;
     this.dialogueSound.play().catch(() => {});
+  }
+
+  public dispose() {
+    this.unsubscribeVol();
   }
 }
