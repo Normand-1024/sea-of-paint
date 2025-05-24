@@ -1,9 +1,13 @@
 export const PAGE_STATE = {
     "intro": 0,
-    "machine": 1,
-    "painting": 2
-}
+    "activate": 1,
+    "machine": 2,
+    "info": 3,
+    "settings": 4,
+    "painting": 5
+  };
 
+export const DIALOGUE_TYPE = {'spirit': 0, 'self-speaking': 1, 'self-thinking': 2, 'machine': 3};
 
 export const GENERATE_WAIT_TYPE = {
     'dialogue': -1,

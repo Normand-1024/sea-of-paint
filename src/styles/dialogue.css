@@ -1,0 +1,52 @@
+/** dialogue.css */
+
+.spirit-line,
+.spirit-line-hover,
+.spirit-line-highlighted {
+  font-size: medium;
+  width: 60%;
+  float: left;
+  text-align: left;
+}
+
+/* FOR HIGHLIGHTING FUNCTIONALITY
+.spirit-line {
+  border: 2px solid var(--background-primary);
+}
+
+.spirit-line-hover {
+  border: 2px solid yellow;
+}
+
+.spirit-line-highlighted {
+  border: 2px solid yellow;
+  background: yellow;
+} 
+
+.machine-page.control-mode .spirit-line {
+  border: 2px solid var(--background-secondary);
+}
+*/
+
+.self-speaking-line,
+.self-thinking-line {
+  font-size: medium;
+  width: 60%;
+  float: right;
+  text-align: right;
+}
+
+.self-thinking-line {
+  color: var(--background-darker);
+  font-style: italic;
+}
+
+.machine-line {
+  width: 90%;
+  text-align: center;
+  display: inline-block;
+  color:chocolate;
+  font-size: small;
+  font-style: oblique;
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}

@@ -1,17 +1,29 @@
-import React, {createRef, useState} from 'react';
+/**
+ * machine.tsx
+ * renders the machine page, which serves as the primary game interface
+ * toggles between the machine dialogue view and the machine image generator view
+ */
+// @ts-ignore
+
+import React, { createRef } from 'react';
 import { Story } from 'inkjs';
 
-import '../App.css';
+/** Styles */
+import '../styles/machine.css';
+import '../styles/buttons.css';
+import '../styles/dialogue.css';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 
-// @ts-ignore
-import YarnBound from 'yarn-bound';
+/** Helper Components */
 import ImageGenerator from '../components/imageGenerator.tsx';
-
 import { MarkovScrambler } from '../functions/markovGeneration.tsx';
 
-import {PAGE_STATE, SPIRIT_NAME, MID_INTEGR_THRSH, LOW_INTEGR_THRSH, GENERATE_WAIT_TYPE, MEY_PORTRAIT_PATH} from '../constants.tsx';
+/** Managers */
+import { AudioManager } from '../managers/audio'
+import { AnimationManager } from '../managers/animation'
 
-const DIALOGUE_TYPE = {'spirit': 0, 'self-speaking': 1, 'self-thinking': 2, 'machine': 3};
+import {GENERATE_WAIT_TYPE, MEY_PORTRAIT_PATH, DIALOGUE_TYPE} from '../constants.tsx';
+
 
 type MachineProps = {
     pageState: number;
@@ -31,11 +43,13 @@ type MachineState = {
     clickedIndices: number[];
     partialSpiritLine: string | null;
     meyPortraitState: string;
+    mode: 'machine' | 'control';
+    blinking: boolean;
 }
 
 class MachinePage extends React.Component<MachineProps, MachineState> {
     state: MachineState = {
-        machineActive: false,
+        machineActive: true,
         dialogueList: [],
         promptList: [],
         markovScrambler: new MarkovScrambler(),
@@ -45,138 +59,114 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         clickedIndices: [],
         partialSpiritLine: null,
         meyPortraitState: "mey_def",
+        mode: 'machine',
+        blinking: false
     };
 
     private dialogueEndRef = createRef<HTMLDivElement>();
     private textPromptRef = createRef<HTMLInputElement>();
 
-    private audioA1 = new Audio("./assets/audio/B1.mp3")  
-    private audioA1prevTimestamp = 0;
-    private audioA2 = new Audio("./assets/audio/A1.mp3")
-    private audioA2prevTimestamp = 0;
+    private audio = new AudioManager();
+    private animator = new AnimationManager();
 
-    private clickSound = new Audio("./assets/audio/click.ogg");
-    private dialogueSound = new Audio("./assets/audio/dialogue.ogg");
-    private isAnimating = false;
-    private currentAnimatingText = "";
+    private dialogueWrapperRef = React.createRef<HTMLDivElement>();
     
-	private tempMemData : (string | number)[] = []; // [index, id1, id2, interpt1, interpt2, imageURL]
+	  private tempMemData : (string | number)[] = []; // [index, id1, id2, interpt1, interpt2, imageURL]
 
+    /********** Load the text into markov chain **********/
     componentDidMount() {
-
-        // *********** Load the text into markov chain ***********
-
         this.state.markovScrambler.initialize("./assets/markovtext.txt");
-
         window.addEventListener("keydown", this.handleKeyDown);
 
-        // *********** Load the yarn ink into dialogueRunner ***********
-        // fetch("./texts/dialogue.yarn")
-        // .then((res) => res.text())
-        // .then((text) => {
-        //     this.setState(() => ({
-        //         dialogueRunner: new YarnBound({
-        //             dialogue: text,
-        //             variableStorage: this.state.dialogueVar
-        //         })
-        //     }));
-        // })
-        // .catch((e) => console.error(e));
+
         fetch("./texts/storytext.json")
         .then((res) => res.text())
         .then((json) => {
             this.setState(() => ({ 
                 dialogueRunner: new Story(json)
-            }))
+            }));
         })
         .catch((e) => console.error(e));
 
-        this.audioA1.preload = "auto";
-        this.audioA2.preload = "auto";
-        this.playAudio();
+        this.audio.play(true);
     }
-    
+
     componentDidUpdate(prevProps: MachineProps, prevState: MachineState): void {
-        if (prevState.generateState !== this.state.generateState || prevState.dialogueList != this.state.dialogueList) {
-            this.dialogueEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end'});
+        /** KK: scroll dialogue into view when animating */
+        if (prevState.dialogueList.length === 0 && this.state.dialogueList.length === 1){
+            this.dialogueEndRef.current?.parentElement!.scrollTo({ top: 0, behavior: 'auto' });
+        } else if (prevState.dialogueList !== this.state.dialogueList || prevState.partialSpiritLine !== this.state.partialSpiritLine) {
+            this.dialogueEndRef.current?.scrollIntoView({ behavior: 'auto'});
         }   
 
-        if (prevState.generateState !== this.state.generateState) {
-            this.playAudio();
+        /** KK: only switch audio when crossing between "dialogue" and "non-dialogue" */
+        const wasDialogue = prevState.generateState === GENERATE_WAIT_TYPE['dialogue'];
+        const isDialogue  = this.state.generateState === GENERATE_WAIT_TYPE['dialogue'];
+        if (wasDialogue !== isDialogue) { 
+            if ((this.state.mode == 'control' && isDialogue) || (this.state.mode == 'machine' && !isDialogue)) this.setState({ blinking: true });
+            this.audio.play(isDialogue); 
         }
+
     }
 
     componentWillUnmount() {
         window.removeEventListener("keydown", this.handleKeyDown);
-        this.stopAudio();
+        this.audio.stop;
     }
 
+
+    /********** handle key/mouse events **********/
     handleKeyDown = (e: KeyboardEvent) => {
-        if (e.code === "Space" && this.isAnimating) {
+        if (e.code === "Space" && (this.state.partialSpiritLine !== null)) {
             e.preventDefault(); 
             this.handleSkipAnimation();
         }
-    };    
+    }; 
 
-    // KK: function to switch the current audio based on machine state (dialogue or image generation)
-    playAudio() {
-        if (!this.state.machineActive) return;
-    
-        const FADE_DURATION = 1000; // KK: these are in miliseconds
-        const STEP_TIME = 100;      
-        const STEPS = FADE_DURATION / STEP_TIME;
-    
-        const isDialogue = this.state.generateState === GENERATE_WAIT_TYPE['dialogue'];
-    
-        const fadeOut = (audio: HTMLAudioElement, callback: () => void) => {
-            const step = audio.volume / STEPS;
-            const fadeInterval = setInterval(() => {
-                audio.volume = Math.max(0, audio.volume - step);
-                if (audio.volume <= 0.01) {
-                    clearInterval(fadeInterval);
-                    audio.pause();
-                    callback();
-                }
-            }, STEP_TIME);
-        };
-    
-        const fadeIn = (audio: HTMLAudioElement) => {
-            audio.volume = 0;
-            audio.loop = true;
-            audio.play().catch(err => console.error("Audio failed to play:", err));
-    
-            const step = 1 / STEPS;
-            const fadeInterval = setInterval(() => {
-                audio.volume = Math.min(1, audio.volume + step);
-                if (audio.volume >= 0.99) {
-                    clearInterval(fadeInterval);
-                }
-            }, STEP_TIME);
-        };
-    
-        if (!isDialogue) {
-            fadeOut(this.audioA2, () => {
-                this.audioA1.currentTime = this.audioA1prevTimestamp;
-                this.audioA2prevTimestamp = this.audioA2.currentTime;
-                console.log("starting A1 audio at: ", this.audioA1.currentTime);
-                fadeIn(this.audioA1);
-            });
-        } else {
-            fadeOut(this.audioA1, () => {
-                this.audioA2.currentTime = this.audioA2prevTimestamp;
-                this.audioA1prevTimestamp = this.audioA1.currentTime;
-                console.log("starting A2 audio at: ", this.audioA2.currentTime);
-                fadeIn(this.audioA2);
-            });
-        }
-    }  
+    handleMouseEnter = (index: number) => {
+        this.setState({ hoveredIndex: index });
+    };
 
-    stopAudio() {
-        this.audioA1.pause();
-        this.audioA1.currentTime = 0;
-        this.audioA2.pause();
-        this.audioA2.currentTime = 0;
+    handleMouseLeave = () => {
+        this.setState({ hoveredIndex: null });
+    };
+
+    handleClick = (index: number) => {
+        this.setState((prevState) => {
+            const { clickedIndices } = prevState;
+            // unhighlights if the text is already highlighted, otherwise highlights -KK
+            if (clickedIndices.includes(index)) {
+                return { clickedIndices: clickedIndices.filter(i => i !== index) };
+            } else {
+                return { clickedIndices: [...clickedIndices, index] };
+            }
+        });
+    };
+
+    handleSkipAnimation = () => {
+        this.animator.skipAnimation(
+            () => this.state.dialogueList,
+            list    => this.setState({ dialogueList: list }),
+            partial => this.setState({ partialSpiritLine: partial })
+        );
+    };
+
+    handleToggleClick = () => {
+        this.setState(
+            prev => ({
+                mode: prev.mode === 'machine' ? 'control' : 'machine',
+                blinking: false,
+            }),
+            () => {
+                const dialogue_position = this.dialogueWrapperRef.current;
+                if (dialogue_position) {
+                dialogue_position.scrollTop = dialogue_position.scrollHeight;
+                }
+            }
+        );
     }
+
+    /********** handle dialogue **********/
 
     setDialogueVar = (v : string, value : any) => {
         if(!this.state.dialogueRunner) {
@@ -241,102 +231,21 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                     dialogueList: [...state.dialogueList, [DIALOGUE_TYPE['spirit'], ""]],
                     partialSpiritLine: ""
                 }),
-                () => this.animateSpiritText(line!)
+                () => {
+                    this.animator.animateSpiritText(
+                        line!,
+                        this.state.dialogueRunner?.currentTags ?? [],
+                        () => this.state.dialogueList,
+                        list => this.setState({ dialogueList: list }),
+                        partial => this.setState({ partialSpiritLine: partial })
+                    );
+                }
             );            
         } else {
             this.setState(state => ({
                 dialogueList: [...state.dialogueList, newEntry]
             }));
         }
-    }
-
-    // KK: shows the spirit dialogue letter by letter for a more engaging approach to dialogue
-    animateSpiritText = async (fullText: string) => {
-        let blipEvery = 6;    //KK: adjust to be faster/slower as needed
-        let waitTime = 10;
-        let current = "";
-    
-        this.isAnimating = true;
-        this.currentAnimatingText = fullText;
-
-        // Adjust animation speed
-        if (this.state.dialogueRunner != undefined &&
-            this.state.dialogueRunner.currentTags != undefined){
-
-            if (this.state.dialogueRunner.currentTags.indexOf('anim--') > -1) {
-                waitTime = 45; 
-                blipEvery = 3;
-            }
-            // else if (this.state.dialogueRunner.currentTags.indexOf('anim') > -1) {
-            //     waitTime = 15; 
-            //     blipEvery = 6;
-            // }
-            // else {
-            //     this.isAnimating = false;
-            // }
-        }
-    
-        for (let i = 0; i < fullText.length; i++) {
-            if (!this.isAnimating) {
-                break;
-            }
-    
-            const char = fullText[i];
-            current += char;
-            this.setState({ partialSpiritLine: current });
-    
-            if (i % blipEvery === 0 && /[a-zA-Z0-9]/.test(char)) {
-                this.dialogueSound.currentTime = 0;
-                this.dialogueSound.play().catch(() => {});
-            }
-    
-            // KK: pause at end of sentence
-            if (char === "." || char === "?" || char === "!") {
-                await new Promise(res => setTimeout(res, 250));
-            } else {
-                await new Promise(res => setTimeout(res, waitTime));
-            }
-        }
-    
-        this.setState(state => {
-            const updated = [...state.dialogueList];
-            updated[updated.length - 1] = [DIALOGUE_TYPE['spirit'], fullText];
-            return { dialogueList: updated, partialSpiritLine: null };
-        });
-    
-        this.isAnimating = false;
-        this.currentAnimatingText = "";
-    };
-
-    // KK: skips dialogue animation with button press
-    handleSkipAnimation = () => {
-        if (this.isAnimating && this.currentAnimatingText) {
-            this.isAnimating = false;
-    
-            this.setState(state => {
-                const updated = [...state.dialogueList];
-                updated[updated.length - 1] = [DIALOGUE_TYPE['spirit'], this.currentAnimatingText];
-                return { dialogueList: updated, partialSpiritLine: null };
-            });
-        }
-    };
-    
-    activateMachine = () => {
-        if(!this.state.dialogueRunner) {
-            console.log("dialogueRunner is undefined")
-            return
-        }
-
-        this.setState(
-            { machineActive: true },
-            () => {
-                this.playAudio();
-            }
-        );
-
-        //this.updatePromptList(); // generate a random image
-        
-        this.pushDialogue(this.state.dialogueRunner.Continue());
     }
 
     // Updating the prompt list also signals the image generator to start working
@@ -362,8 +271,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     }
 
     handleDialogue = (option : number = -1) => {
-        this.clickSound.currentTime = 0;
-        this.clickSound.play().catch(() => {});
+        this.audio.playClick();
         console.log("played click audio")
 
         if(!this.state.dialogueRunner) {
@@ -393,12 +301,6 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         if (this.state.dialogueRunner.canContinue) {
             this.pushDialogue(this.state.dialogueRunner.Continue());
         }
-        
-        // If $follow is true, print the next statement
-        // while (this.state.dialogueRunner.currentTags &&
-        //     this.state.dialogueRunner.currentTags.indexOf('follow') > -1) {
-        //         this.pushDialogue(this.state.dialogueRunner.Continue());
-        // }
 
         // If make_memora is true, then start inputting memorabilia
         if (this.state.dialogueRunner.currentTags &&
@@ -450,42 +352,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             }
         }
 
-        // Handle announcement when thresholds are crossed
-        // if (original_integr > MID_INTEGR_THRSH &&
-        //         this.state.dialogueRunner.variablesState["integrity"] < MID_INTEGR_THRSH) {
-        //     this.pushSelfDialogue(SPIRIT_NAME + " is overwhelmed by the Voices", 
-        //         DIALOGUE_TYPE['self-thinking']);
-        // }
-        // else if (original_integr > LOW_INTEGR_THRSH &&
-        //         this.state.dialogueRunner.variablesState["integrity"] < LOW_INTEGR_THRSH) {
-        //     this.pushSelfDialogue(SPIRIT_NAME + " is lost to the Sea", 
-        //         DIALOGUE_TYPE['self-thinking']);
-        // }
     }
-    
-    printSomething = () => {
-        console.log("123");
-    }
-
-    handleMouseEnter = (index: number) => {
-        this.setState({ hoveredIndex: index });
-    };
-
-    handleMouseLeave = () => {
-        this.setState({ hoveredIndex: null });
-    };
-
-    handleClick = (index: number) => {
-        this.setState((prevState) => {
-            const { clickedIndices } = prevState;
-            // unhighlights if the text is already highlighted, otherwise highlights -KK
-            if (clickedIndices.includes(index)) {
-                return { clickedIndices: clickedIndices.filter(i => i !== index) };
-            } else {
-                return { clickedIndices: [...clickedIndices, index] };
-            }
-        });
-    };
 
     getObjectiveText = () => {
         if (this.state.dialogueRunner?.variablesState["current_stage"] == 1)
@@ -505,182 +372,153 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     render() {
         if(!this.state.dialogueRunner) {
             console.log("dialogueRunner is undefined");
-            return
+            return null;
         }
+        const { mode, blinking } = this.state;
 
         return (
-            <div id="machinePage">
+            <div className={`machine-page ${mode}-mode`}>
 
-                <div id="machineDisplay">
-                    <img id="nameCard"
-                        src={!this.state.machineActive ? 
-                                "./assets/images/namecard.png" 
-                                : MEY_PORTRAIT_PATH[this.state.meyPortraitState as keyof typeof MEY_PORTRAIT_PATH]
-                            }
-                        style={{position: this.state.machineActive ? "absolute" : "relative",
-                                right: this.state.machineActive ? "82%" : "0",
-                                height: this.state.machineActive ? "" : "40%"}}>
-                    </img>
+                {/** LEFT PANEL: machine dialogue */}
+                <div className="machine-dialogue-display">
+                  <div className="portrait-wrapper">
+                    <img src={MEY_PORTRAIT_PATH[this.state.meyPortraitState as keyof typeof MEY_PORTRAIT_PATH]} />
+                  </div>
 
-                    <div id="dialogueCol"
-                        style={{height: this.state.machineActive ? "90%" : "60%",
-                                overflowY: this.state.generateState==GENERATE_WAIT_TYPE["dialogue"] 
-                                && (this.state.dialogueRunner.canContinue 
-                                    //|| this.state.dialogueRunner.currentChoices.length < 2
-                                    || this.isAnimating) ? "hidden" : "auto"
-                        }}>
-                    
-                        <div id="dialogue">
-                            {this.state.dialogueList.map((item,index) => {
-                                if (item[0] == DIALOGUE_TYPE['self-speaking'])
-                                    return (<p key={index} className='self-speaking-line'>{item[1]}</p>);
-                                else if (item[0] == DIALOGUE_TYPE['self-thinking'])
-                                    return (<p key={index} className='self-thinking-line'>{item[1]}</p>);
-                                else if (item[0] == DIALOGUE_TYPE['machine']) 
-                                    return (<p key={index} className='machine-line'>{item[1]}</p>);
-                                else {
-                                    let css = 'spirit-line';
-                                    if (this.state.clickedIndices.includes(index)) {
-                                        css = 'spirit-line';
-                                    } else if (this.state.hoveredIndex === index) {
-                                        css = 'spirit-line';
-                                    }
+                  <div ref={this.dialogueWrapperRef} className="dialogue-column-wrapper"
+                    style={{ overflowY: this.state.generateState === GENERATE_WAIT_TYPE["dialogue"] &&
+                            (this.state.dialogueRunner.canContinue || this.state.partialSpiritLine !== null) ? "hidden" : "auto"
+                          }}>
+                    {this.state.dialogueList.map((item, index) => {
+                        if (item[0] == DIALOGUE_TYPE['self-speaking'])
+                            return (<p key={index} className='self-speaking-line'>{item[1]}</p>);
+                        else if (item[0] == DIALOGUE_TYPE['self-thinking'])
+                            return (<p key={index} className='self-thinking-line'>{item[1]}</p>);
+                        else if (item[0] == DIALOGUE_TYPE['machine']) 
+                            return (<p key={index} className='machine-line'>{item[1]}</p>);
+                        else {
+                            let css = 'spirit-line';
+                            /* if (this.state.clickedIndices.includes(index)) {
+                                css = 'spirit-line-highlighted';
+                            } else if (this.state.hoveredIndex === index) {
+                                css = 'spirit-line-hover';
+                            } */
 
-                                    const isLast = index === this.state.dialogueList.length - 1;
-                                    const shouldAnimate = item[0] === DIALOGUE_TYPE['spirit'] && this.state.partialSpiritLine !== null;
+                            const isLast = index === this.state.dialogueList.length - 1;
+                            const shouldAnimate = item[0] === DIALOGUE_TYPE['spirit'] && this.state.partialSpiritLine !== null;
 
-                                    return (
-                                        <p
-                                            key={index}
-                                            className={css}
-                                            onMouseEnter={() => this.handleMouseEnter(index)}
-                                            onMouseLeave={this.handleMouseLeave}
-                                            onClick={() => this.handleClick(index)}
-                                        >
-                                            {shouldAnimate && isLast ? this.state.partialSpiritLine : item[1]}
-                                        </p>
-                                    );
-                                }
-                            })}
-                        </div>
-
-                        <div id="button-container">
-                        {
-                            !this.state.machineActive ? (
-                            <div className="button-div">
-                                <button type="button" className="dialogue-button" onClick={this.activateMachine}>
-                                Activate Machine, bring back Mey
-                                </button>
-                            </div>
-                            ) : (
-                            !this.state.dialogueRunner.canContinue &&
-                            this.state.generateState === GENERATE_WAIT_TYPE['dialogue'] ? (
-                                this.isAnimating ? null : (
-                                <>
-                                    {this.state.dialogueRunner.currentChoices.map((op: any, i: number) => {
-                                    if (op.isInvisibleDefault) return <div key={i}></div>;
-                                    return (
-                                        <div className="button-div" key={i}>
-                                        <button
-                                            type="button"
-                                            className="dialogue-button"
-                                            onClick={() => this.handleDialogue(i)}
-                                        >
-                                            {op.text}
-                                        </button>
-                                        </div>
-                                    );
-                                    })}
-                                </>
-                                )
-                            ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_first'] ? (
-                                <div className="button-div">
-                                <button type="button" className="continue-button" disabled>
-                                    Generate one Image to Continue
-                                </button>
-                                </div>
-                            ) : this.state.generateState === GENERATE_WAIT_TYPE['only_continue_from_generate'] ? (
-                                <div className="button-div">
-                                <button type="button" className="continue-button" disabled>
-                                    Wake up Mey from Core Memories
-                                </button>
-                                </div>
-                            ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_lily2'] ? (
-                                <div className="button-div">
-                                <button type="button" className="continue-button" disabled>
-                                    Unlock the Core Memory of Lily to Continue
-                                </button>
-                                </div>
-                            ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_lily1'] ? (
-                                <div className="button-div">
-                                <button type="button" className="continue-button" disabled>
-                                    Wake up Mey from a Core Memory
-                                </button>
-                                </div>
-                            ) : this.state.generateState === GENERATE_WAIT_TYPE['generated'] ? (
-                                <div className="button-div">
-                                <button type="button" className="continue-button" onClick={() => this.setToDialogue()}>
-                                    Bring back Mey
-                                </button>
-                                </div>
-                            ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_interpretations'] ? (
-                                <div className="button-div">
-                                <button type="button" className="continue-button" disabled>
-                                    Finish Interpretations to Continue
-                                </button>
-                                </div>
-                            ) : (
-                                !this.isAnimating && (
-                                <div className="button-div">
-                                    <button type="button" className="continue-button" onClick={() => this.handleDialogue()}>
-                                    Continue
-                                    </button>
-                                </div>
-                                )
-                            )
-                            )
+                            return (
+                                <p
+                                    key={index}
+                                    className={css}
+                                    onMouseEnter={() => this.handleMouseEnter(index)}
+                                    onMouseLeave={this.handleMouseLeave}
+                                    onClick={() => this.handleClick(index)}
+                                >
+                                    {shouldAnimate && isLast ? this.state.partialSpiritLine : item[1]}
+                                </p>
+                            );      
                         }
-                        </div>
+                    })}
 
-                        <div ref={this.dialogueEndRef}></div>
-                    
+                    <div id="button-container"> {
+                        !this.state.dialogueRunner.canContinue &&
+                        this.state.generateState === GENERATE_WAIT_TYPE['dialogue'] ? (
+                            (this.state.partialSpiritLine !== null) ? null : (
+                            <>
+                                {this.state.dialogueRunner.currentChoices.map((op: any, i: number) => {
+                                if (op.isInvisibleDefault) return <div key={i}></div>;
+                                return (
+                                    <button
+                                        type="button"
+                                        className="dialogue-button"
+                                        onClick={() => this.handleDialogue(i)}
+                                    >
+                                        {op.text}
+                                    </button>
+                                );
+                                })}
+                            </>
+                            )
+                        ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_first'] ? (
+                            <button type="button" className="continue-button" disabled>
+                                Generate one Image to Continue
+                            </button>
+                        ) : this.state.generateState === GENERATE_WAIT_TYPE['only_continue_from_generate'] ? (
+                            <button type="button" className="continue-button" disabled>
+                                Wake up Mey from Core Memories
+                            </button>
+                        ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_lily2'] ? (
+                            <button type="button" className="continue-button" disabled>
+                                Unlock Memory of Lily to Continue
+                            </button>
+                        ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_lily1'] ? (
+                            <button type="button" className="continue-button" disabled>
+                                Wake up Mey from a Core Memory
+                            </button>
+                        ) : this.state.generateState === GENERATE_WAIT_TYPE['generated'] ? (
+                            <button type="button" className="continue-button" onClick={() => this.setToDialogue()}>
+                                Bring back Mey
+                            </button>
+                        ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_interpretations'] ? (
+                            <button type="button" className="continue-button" disabled>
+                                Finish Interpretations to Continue
+                            </button>
+                        ) : (
+                            !(this.state.partialSpiritLine !== null) && (
+                              <button type="button" className="continue-button" onClick={() => this.handleDialogue()}>
+                              Continue
+                              </button>
+                            )
+                        )
+                    }
+                    </div>
+                    <div ref={this.dialogueEndRef} />
                     </div>
                 </div>
 
-                <div id="machineControl">
-                    <ImageGenerator prompts = {this.state.promptList}
-                                    dialogueRunner = {this.state.dialogueRunner}
-                                    setDialogueVar  = {this.setDialogueVar}
-                                    initiateScene = {this.setToDialogue}
-                                    generateState = {this.state.generateState}
-                                    fillPromptBox = {this.fillPromptBox} ></ImageGenerator>
-
-                    { 
-                    
-                    this.state.machineActive ?
-
-                    <div id="prompt-control">
-                        <input type="text" id="prompt" autoComplete="off" ref={this.textPromptRef}></input>
-
-
-                        {this.state.generateState  == GENERATE_WAIT_TYPE['dialogue'] ?
-                        <button type="button" id="promptSubmit" disabled>Mey is away</button>
-                        :
-                        <button type="button" id="promptSubmit"
-                             onClick = {() => this.updatePromptList()}>Retrieve</button>}
-
-                        { this.state.dialogueRunner.variablesState["current_stage"] > 0 ?
-                            <p id="objective">{this.getObjectiveText()}</p> : (null)
-                        }
-                    </div> 
-                        
-                    : 
-                    
-                    <div></div>
-
-                    }
+                {/** MIDDLE TOGGLE: switch between dialogue & image generation */}
+                <div
+                    className={`middle-toggle${blinking ? ' blinking' : ''}`}
+                    onClick={this.handleToggleClick}
+                    >
+                    <SwapHorizIcon className="toggle-icon" />
                 </div>
 
+                {/** RIGHT PANEL: machine image generation */}
+                <div className="machine-control-display">
+                    <ImageGenerator
+                        prompts={this.state.promptList}
+                        dialogueRunner={this.state.dialogueRunner}
+                        setDialogueVar={this.setDialogueVar}
+                        initiateScene={this.setToDialogue}
+                        generateState={this.state.generateState}
+                        fillPromptBox={this.fillPromptBox}
+                    />
+                    {this.state.machineActive && (
+                    <div className="prompt-control">
+                        <div className="prompt-wrapper">
+                            <input type="text" id="prompt" autoComplete="off" ref={this.textPromptRef} />
+                            {this.state.generateState === GENERATE_WAIT_TYPE["dialogue"] ? (
+                            <button type="button" id="promptSubmit" disabled>
+                                Mey is away
+                            </button>
+                            ) : (
+                            <button
+                                type="button"
+                                id="promptSubmit"
+                                onClick={() => this.updatePromptList()}
+                            >
+                                Retrieve
+                            </button>
+                            )}
+                        </div>
+                        {this.state.dialogueRunner.variablesState["current_stage"] > 0 && (
+                        <p id="objective">{this.getObjectiveText()}</p>
+                        )}
+                    </div>
+                    )
+                </div>
             </div>
         );
     }

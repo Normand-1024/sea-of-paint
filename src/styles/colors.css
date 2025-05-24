@@ -1,0 +1,34 @@
+/* colors.css */
+
+:root {
+    --background-primary: #fdfdfd;
+    --background-inbetween: #e0e0e0;
+    --background-secondary: #cfcfcf;
+    --background-lighter: #ffffff;
+    --background-darker: #616161;
+    --menu-background:#202020;
+    --menu-icon: #555555;
+    --menu-hover: #646464;
+    --intro-text: #cecece;
+    --text: #000000;
+    --middle-toggle-highlight: #f5de99;
+    --scrollbar-track: var(--background-secondary);
+    --scrollbar-thumb: var(--background-primary);
+    /** --background-primary: #b3b8b3;
+    --background-secondary: #858a85;
+    --background-lighter: #c9cdc9;
+    --menu-background:#201616;
+    --menu-icon: #514040;
+    --menu-hover: #796868;
+    --intro-text: #FFFFFF;
+    --text: #000000; */
+  }
+
+  .MuiButton-root {
+    font-family: 'Courier New', Courier, monospace !important;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: var(--menu-icon) !important;
+    border: 2px solid var(--menu-icon) !important;
+  }
+  

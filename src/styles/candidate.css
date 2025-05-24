@@ -22,9 +22,9 @@
     }
 
     /* Clear floats after the columns */
-    .row {
+    .row-wrapper {
       display: block;
-      margin-bottom: 1%;
+      margin-bottom: 2rem;
     }
 
 /*           

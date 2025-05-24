@@ -1,0 +1,67 @@
+.settings-wrapper {
+  padding: 2rem;
+  color: var(--text);
+  font-family: 'Courier New', Courier, monospace;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.settings-wrapper h1 {
+  margin-bottom: 1rem;
+}
+
+.settings-wrapper p {
+  font-size: large;
+  text-align: center;
+}
+
+.slider-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  margin-bottom: 2rem;
+}
+
+/** KK: adjusts slider color */
+/* .slider-wrapper .MuiSlider-root {
+  color: var(--middle-toggle-highlight); 
+} */
+
+.slider-wrapper p {
+  text-align: left;
+}
+
+.button-wrapper {
+  display: flex;
+  flex-direction: row; 
+  gap: 1rem;
+  margin-top: 2rem;
+  align-items: center;
+}
+
+.shutdown-button,
+.restart-button {
+  font-weight: bold !important;
+  font-size: large !important;
+}
+
+.shutdown-button {
+  background-color: var(--background-secondary) !important;
+}
+
+.shutdown-button:hover {
+  background: var(--background-inbetween) !important;
+  cursor: pointer;
+}
+
+.restart-button {
+  background-color: #d69696 !important;
+}
+
+.restart-button:hover {
+  background: #e6adad !important;
+  cursor: pointer;
+}
+  

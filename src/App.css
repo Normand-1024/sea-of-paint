@@ -1,184 +1,60 @@
-.no-select{ 
-  -webkit-user-select: none; /* Safari */
-  -ms-user-select: none; /* IE 10 and IE 11 */
-  user-select: none; /* Standard syntax */
+/* App.css */
+@import './styles/colors.css';
+
+/* Global Reset */
+html, body, #root {
+  margin: 0;
+  height: 100%;
+  background-color: var(--menu-background);
+  font-family: 'Courier New', Courier, monospace;
+  color: var(--text);
 }
 
-#root {
-  /* max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center; */
+.app-container {
+  display: flex;
+  height: 100%;
+  border: 20px solid var(--menu-background);
+  box-sizing: border-box;
+}
+
+.menu {
+  width: 5%;
+  background-color: var(--menu-background);
+  border-right: 20px solid var(--menu-background);
+  position: relative;
+}
+
+.menu-buttons {
+  position: absolute;
+  bottom: 1rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+}
+.menu button {
+  background: none;
+  border: none;
+  color: var(--menu-icon);
+  padding: 1px;
+  padding-top: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.menu button:hover {
+  color: var(--menu-hover);
+  transform: scale(1.2);
+}  
+
+.menu button svg {
+  width: 100%;
+  height: auto;
   display: block;
-  text-align: -webkit-center;
-  unicode-bidi: isolate;
 }
 
-#storyPage {
-  width: 30%;
-
-  h1 {
-    padding-bottom: 4%;
-  }
-
-  p {
-    display: inline-block;
-    width: 100%;
-    padding-bottom: 2%;
-  }
-}
-
-#machinePage {
-  width: 80%;
-  height: 95vmin;
-  display: inline-block;
-
-  #machineDisplay {
-    width: 57%;
-    height: 100%;
-    display: inline-block;
-
-    #nameCard {
-      display: block;
-      pointer-events: none;
-    }
-
-    #dialogueCol {
-      width: 90%;
-      display: block;
-      overflow-y: auto;
-      background-color: rgba(255,255,255,0.5);
-      /* scroll-behavior: smooth; */
-
-      #dialogue {
-        display: inline-block;
-        width: 80%;
-        padding-bottom: 4%;
-
-        .spirit-line {
-          width: 60%;
-          float:left;
-          text-align: left;
-          background: white;
-          border: 2px solid white;
-        }
-
-        .spirit-line-hover {
-          width: 60%;
-          float:left;
-          text-align: left;
-          background: white;
-          border: 2px solid yellow;
-        }
-
-        .spirit-line-highlighted {
-          width: 60%;
-          float:left;
-          text-align: left;
-          background: yellow;
-          border: 2px solid yellow;
-        }
-
-        .self-speaking-line {
-          width: 60%;
-          float: right;
-          text-align: right;
-        }
-        
-        .self-thinking-line {
-          width: 52%;
-          color: gray;
-          font-style: italic;
-          float: right;
-          text-align: right;
-        }
-
-        .machine-line {
-          width: 90%;
-          text-align: center;
-          display: inline-block;
-          color:chocolate;
-          font-size: smaller;
-          font-style: oblique;
-          font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-        }
-      }
-    }
-    
-    #button-container {
-      display: inline-block;
-      width: 80%;
-      padding-top: 4%;
-
-      .button-div {
-        width: 100%;
-
-        .dialogue-button {
-          display: block;
-          margin-left: auto;
-          margin-right: 0;
-          margin-bottom: 1%;
-        }
-        .continue-button {
-          display: block;
-          margin-left: auto;
-          margin-right: auto;
-          margin-bottom: 1%;
-          font-style: oblique;
-        }
-        .machine-button {
-          display: block;
-          margin-left: auto;
-          margin-right: 0;
-          margin-bottom: 1%;
-          font-style: oblique;
-        }
-      }
-    }
-  }
-
-  #machineControl {
-    width: 38%;
-    height: 100%;
-    float: right;
-
-    #prompt-control {
-      width: 100%;
-      padding-top: 4%;
-
-      #prompt {
-        width: 100%;
-        size: 100;
-      }
-
-      #objective {
-        float:right;
-        user-select: none;
-        border-radius: 3px;
-        padding: 0.5% 2% 0.5% 2%;
-        margin-top: 2%;
-        margin-right: 2%;
-        background-color: #f0f0f0;
-        color: #919191;
-      }
-
-      #promptSubmit {
-        float: right;  
-        margin-top: 2%;
-        padding: 0.5% 2% 0.5% 2%;
-      }
-    }
-  }
-}
-
-
-#paintingPage {
-  width: 80%;
-  height: 95vmin;
-  display: inline-block;
-
-  .p5Container {
-    position: relative;
-    top: 13%;
-  }
+.main-screen {
+  flex: 1;
+  position: relative;
+  background-color: var(--background-primary);
 }

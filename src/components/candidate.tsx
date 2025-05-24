@@ -1,8 +1,9 @@
 import React, {useEffect} from 'react';
-import '../styles/candidate.css'
 import { Story } from 'inkjs';
 
-import {IMAGE_DIM, HIGH_BOUND, LOW_BOUND, GENERATE_WAIT_TYPE, LEANINIG_INTERVAL, UNLOCK_SCORE} from '../constants.tsx';
+import '../styles/candidate.css';
+
+import { HIGH_BOUND, LOW_BOUND, GENERATE_WAIT_TYPE, LEANINIG_INTERVAL, UNLOCK_SCORE} from '../constants.tsx';
 import { match } from 'assert';
 
 type CandidateProps = {
@@ -259,16 +260,21 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
 
         return (
             <div className = "candidate">
-
-                <img src={this.props.imageurl} style={{'width': '100%'}}></img>
-                <p style={{'marginTop': 0, 'color': 'gray', 'fontStyle': 'italic'}}>"{this.props.inprompt}"</p>
-
-                { // | noise | distance | unlocked & interpreted | unlocked & not yet interpreted 
+                <div className="image-wrapper">
+                    <img
+                        src={this.props.imageurl}
+                        className="image"
+                    />
+                    <p className="image-caption">
+                        "{this.props.inprompt}"
+                    </p>
+                </div>
+                { /* | noise | distance | unlocked & interpreted | unlocked & not yet interpreted */ 
 
                 imgName == "noise" ? this.seaDoesNotKnow()
                 : !matched ?
                         // Render the top five memories
-                        <div className = "row">
+                        <div className = "row-wrapper">
                             <p   className = "column left" style={{'marginTop': 0}}> 
                                 <big>Memories sorted by Resonance:</big> 
 
