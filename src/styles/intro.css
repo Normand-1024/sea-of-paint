@@ -16,7 +16,7 @@
   
 #storyPage h1 {
     margin-bottom: 2rem;
-    font-size: xx-large;
+    font-size: xx-large !important;
 }
 
 #storyPage p {
@@ -38,9 +38,9 @@
 .intro-button {
     color: var(--menu-icon);
     border: 2px solid var(--menu-icon);
-    font-size: large;
+    font-size: large !important;
     font-family: 'Courier New', Courier, monospace;
-    font-weight: bold;
+    font-weight: bold !important;
     letter-spacing: 0.5px;
 }
 

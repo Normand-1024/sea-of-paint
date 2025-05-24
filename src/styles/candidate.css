@@ -31,10 +31,10 @@
 }
 
 /** LAYOUT */
-.candidate .row-wrapper    { display: block; margin-bottom: 2rem; }
-.candidate .column { display: inline-block; text-align: left; vertical-align: middle; }
-.candidate .left   { width: 25%; margin-right: 5%; }
-.candidate .right  { width: 70%; }
+.candidate .row-wrapper { display: block; margin-bottom: 2rem; }
+.candidate .column      { display: inline-block; text-align: left; vertical-align: middle; }
+.candidate .left        { width: 25%; margin-right: 5%; }
+.candidate .right       { width: 70%; }
 
 /** MODE HANDLING */
 /** dialogue mode */

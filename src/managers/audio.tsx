@@ -3,8 +3,7 @@
  * helps manage audio on the machine page
  */
 
-import { getVolume, subscribeVolume } from '../globals';
-
+import { getMusicVolume, subscribeMusicVolume, getSfxVolume, subscribeSfxVolume } from '../globals';
 export class AudioManager {
   private audioA1 = new Audio("./assets/audio/B1.mp3");
   private audioA2 = new Audio("./assets/audio/A1.mp3");
@@ -14,18 +13,30 @@ export class AudioManager {
   private a1Prev = 0;
   private a2Prev = 0;
 
-  private unsubscribeVol: () => void;
+  private unsubscribeMusic: () => void;
+  private unsubscribeSfx:   () => void;
 
   constructor() {
     this.audioA1.preload = "auto";
     this.audioA2.preload = "auto";
 
-    const initialVol = getVolume();
-    [this.audioA1, this.audioA2, this.clickSound, this.dialogueSound]
-      .forEach(a => { a.volume = initialVol; });
+    /** KK: set up music volume */
+    const initialMusicVol = getMusicVolume();
+    [this.audioA1, this.audioA2]
+      .forEach(audio => { audio.volume = initialMusicVol; });
 
-    this.unsubscribeVol = subscribeVolume(vol => {
-      [this.audioA1, this.audioA2, this.clickSound, this.dialogueSound]
+    this.unsubscribeMusic = subscribeMusicVolume(vol => {
+      [this.audioA1, this.audioA2]
+        .forEach(audio => { audio.volume = vol; });
+    });
+
+    /** KK: set up sfx volume */
+    const initialSfxVol = getSfxVolume();
+    [this.clickSound, this.dialogueSound]
+      .forEach(audio => { audio.volume = initialSfxVol; });
+
+    this.unsubscribeSfx = subscribeSfxVolume(vol => {
+      [this.clickSound, this.dialogueSound]
         .forEach(audio => { audio.volume = vol; });
     });
   }
@@ -35,7 +46,7 @@ export class AudioManager {
     const FADE_DURATION = 2000; // KK: these are in miliseconds
     const STEP_TIME = 100;  
     const STEPS = FADE_DURATION / STEP_TIME;
-    const targetVol = getVolume();
+    const targetVol = getMusicVolume();
 
     const fadeOut = (audio: HTMLAudioElement, callback: () => void) => {
         const step = audio.volume / STEPS;
@@ -98,6 +109,7 @@ export class AudioManager {
   }
 
   public dispose() {
-    this.unsubscribeVol();
+    this.unsubscribeMusic();
+    this.unsubscribeSfx();
   }
 }

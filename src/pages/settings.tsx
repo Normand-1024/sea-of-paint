@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Typography, Slider, Stack, Button } from '@mui/material';
-import { getVolume, setVolume, getSpeedMode, setSpeedMode, SpeedMode } from '../globals';
+import { Slider, Button } from '@mui/material';
+import { getMusicVolume, setMusicVolume, getSfxVolume, setSfxVolume, getSpeedMode, setSpeedMode, SpeedMode } from '../globals';
 import '../styles/settings.css';
 import '../styles/colors.css';
 
@@ -13,8 +13,8 @@ const speedOptions: { value: SpeedMode; label: string }[] = [
 ];
 
 const SettingsPage: React.FC = () => {
-  const [vol, setVolState] = useState<number>(getVolume() * 100);
-  // derive initial index from current speed mode
+  const [mVol, setMusicVolState] = useState<number>(getMusicVolume() * 100);
+  const [sfxVol, setSfxVolState] = useState<number>(getSfxVolume() * 100);
   const initialSpeedIndex = speedOptions.findIndex(
     opt => opt.value === getSpeedMode()
   );
@@ -22,13 +22,22 @@ const SettingsPage: React.FC = () => {
     initialSpeedIndex >= 0 ? initialSpeedIndex : 2
   );
 
-  const handleVolumeChange = (
+  const handleMusicVolumeChange = (
     _event: Event,
     newValue: number | number[]
   ) => {
     const pct = Array.isArray(newValue) ? newValue[0] : newValue;
-    setVolState(pct);
-    setVolume(pct / 100);
+    setMusicVolState(pct);
+    setMusicVolume(pct / 100);
+  };
+
+  const handleSfxVolumeChange = (
+    _event: Event,
+    newValue: number | number[]
+  ) => {
+    const pct = Array.isArray(newValue) ? newValue[0] : newValue;
+    setSfxVolState(pct);
+    setSfxVolume(pct / 100);
   };
 
   const handleSpeedSlider = (
@@ -46,10 +55,22 @@ const SettingsPage: React.FC = () => {
       <h1>Game Settings</h1>
 
       <div className = "slider-wrapper">
-        <p>Volume: {vol}%</p>
+        <p>Music Volume: {mVol}%</p>
         <Slider
-          value={vol}
-          onChange={handleVolumeChange}
+          value={mVol}
+          onChange={handleMusicVolumeChange}
+          aria-labelledby="volume-slider"
+          min={0}
+          max={100}
+          valueLabelDisplay="auto"
+        />
+      </div>
+
+      <div className = "slider-wrapper">
+        <p>Sound Effect Volume: {sfxVol}%</p>
+        <Slider
+          value={sfxVol}
+          onChange={handleSfxVolumeChange}
           aria-labelledby="volume-slider"
           min={0}
           max={100}
@@ -75,11 +96,8 @@ const SettingsPage: React.FC = () => {
       </div>
 
       <div className="button-wrapper">
-        <Button className="shutdown-button" variant="outlined">
-          Shutdown Machine
-        </Button>
         <Button className="restart-button" variant="outlined">
-          Restart Game
+          Back to Main Menu
         </Button>
       </div>
     </div>

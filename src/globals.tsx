@@ -1,6 +1,7 @@
 /** globals.tsx */
 
-let volume = 1.0;
+let musicVolume = 1.0;
+let sfxVolume = 1.0;
 
 export type SpeedMode = 
   | 'very-slow' 
@@ -12,16 +13,26 @@ export type SpeedMode =
 let speedMode: SpeedMode = 'normal';
 
 /** Volume API */
-const audioListeners = new Set<(v: number) => void>();
-export function subscribeVolume(fn: (v: number) => void) {
-  audioListeners.add(fn);
-  return () => { audioListeners.delete(fn); };
+const musicListeners = new Set<(v: number) => void>();
+export function subscribeMusicVolume(fn: (v: number) => void) {
+  musicListeners.add(fn);
+  return () => { musicListeners.delete(fn); };
+}
+export function getMusicVolume(): number { return musicVolume; }
+export function setMusicVolume(v: number) {
+  musicVolume = Math.min(1, Math.max(0, v));
+  musicListeners.forEach(fn => fn(musicVolume));
 }
 
-export function getVolume(): number { return volume; }
-export function setVolume(v: number) {
-  volume = Math.min(1, Math.max(0, v));
-  audioListeners.forEach(fn => fn(volume));
+const sfxListeners = new Set<(v: number) => void>();
+export function subscribeSfxVolume(fn: (v: number) => void) {
+  sfxListeners.add(fn);
+  return () => { sfxListeners.delete(fn); };
+}
+export function getSfxVolume(): number { return sfxVolume; }
+export function setSfxVolume(v: number) {
+  sfxVolume = Math.min(1, Math.max(0, v));
+  sfxListeners.forEach(fn => fn(sfxVolume));
 }
 
 /** Speed API */

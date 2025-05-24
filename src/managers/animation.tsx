@@ -33,14 +33,14 @@ export class AnimationManager {
     setDialogueList: (list: [number, string][]) => void,
     setPartialSpiritLine: (line: string | null) => void
   ) {
-    const { waitTime, blipEvery } = this.getTimings(getSpeedMode());
+    let { waitTime, blipEvery } = this.getTimings(getSpeedMode());
     let current = "";
 
     this.isAnimating = true;
     this.currentAnimatingText = fullText;
     
     /* if (currentTags.indexOf('anim--') > -1) {
-        waitTime = 45; 
+        waitTime = waitTime*10; 
         blipEvery = 3;
     } */
 

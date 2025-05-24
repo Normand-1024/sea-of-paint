@@ -163,7 +163,6 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     }
 
     /********** handle dialogue **********/
-
     setDialogueVar = (v : string, value : any) => {
         if(!this.state.dialogueRunner) {
             console.log("dialogueRunner is undefined");
