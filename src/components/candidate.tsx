@@ -327,7 +327,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                             </div>
                         </div>
                 : this.props.dialogueRunner.variablesState[imgName] > -1  ? 
-                    <div>
+                    <div className = "row-wrapper">
                         <p className = "copiable-prompt-reveal">"{this.props.imgData[imgName]["descp"]}"</p>
                         <p className = "interpret-line">
                             {if_top_main ? 
@@ -345,7 +345,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                         </p>
                     </div>
                 :   // The buttons for interpretations
-                    <div>
+                    <div className = "row-wrapper">
                     <p className = "copiable-prompt-reveal">"{this.props.imgData[imgName]["descp"]}"</p>
                     <p style={{'marginTop': 0}}>Core memory retrieved. But what is this picture saying? </p>
                     {   

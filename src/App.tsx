@@ -51,7 +51,7 @@ function App() {
               <ActivateMachine onActivate={() => { setPageState(PAGE_STATE.machine); }} />}
 
             {pageState == PAGE_STATE['machine'] && 
-              <MachinePage pageState={pageState} setPageState={setPageState}>
+              <MachinePage pageState={pageState} setPageState={setPageState}
                         memorabilia={memorabilia} setMemorabilia={setMemorabilia}></MachinePage>}
 
             {pageState == PAGE_STATE['painting'] && 

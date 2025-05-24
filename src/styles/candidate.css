@@ -1,7 +1,11 @@
 /** candidate.css */
 
 .candidate {
-    /* Create two unequal columns that floats next to each other */
+    /* Create two unequal columns that floats next to each other */  
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+
     p {
       color: #686868;
     }
@@ -21,10 +25,26 @@
       width: 70%;
     }
 
-    /* Clear floats after the columns */
     .row-wrapper {
-      display: block;
+      height: 100%;
       margin-bottom: 2rem;
+    }
+
+    /** IMAGE */
+    .image-wrapper {
+      width: 100%;
+    }
+
+    .image-wrapper .image {
+      /* width: 100%; */
+      display: block;
+    }
+
+    .image-wrapper .image-caption {
+      margin-top: 10px;
+      color: gray;
+      font-style: italic;
+      text-align: center;
     }
 
 /*           
@@ -351,4 +371,29 @@
       box-shadow: rgba(213, 217, 217, 1) 0 0px 2px 0;font-size: 14px;
       transform: translateY(0);
     }
+}
+
+/** MODE HANDLING */
+/** dialogue mode */
+.machine-page.machine-mode .candidate .row-wrapper {
+  display: none;
+}
+.machine-page.machine-mode .candidate .image-wrapper {
+  width: 100%;
+}
+
+/** control mode */
+/* .machine-page.control-mode .candidate {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+} */
+
+.machine-page.control-mode .candidate .image-wrapper {
+  flex: 0 0 40%;
+}
+
+.machine-page.control-mode .candidate .row-wrapper {
+  flex: 0 0 50%;
+  display: block;
 }

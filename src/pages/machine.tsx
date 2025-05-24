@@ -516,7 +516,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                         <p id="objective">{this.getObjectiveText()}</p>
                         )}
                     </div>
-                    )
+                    )}
                 </div>
             </div>
         );

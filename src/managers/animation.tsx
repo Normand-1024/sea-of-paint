@@ -15,6 +15,7 @@ export class AnimationManager {
   private audio = new AudioManager();
 
   private getTimings(mode: SpeedMode): { waitTime: number, blipEvery: number } {
+    return { waitTime: 10,  blipEvery: 6  };
     switch (mode) {
       case 'very-slow':  return { waitTime: 100, blipEvery: 20 };
       case 'slow':       return { waitTime: 60,  blipEvery: 12 };
@@ -39,10 +40,10 @@ export class AnimationManager {
     this.isAnimating = true;
     this.currentAnimatingText = fullText;
     
-    /* if (currentTags.indexOf('anim--') > -1) {
-        waitTime = waitTime*10; 
+    if (currentTags.indexOf('anim--') > -1) {
+        waitTime = 45; 
         blipEvery = 3;
-    } */
+    }
 
     const initialList = getDialogueList();
     setDialogueList([...initialList, [DIALOGUE_TYPE['spirit'], '']]);
