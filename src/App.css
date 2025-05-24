@@ -13,14 +13,14 @@ html, body, #root {
 .app-container {
   display: flex;
   height: 100%;
-  border: 20px solid var(--menu-background);
+  border: 10px solid var(--menu-background);
   box-sizing: border-box;
 }
 
 .menu {
   width: 5%;
   background-color: var(--menu-background);
-  border-right: 20px solid var(--menu-background);
+  border-right: 10px solid var(--menu-background);
   position: relative;
 }
 

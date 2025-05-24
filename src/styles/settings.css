@@ -1,5 +1,4 @@
 .settings-wrapper {
-  padding: 1rem;
   color: var(--text);
   font-family: 'Courier New', Courier, monospace;
   display: flex;
@@ -13,7 +12,7 @@
 }
 
 .settings-wrapper p {
-  font-size: large;
+  font-size: medium;
   text-align: center;
 }
 
@@ -21,7 +20,7 @@
   display: flex;
   flex-direction: column;
   width: 60%;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 /** KK: adjusts slider color */
@@ -36,28 +35,15 @@
 .button-wrapper {
   display: flex;
   flex-direction: row; 
-  gap: 1rem;
-  margin-top: 2rem;
+  gap: 0.5rem;
+  margin-top: 1rem;
   align-items: center;
-}
-
-.shutdown-button,
-.restart-button {
-  font-weight: bold !important;
-  font-size: large !important;
-}
-
-.shutdown-button {
-  background-color: var(--background-secondary) !important;
-}
-
-.shutdown-button:hover {
-  background: var(--background-inbetween) !important;
-  cursor: pointer;
 }
 
 .restart-button {
   background-color: #d69696 !important;
+  font-weight: bold !important;
+  font-size: medium !important;
 }
 
 .restart-button:hover {
