@@ -84,13 +84,13 @@ VAR mem_2_interp = -1
 // ~ core_unlocked = 1
 // -> A2_Hub
 
-// ~ lily = 0
-// ~ lily2 = 0
-// ~ lily_spark = 0
-// ~ ivan = 0 
-// ~ current_stage = 4
-// ~ core_unlocked = 3
-// -> A2_Hub
+~ lily = 0
+~ lily2 = 0
+~ lily_spark = 0
+~ ivan = 0 
+~ current_stage = 4
+~ core_unlocked = 3
+-> A2_Hub
 
 - What is this? Why is it so dark here? # anim--
 
