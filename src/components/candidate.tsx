@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Story } from 'inkjs';
 
 import '../styles/candidate.css';
 
-import { HIGH_BOUND, LOW_BOUND, GENERATE_WAIT_TYPE, LEANINIG_INTERVAL} from '../constants.tsx';
+import { HIGH_BOUND, LOW_BOUND, GENERATE_WAIT_TYPE, LEANINIG_INTERVAL, UNLOCK_SCORE} from '../constants.tsx';
+import { match } from 'assert';
 
 type CandidateProps = {
     inprompt: string;
@@ -28,8 +29,6 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
     state: CandidateState = {
         imageurl: "public/assets/images/placeholder.jpg"
     }
-
-    private aboveHigh = this.props.similarities[0].score > HIGH_BOUND;
 
     getMemInfo(  image_name : string,
                  image_score : number,
@@ -112,11 +111,18 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
         this.props.setDialogueVar("scene_var", "A2_Memorabilia");
         this.props.setDialogueVar("memora_first", this.props.similarities[0].name);
         this.props.setDialogueVar("memora_second", this.props.similarities[1].name);
+        this.props.setDialogueVar("mem_1_line_1", this.props.imgData[this.props.similarities[0].name]["memorabilia"][0]);
+        this.props.setDialogueVar("mem_1_line_2", this.props.imgData[this.props.similarities[0].name]["memorabilia"][1]);
+        this.props.setDialogueVar("mem_2_line_1", this.props.imgData[this.props.similarities[1].name]["memorabilia"][0]);
+        this.props.setDialogueVar("mem_2_line_2", this.props.imgData[this.props.similarities[1].name]["memorabilia"][1]);
         
         let sim_diff = this.props.similarities[0].score - this.props.similarities[1].score;
-        this.props.setDialogueVar("memora_lean_first", (sim_diff > LEANINIG_INTERVAL).toString());
+        this.props.setDialogueVar("memora_lean_first", sim_diff > LEANINIG_INTERVAL);
 
-        this.props.initiateScene();
+        let index = this.props.dialogueRunner.variablesState["memorabilia"];
+        let imgURL = this.props.imageurl;
+
+        this.props.initiateScene([index, this.props.similarities[0].name, this.props.similarities[1].name, -1, -1, imgURL]);
     }
 
     fillPromptBox(text : string) {
@@ -245,7 +251,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
 
         // check if paths to unlocked the image has been traversed
         let imgName = this.props.imgName;
-        let matched = this.aboveHigh;
+        let matched = this.props.similarities[0].score == UNLOCK_SCORE;
         let if_top_main : boolean = imgName != "noise" && this.props.imgData[imgName]["interpretations"].length > 0;
         let if_top_two_retrieved = 
             this.props.similarities[0].name != "noise" && this.props.similarities[1].name != "noise"
@@ -286,12 +292,12 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                                     
                                     {this.props.dialogueRunner.variablesState["current_stage"] < 4 ? (null)
                                     : this.props.dialogueRunner.variablesState["memorabilia"] >= 3 ?
-                                        <div id="memora-button-locked"> Memorabilia Count Full </div>
+                                        <div id="memora-button memora-button-locked"> Memorabilia Count Full </div>
                                     : if_top_two_retrieved ?
                                         (this.props.generateState == GENERATE_WAIT_TYPE['dialogue'] ? 
-                                        <div className= "memora-button memora-button-clickable-disabled " > <br></br> </div>
+                                        <div className= "memora-button memora-button-clickable-disabled " > Submerge Mey to Make this Memorabilium </div>
                                         :<div className= "memora-button memora-button-clickable" onClick = {() => this.initiateMemoribilumScene()}> Make Memorabilium </div>)
-                                    :   <div className="memora-button memora-button-locked"> Retrieve Both Memories for Memorabilium </div>}
+                                    :   <div className="memora-button memora-button-locked"> Both Memories Should be Retrieved/Gold for Memorabilium </div>}
 
                                     {this.props.similarities.slice(0,2).map(
                                         (img:any, i:number) => {

@@ -29,9 +29,10 @@ export const SPIRIT_NAME = "Mey";
 export const MID_INTEGR_THRSH = 60;
 export const LOW_INTEGR_THRSH = 10;
 
-export const LEANINIG_INTERVAL = 0.1;
+export const LEANINIG_INTERVAL = 0.15;
 
 export const IMAGE_DIM = 500;
 
 export const HIGH_BOUND = 0.85;
 export const LOW_BOUND = 0.18;
+export const UNLOCK_SCORE = 1.2;
