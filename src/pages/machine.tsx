@@ -71,7 +71,9 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
 
     private dialogueWrapperRef = React.createRef<HTMLDivElement>();
     
-	  private tempMemData : (string | number)[] = []; // [index, id1, id2, interpt1, interpt2, imageURL]
+	private tempMemData : (string | number)[] = []; // [index, id1, id2, interpt1, interpt2, imageURL]
+
+    private firstContinued = false;
 
     /********** Load the text into markov chain **********/
     componentDidMount() {
@@ -82,9 +84,9 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         fetch("./texts/storytext.json")
         .then((res) => res.text())
         .then((json) => {
-            this.setState(() => ({ 
+            this.setState({ 
                 dialogueRunner: new Story(json)
-            }));
+            })
         })
         .catch((e) => console.error(e));
 
@@ -92,6 +94,10 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     }
 
     componentDidUpdate(prevProps: MachineProps, prevState: MachineState): void {
+        // if (!this.firstContinued && this.state.dialogueRunner) {
+        //     this.pushDialogue(this.state.dialogueRunner.Continue());
+        // }
+
         /** KK: scroll dialogue into view when animating */
         if (prevState.dialogueList.length === 0 && this.state.dialogueList.length === 1){
             this.dialogueEndRef.current?.parentElement!.scrollTo({ top: 0, behavior: 'auto' });
