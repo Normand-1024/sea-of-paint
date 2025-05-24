@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/Info.css';
+import '../styles/info.css';
 
 const InfoPage: React.FC = () => {
   return (
