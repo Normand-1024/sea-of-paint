@@ -10,10 +10,9 @@ import { brightness, randomCMYK, randomHue, saturation, copyOver } from '../func
 
 import '../styles/image.css';
 
-import { IMAGE_DIM, HIGH_BOUND, LOW_BOUND, LEANINIG_INTERVAL } from '../constants.tsx';
+import { IMAGE_DIM, HIGH_BOUND, LOW_BOUND, LEANINIG_INTERVAL, UNLOCK_SCORE } from '../constants.tsx';
 import { IMAGE_DATA } from '../../public/assets/images/imageData.tsx';
 
-let UNLOCK_SCORE = 1.2;
 
 type ImageGeneratorProps = {
 	prompts: Array<string>;
@@ -108,20 +107,21 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				let keywords = this.imgData[similarities[0].name]["keywords"]; 
 				let wordStat = this.imgWordStat[similarities[0].name];
 				let visit_count = this.props.dialogueRunner.state.VisitCountAtPathString(this.imgData[similarities[0].name]["scene"]);
-
 				if (visit_count == null || visit_count == undefined)
 					console.log("WARNING: VISIT_COUNT IS NULL OR UNDEFINED");
-				else if (similarities[0].score > HIGH_BOUND){
-					similarities[0].score = UNLOCK_SCORE;
-					for (let i=0; i<wordStat.length; i++) 
-						wordStat[i] = true;
-				}
 				else if (visit_count > 0){
-					for (let i=0; i<wordStat.length; i++) {
-						if (wordStat[i]) continue;
-						for (let j=0; j < keywords[i].length; j++){
-							if (prompt.includes(keywords[i][j].toLowerCase())){
-								wordStat[i] = true;
+					if (similarities[0].score > HIGH_BOUND) {
+						similarities[0].score = UNLOCK_SCORE;
+						for (let i=0; i<wordStat.length; i++) 
+							wordStat[i] = true;
+					}
+					else {
+						for (let i=0; i<wordStat.length; i++) {
+							if (wordStat[i]) continue;
+							for (let j=0; j < keywords[i].length; j++){
+								if (prompt.includes(keywords[i][j].toLowerCase())){
+									wordStat[i] = true;
+								}
 							}
 						}
 					}
@@ -185,8 +185,8 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				copyOver(raw1, img);
 
 				//	Use first two similarities to determine opacity of the top mask
-				let score_ratio = similarities[0]["score"] / (similarities[0]["score"] + similarities[1]["score"]);
-				let mask_opacity = Math.min(((score_ratio - 0.5) * 1/LEANINIG_INTERVAL), 1.0); // 0.5 - 0.5 + LEANING_INTERVAL -> 0.0 - 1.0
+				//let score_ratio = similarities[0]["score"] / (similarities[0]["score"] + similarities[1]["score"]);
+				let mask_opacity = Math.min(((similarities[0]["score"] - similarities[1]["score"])/LEANINIG_INTERVAL), 1.0); //Math.min(((score_ratio - 0.5) * 1/LEANINIG_INTERVAL), 1.0); // 0.5 - 0.5 + LEANING_INTERVAL -> 0.0 - 1.0
 				
 				cmykBlend(img, raw2, img, mask_opacity);
 				hardlightBlend(img, raw2, img, 1 - mask_opacity);
