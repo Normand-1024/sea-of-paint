@@ -27,7 +27,8 @@
   width: 60%;
   border: 2px solid var(--menu-background);
   /** background-color: var(--background-primary) !important; */
-  font-weight: bold;
+  font-size: medium !important;
+  font-weight: bold !important;
   letter-spacing: 0.5px;
 }
 
