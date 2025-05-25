@@ -13,15 +13,14 @@ html, body, #root {
 .app-container {
   display: flex;
   height: 100%;
-  border: 10px solid var(--menu-background);
-  box-sizing: border-box;
+  /* border: 10px solid var(--menu-background);
+  box-sizing: border-box; */
 }
 
 .menu {
-  width: 5%;
-  background-color: var(--menu-background);
-  border-right: 10px solid var(--menu-background);
-  position: relative;
+  width: 3rem;
+  height:100%;
+  position: absolute;
 }
 
 .menu-buttons {
@@ -43,7 +42,6 @@ html, body, #root {
 }
 
 .menu button:hover {
-  color: var(--menu-hover);
   transform: scale(1.2);
 }  
 
@@ -55,6 +53,6 @@ html, body, #root {
 
 .main-screen {
   flex: 1;
-  position: relative;
+  width: 96%;
   background-color: var(--background-primary);
 }

@@ -6,12 +6,12 @@
     --background-secondary: #cfcfcf;
     --background-lighter: #ffffff;
     --background-darker: #616161;
-    --menu-background:#202020;
-    --menu-icon: #555555;
-    --menu-hover: #646464;
-    --intro-text: #cecece;
+    --menu-background:#ffffff;
+    --menu-icon: #313131;
+    --menu-hover: #e4e4e4;
+    --intro-text: #000000;
     --text: #000000;
-    --middle-toggle-highlight: #f5de99;
+    --middle-toggle-highlight: #888888;
     --scrollbar-track: var(--background-secondary);
     --scrollbar-thumb: var(--background-primary);
     /** --background-primary: #b3b8b3;

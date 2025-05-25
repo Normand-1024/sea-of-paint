@@ -2,7 +2,7 @@ import React from 'react';
 
 import '../styles/intro.css'
 import { PAGE_STATE } from '../constants.tsx';
-import Button from '@mui/material/Button';
+// import Button from '@mui/material/Button';
 
 const INTRO_TEXT = [
   "The Sea is everywhere, all around us. Every minute, traces of ourselves dissolve into the man-made Sea. A whole continuously breaks into parts to become the Whole again.",
@@ -46,15 +46,18 @@ class IntroPage extends React.Component<IntroProps, IntroState> {
           </p>
         ))}
 
+        <br></br>
+        <br></br>
+
         <div className="intro-button-container">
         {this.state.currentLine < INTRO_TEXT.length - 1 ? (
-            <Button onClick={this.advanceIntro} className="intro-button">
+            <button onClick={this.advanceIntro} className="intro-button">
                 Continue
-            </Button>
+            </button>
         ) : (
-            <Button onClick={this.nextPage} className="intro-button">
-                Log In
-            </Button>
+            <button onClick={this.nextPage} className="intro-button">
+                Start
+            </button>
         )}
         </div>
       </div>

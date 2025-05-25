@@ -16,8 +16,8 @@ export const IMAGE_DATA : Array<any> = [
                             ]
                             ],
         "memorabilia": [
-                "line1test",
-                "line2"
+                "Mey is often accompanied by self-reliant and independent friends",
+                "Mey is often accompanied by "
         ],
         "scene": "A1_Lily_Q"
     },
@@ -36,8 +36,8 @@ export const IMAGE_DATA : Array<any> = [
                             ]
                             ],
         "memorabilia": [
-                "line1",
-                "line2"
+                "Mey was known for her kindness and the willingness to attend to others' feelings",
+                "Mey goes beyond attending to other's feelings — she worries about her close ones' future"
         ],
         "scene": "A2_Lily"
     },
@@ -50,8 +50,8 @@ export const IMAGE_DATA : Array<any> = [
         "info": "Lily is covered in her \"spark\". It seems like a significant thing for Mey. Almost like she's blinded by it.",
         "interpretations": [],
         "memorabilia": [
-                "line1",
-                "line2"
+                "Mey sees ",
+                "Mey sees "
         ],
         "scene": "A2_Lily_O",
         "d_var": "d_lily_o"

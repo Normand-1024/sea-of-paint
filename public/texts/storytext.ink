@@ -84,13 +84,13 @@ VAR mem_2_interp = -1
 // ~ core_unlocked = 1
 // -> A2_Hub
 
-~ lily = 0
-~ lily2 = 0
-~ lily_spark = 0
-~ ivan = 0 
-~ current_stage = 4
-~ core_unlocked = 3
--> A2_Hub
+// ~ lily = 0
+// ~ lily2 = 0
+// ~ lily_spark = 0
+// ~ ivan = 0 
+// ~ current_stage = 4
+// ~ core_unlocked = 3
+// -> A2_Hub
 
 - What is this? Why is it so dark here? # anim--
 
@@ -2080,9 +2080,9 @@ NOTICE: THIS IS NOT FINISHED YET. First is {memora_first}, Second is {memora_sec
 
 - 123
 
-* , and {mem_1_line_1}"
+* , and {mem_1_line_1}."
     ~mem_2_interp = 0
-* , and {mem_1_line_2}"
+* , and {mem_1_line_2}."
     ~mem_2_interp = 1
 
 - Do you want to make this memorabilia?

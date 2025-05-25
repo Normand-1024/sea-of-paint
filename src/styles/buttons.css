@@ -1,4 +1,7 @@
 /** buttons.css */
+:root {
+    --button-font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
 .dialogue-button,
 .continue-button,
@@ -10,12 +13,48 @@
 }
 
 .dialogue-button {
-  margin-right: 0;
+    font-family: var(--button-font);
+    color: var(--menu-icon);
+    max-width: 70%;
+    border-radius: 4px;
+    border: 1px solid var(--menu-icon);
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    padding: 0.2rem 1rem 0.2rem 1rem;
+}
+
+.dialogue-button:hover {
+    color: var(--intro-text);
+    background-color: var(--menu-hover);
+}
+
+.dialogue-button:active {
+    background-color: #c4c4c4;
 }
 
 .continue-button {
+  font-family: var(--button-font);
+  color: var(--menu-icon);
+  border-radius: 4px;
+  border: 1px solid var(--menu-icon);
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  padding: 0.2rem 1rem 0.2rem 1rem;
   margin-right: auto;
   font-style: oblique;
+}
+.continue-button:hover {
+    color: var(--intro-text);
+    background-color: var(--menu-hover);
+}
+.continue-button:active {
+    background-color: #c4c4c4;
+}
+.continue-button:disabled {
+  color:#727272;
+  background-color: #f3f3f3;
+  border: 1px solid #a0a0a0;
+  pointer-events: none;
 }
 
 .machine-button {

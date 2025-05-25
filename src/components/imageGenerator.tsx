@@ -5,7 +5,7 @@ import { Story } from 'inkjs';
 
 import Candidate from './candidate';
 import SentenceTransformer from '../functions/sentenceTransformer.tsx';
-import { normalBlend, overlayBlend, hardlightBlend, cmykBlend } from '../functions/blending.tsx';
+import { normalBlend, normalBNWBlend, overlayBlend, hardlightBlend, cmykBlend, pinLightBlend } from '../functions/blending.tsx';
 import { brightness, randomCMYK, randomHue, saturation, copyOver } from '../functions/imageProcessing.tsx';
 
 import '../styles/image.css';
@@ -154,7 +154,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 			img.loadPixels();
 
 			// generate image based off of similarity score -KK
-			let first = "noise"; let second = "noise"; let mask = "noise";
+			let first = "noise"; let second = "noise"; let mask1 = "noise"; let mask2 = "noise";
 			let filtered = similarities.filter(sim => sim.score > LOW_BOUND);
 
 			if(similarities[0].score == UNLOCK_SCORE){
@@ -162,11 +162,12 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				unlocked = true;
 			} else if(filtered.length > 0) { 
 				first = similarities[0].name;
-				mask = first + "_mask_1";
+				mask1 = first + "_mask";
 			}
 
 			if (filtered.length > 1) {
 				second = similarities[1].name;
+				mask2 = second + "_mask";
 			}
 
 			let raw1 : p5.Image = this.rawImg[first];
@@ -174,23 +175,34 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				p5.image(raw1, 0, 0);
 			}
 			else{
-				let raw2 : p5.Image = this.rawImg[second]; // raw2 is over raw1
-				let raw1_mask : p5.Image = this.rawImg[mask];
+				let raw2 : p5.Image = this.rawImg[second];
+				let raw1_mask : p5.Image = this.rawImg[mask1];
+				let raw2_mask : p5.Image = this.rawImg[mask2];
 				
 				raw1.loadPixels();
 				raw2.loadPixels();
-				// raw2.filter(p5.GRAY);
 				raw1_mask.loadPixels();
+				raw2_mask.loadPixels();
 
-				copyOver(raw1, img);
-
+				// copyOver(raw1, img);
+				normalBNWBlend(img, raw1, img, 0.5);
+				normalBNWBlend(img, raw2, img, 0.5);
+				// console.log([(similarities[0].score - LOW_BOUND) / (HIGH_BOUND - LOW_BOUND),
+				// 		(similarities[1].score - LOW_BOUND) / (HIGH_BOUND - LOW_BOUND)])
+				pinLightBlend(img, raw2_mask, img, 
+					(similarities[1]["score"] - LOW_BOUND) / (1.8*(HIGH_BOUND - LOW_BOUND))
+				);
+				pinLightBlend(img, raw1_mask, img,
+					(similarities[0]["score"] - LOW_BOUND) / (HIGH_BOUND - LOW_BOUND)
+				);
+				
 				//	Use first two similarities to determine opacity of the top mask
 				//let score_ratio = similarities[0]["score"] / (similarities[0]["score"] + similarities[1]["score"]);
-				let mask_opacity = Math.min(((similarities[0]["score"] - similarities[1]["score"])/LEANINIG_INTERVAL), 1.0); //Math.min(((score_ratio - 0.5) * 1/LEANINIG_INTERVAL), 1.0); // 0.5 - 0.5 + LEANING_INTERVAL -> 0.0 - 1.0
+				// let mask_opacity = Math.min(((similarities[0]["score"] - similarities[1]["score"])/LEANINIG_INTERVAL), 1.0); //Math.min(((score_ratio - 0.5) * 1/LEANINIG_INTERVAL), 1.0); // 0.5 - 0.5 + LEANING_INTERVAL -> 0.0 - 1.0
 				
-				cmykBlend(img, raw2, img, mask_opacity);
-				hardlightBlend(img, raw2, img, 1 - mask_opacity);
-				cmykBlend(img, raw1_mask, img, mask_opacity);
+				// cmykBlend(img, raw2, img, mask_opacity);
+				// hardlightBlend(img, raw2, img, 1 - mask_opacity);
+				// cmykBlend(img, raw1_mask, img, mask_opacity);
 
 				p5.image(img, 0, 0);
 			}
@@ -227,9 +239,9 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				console.log("loading image: " + name.toString());
 				await loadImageAsync(name);
 			}
-			if (!this.rawImg[name + "_mask_1"]) {
+			if (!this.rawImg[name + "_mask"]) {
 				console.log("loading mask: " + name.toString());
-				await loadImageAsync(name + "_mask_1");
+				await loadImageAsync(name + "_mask");
 			}
 		}));
 	};

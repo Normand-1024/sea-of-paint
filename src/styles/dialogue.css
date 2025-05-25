@@ -1,10 +1,13 @@
 /** dialogue.css */
-
+:root {
+    --button-font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 .spirit-line,
 .spirit-line-hover,
 .spirit-line-highlighted {
-  font-size: small;
+  font-family: var(--button-font);
   width: 60%;
+  font-size: 1.2rem;
   float: left;
   text-align: left;
 }
@@ -30,8 +33,9 @@
 
 .self-speaking-line,
 .self-thinking-line {
-  font-size: small;
+  font-family: var(--button-font);
   width: 60%;
+  font-size: 1.2rem;
   float: right;
   text-align: right;
 }

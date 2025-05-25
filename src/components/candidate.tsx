@@ -135,7 +135,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
         if (this.props.inprompt[this.props.inprompt.length - 1] == "?") 
             output += "The Sea technically does not answer questions. It surfaces memories that resonate with the prompt."
             
-        return <p style={{'marginTop': 0}}>{output}</p>
+        return <div className="row-wrapper"><p style={{'marginTop': 0}}>{output}</p></div>
     }
 
     interpretMemory(imgName : string, i : number) {
@@ -297,7 +297,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                                         (this.props.generateState == GENERATE_WAIT_TYPE['dialogue'] ? 
                                         <div className= "memora-button memora-button-clickable-disabled " > Submerge Mey to Make this Memorabilium </div>
                                         :<div className= "memora-button memora-button-clickable" onClick = {() => this.initiateMemoribilumScene()}> Make Memorabilium </div>)
-                                    :   <div className="memora-button memora-button-locked"> Both Memories Should be Retrieved/Gold for Memorabilium </div>}
+                                    :   <div className="memora-button memora-button-locked"> Both Memories Should be Retrieved (Gold) for Memorabilium </div>}
 
                                     {this.props.similarities.slice(0,2).map(
                                         (img:any, i:number) => {

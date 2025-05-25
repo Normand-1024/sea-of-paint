@@ -49,7 +49,7 @@ type MachineState = {
 
 class MachinePage extends React.Component<MachineProps, MachineState> {
     state: MachineState = {
-        machineActive: true,
+        machineActive: false,
         dialogueList: [],
         promptList: [],
         markovScrambler: new MarkovScrambler(),
@@ -73,8 +73,6 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     
 	private tempMemData : (string | number)[] = []; // [index, id1, id2, interpt1, interpt2, imageURL]
 
-    private firstContinued = false;
-
     /********** Load the text into markov chain **********/
     componentDidMount() {
         this.state.markovScrambler.initialize("./assets/markovtext.txt");
@@ -89,14 +87,9 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             })
         })
         .catch((e) => console.error(e));
-
-        this.audio.play(true);
     }
 
     componentDidUpdate(prevProps: MachineProps, prevState: MachineState): void {
-        // if (!this.firstContinued && this.state.dialogueRunner) {
-        //     this.pushDialogue(this.state.dialogueRunner.Continue());
-        // }
 
         /** KK: scroll dialogue into view when animating */
         if (prevState.dialogueList.length === 0 && this.state.dialogueList.length === 1){
@@ -156,6 +149,18 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             partial => this.setState({ partialSpiritLine: partial })
         );
     };
+
+    activateMachine = () => {
+        if(!this.state.dialogueRunner) {
+            console.log("dialogueRunner is undefined")
+            return
+        }
+
+        this.setState({ machineActive: true });
+        this.audio.play(true);
+
+        this.pushDialogue(this.state.dialogueRunner.Continue());
+    }
 
     handleToggleClick = () => {
         this.setState(
@@ -386,100 +391,108 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
 
                 {/** LEFT PANEL: machine dialogue */}
                 <div className="machine-dialogue-display">
-                  <div className="portrait-wrapper">
-                    <img src={MEY_PORTRAIT_PATH[this.state.meyPortraitState as keyof typeof MEY_PORTRAIT_PATH]} />
-                  </div>
+                    <div className="portrait-wrapper">
+                        <img src={!this.state.machineActive ? "./assets/images/namecard.png" :
+                            MEY_PORTRAIT_PATH[this.state.meyPortraitState as keyof typeof MEY_PORTRAIT_PATH]
+                            } />
+                            
+                        {!this.state.machineActive && this.state.mode=="machine" && 
+                        <button type="button" className="dialogue-button" onClick={this.activateMachine}>
+                            Activate Machine, bring back Mey
+                        </button>}
+                    </div>
 
-                  <div ref={this.dialogueWrapperRef} className="dialogue-column-wrapper"
-                    style={{ overflowY: this.state.generateState === GENERATE_WAIT_TYPE["dialogue"] &&
-                            (this.state.dialogueRunner.canContinue || this.state.partialSpiritLine !== null) ? "hidden" : "auto"
-                          }}>
-                    {this.state.dialogueList.map((item, index) => {
-                        if (item[0] == DIALOGUE_TYPE['self-speaking'])
-                            return (<p key={index} className='self-speaking-line'>{item[1]}</p>);
-                        else if (item[0] == DIALOGUE_TYPE['self-thinking'])
-                            return (<p key={index} className='self-thinking-line'>{item[1]}</p>);
-                        else if (item[0] == DIALOGUE_TYPE['machine']) 
-                            return (<p key={index} className='machine-line'>{item[1]}</p>);
-                        else {
-                            let css = 'spirit-line';
-                            /* if (this.state.clickedIndices.includes(index)) {
-                                css = 'spirit-line-highlighted';
-                            } else if (this.state.hoveredIndex === index) {
-                                css = 'spirit-line-hover';
-                            } */
+                    { this.state.machineActive &&
+                    <div ref={this.dialogueWrapperRef} className="dialogue-column-wrapper"
+                        style={{ overflowY: this.state.generateState === GENERATE_WAIT_TYPE["dialogue"] &&
+                                (this.state.dialogueRunner.canContinue || this.state.partialSpiritLine !== null) ? "hidden" : "auto"
+                            }}>
+                        {this.state.dialogueList.map((item, index) => {
+                            if (item[0] == DIALOGUE_TYPE['self-speaking'])
+                                return (<p key={index} className='self-speaking-line'>{item[1]}</p>);
+                            else if (item[0] == DIALOGUE_TYPE['self-thinking'])
+                                return (<p key={index} className='self-thinking-line'>{item[1]}</p>);
+                            else if (item[0] == DIALOGUE_TYPE['machine']) 
+                                return (<p key={index} className='machine-line'>{item[1]}</p>);
+                            else {
+                                let css = 'spirit-line';
+                                /* if (this.state.clickedIndices.includes(index)) {
+                                    css = 'spirit-line-highlighted';
+                                } else if (this.state.hoveredIndex === index) {
+                                    css = 'spirit-line-hover';
+                                } */
 
-                            const isLast = index === this.state.dialogueList.length - 1;
-                            const shouldAnimate = item[0] === DIALOGUE_TYPE['spirit'] && this.state.partialSpiritLine !== null;
+                                const isLast = index === this.state.dialogueList.length - 1;
+                                const shouldAnimate = item[0] === DIALOGUE_TYPE['spirit'] && this.state.partialSpiritLine !== null;
 
-                            return (
-                                <p
-                                    key={index}
-                                    className={css}
-                                    onMouseEnter={() => this.handleMouseEnter(index)}
-                                    onMouseLeave={this.handleMouseLeave}
-                                    onClick={() => this.handleClick(index)}
-                                >
-                                    {shouldAnimate && isLast ? this.state.partialSpiritLine : item[1]}
-                                </p>
-                            );      
-                        }
-                    })}
-
-                    <div id="button-container"> {
-                        !this.state.dialogueRunner.canContinue &&
-                        this.state.generateState === GENERATE_WAIT_TYPE['dialogue'] ? (
-                            (this.state.partialSpiritLine !== null) ? null : (
-                            <>
-                                {this.state.dialogueRunner.currentChoices.map((op: any, i: number) => {
-                                if (op.isInvisibleDefault) return <div key={i}></div>;
                                 return (
-                                    <button
-                                        type="button"
-                                        className="dialogue-button"
-                                        onClick={() => this.handleDialogue(i)}
+                                    <p
+                                        key={index}
+                                        className={css}
+                                        onMouseEnter={() => this.handleMouseEnter(index)}
+                                        onMouseLeave={this.handleMouseLeave}
+                                        onClick={() => this.handleClick(index)}
                                     >
-                                        {op.text}
-                                    </button>
-                                );
-                                })}
-                            </>
+                                        {shouldAnimate && isLast ? this.state.partialSpiritLine : item[1]}
+                                    </p>
+                                );      
+                            }
+                        })}
+
+                        <div id="button-container"> {
+                            !this.state.dialogueRunner.canContinue &&
+                            this.state.generateState === GENERATE_WAIT_TYPE['dialogue'] ? (
+                                (this.state.partialSpiritLine !== null) ? null : (
+                                <>
+                                    {this.state.dialogueRunner.currentChoices.map((op: any, i: number) => {
+                                    if (op.isInvisibleDefault) return <div key={i}></div>;
+                                    return (
+                                        <button
+                                            type="button"
+                                            className="dialogue-button"
+                                            onClick={() => this.handleDialogue(i)}
+                                        >
+                                            {op.text}
+                                        </button>
+                                    );
+                                    })}
+                                </>
+                                )
+                            ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_first'] ? (
+                                <button type="button" className="continue-button" disabled>
+                                    Generate one Image to Continue
+                                </button>
+                            ) : this.state.generateState === GENERATE_WAIT_TYPE['only_continue_from_generate'] ? (
+                                <button type="button" className="continue-button" disabled>
+                                    Wake up Mey from Core Memories
+                                </button>
+                            ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_lily2'] ? (
+                                <button type="button" className="continue-button" disabled>
+                                    Unlock Memory of Lily to Continue
+                                </button>
+                            ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_lily1'] ? (
+                                <button type="button" className="continue-button" disabled>
+                                    Wake up Mey from a Core Memory
+                                </button>
+                            ) : this.state.generateState === GENERATE_WAIT_TYPE['generated'] ? (
+                                <button type="button" className="continue-button" onClick={() => this.setToDialogue()}>
+                                    Bring back Mey
+                                </button>
+                            ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_interpretations'] ? (
+                                <button type="button" className="continue-button" disabled>
+                                    Finish Interpretations to Continue
+                                </button>
+                            ) : (
+                                !(this.state.partialSpiritLine !== null) && (
+                                <button type="button" className="continue-button" onClick={() => this.handleDialogue()}>
+                                Continue
+                                </button>
+                                )
                             )
-                        ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_first'] ? (
-                            <button type="button" className="continue-button" disabled>
-                                Generate one Image to Continue
-                            </button>
-                        ) : this.state.generateState === GENERATE_WAIT_TYPE['only_continue_from_generate'] ? (
-                            <button type="button" className="continue-button" disabled>
-                                Wake up Mey from Core Memories
-                            </button>
-                        ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_lily2'] ? (
-                            <button type="button" className="continue-button" disabled>
-                                Unlock Memory of Lily to Continue
-                            </button>
-                        ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_lily1'] ? (
-                            <button type="button" className="continue-button" disabled>
-                                Wake up Mey from a Core Memory
-                            </button>
-                        ) : this.state.generateState === GENERATE_WAIT_TYPE['generated'] ? (
-                            <button type="button" className="continue-button" onClick={() => this.setToDialogue()}>
-                                Bring back Mey
-                            </button>
-                        ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_interpretations'] ? (
-                            <button type="button" className="continue-button" disabled>
-                                Finish Interpretations to Continue
-                            </button>
-                        ) : (
-                            !(this.state.partialSpiritLine !== null) && (
-                              <button type="button" className="continue-button" onClick={() => this.handleDialogue()}>
-                              Continue
-                              </button>
-                            )
-                        )
-                    }
-                    </div>
-                    <div ref={this.dialogueEndRef} />
-                    </div>
+                        }
+                        </div>
+                        <div ref={this.dialogueEndRef} />
+                    </div>}
                 </div>
 
                 {/** MIDDLE TOGGLE: switch between dialogue & image generation */}
@@ -487,7 +500,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                     className={`middle-toggle${blinking ? ' blinking' : ''}`}
                     onClick={this.handleToggleClick}
                     >
-                    <SwapHorizIcon className="toggle-icon" />
+                    <SwapHorizIcon className={`toggle-icon${blinking ? ' blinking' : ''}`} />
                 </div>
 
                 {/** RIGHT PANEL: machine image generation */}

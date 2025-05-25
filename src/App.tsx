@@ -27,7 +27,7 @@ function App() {
   const [memorabilia, setMemorabilia] = useState([["", "", -1, -1, ""], ["", "", -1, -1, ""], ["", "", -1, -1, ""]]);
 
   if (pageState === PAGE_STATE.intro) {
-    return <IntroPage pageState={pageState} setPageState={() => setPageState(PAGE_STATE.activate)} />;
+    return <IntroPage pageState={pageState} setPageState={setPageState} />;
   }
   else {
       return (

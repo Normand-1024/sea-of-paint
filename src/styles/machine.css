@@ -3,7 +3,8 @@
 .machine-page {
   display: flex;
   height: 100%;
-  width: 100%;
+  width: 97.5%;
+  padding-left: 2.5%;    
 }
   
 .machine-page .machine-dialogue-display,
@@ -66,9 +67,14 @@
 }
 
 .toggle-icon {
+  fill: #313131;
   width: 80%;
   height: auto;
   min-width: 24px;
+}
+
+.middle-toggle:hover .toggle-icon {
+  fill: var(--background-primary);
 }
 
 /** KK: currently not working :( should make icon disappear if it shrinks past a certain size */
@@ -86,6 +92,15 @@
   }
 }
 
+@keyframes button-blink-color {
+  0%, 100% {
+    fill: #313131;
+  }
+  50% {
+    fill: var(--background-primary);
+  }
+}
+
 .middle-toggle.blinking {
   animation: blink-color 1.5s ease-in-out infinite;
   transition: none;
@@ -93,9 +108,15 @@
 
 .middle-toggle.blinking:hover {
   animation: none;
-  background-color: var(--middle-toggle-highlight);
+  fill: var(--middle-toggle-highlight);
   cursor: pointer;
 }
+
+.toggle-icon.blinking {
+  animation: button-blink-color 1.5s ease-in-out infinite;
+  transition: none;
+}
+
 
 /** LEFT PANEL: machine dialogue */
 .machine-dialogue-display {
@@ -103,6 +124,7 @@
   align-items: flex-start;
   height: 100%;
   box-sizing: border-box;
+  padding-bottom: 2%;
 }
 
 .portrait-wrapper {
@@ -133,7 +155,7 @@
 .machine-page.control-mode .machine-dialogue-display {
   display: flex;
   flex-direction: column;
-  align-items: stretch;      
+  align-items: stretch;  
   height: 100%;
 }
 
