@@ -22,7 +22,7 @@ import { MarkovScrambler } from '../functions/markovGeneration.tsx';
 import { AudioManager } from '../managers/audio'
 import { AnimationManager } from '../managers/animation'
 
-import {GENERATE_WAIT_TYPE, MEY_PORTRAIT_PATH, DIALOGUE_TYPE} from '../constants.tsx';
+import {GENERATE_WAIT_TYPE, MEY_PORTRAIT_PATH, DIALOGUE_TYPE, HIGH_BOUND} from '../constants.tsx';
 
 
 type MachineProps = {
@@ -33,7 +33,6 @@ type MachineProps = {
 }
 
 type MachineState = {
-    machineActive: boolean;
     markovScrambler: MarkovScrambler;
     dialogueList: Array<[number, string]>;
     promptList: Array<string>;
@@ -43,13 +42,12 @@ type MachineState = {
     clickedIndices: number[];
     partialSpiritLine: string | null;
     meyPortraitState: string;
-    mode: 'machine' | 'control';
+    mode: 'inactive' | 'machine' | 'control';
     blinking: boolean;
 }
 
 class MachinePage extends React.Component<MachineProps, MachineState> {
     state: MachineState = {
-        machineActive: false,
         dialogueList: [],
         promptList: [],
         markovScrambler: new MarkovScrambler(),
@@ -59,7 +57,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         clickedIndices: [],
         partialSpiritLine: null,
         meyPortraitState: "mey_def",
-        mode: 'machine',
+        mode: 'inactive',
         blinking: false
     };
 
@@ -156,7 +154,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             return
         }
 
-        this.setState({ machineActive: true });
+        this.setState({ mode: 'machine' });
         this.audio.play(true);
 
         this.pushDialogue(this.state.dialogueRunner.Continue());
@@ -392,20 +390,20 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                 {/** LEFT PANEL: machine dialogue */}
                 <div className="machine-dialogue-display">
                     <div className="portrait-wrapper">
-                        <img src={!this.state.machineActive ? "./assets/images/namecard.png" :
+                        <img src={this.state.mode == 'inactive' ? "./assets/images/namecard.png" :
                             MEY_PORTRAIT_PATH[this.state.meyPortraitState as keyof typeof MEY_PORTRAIT_PATH]
                             } />
                             
-                        {!this.state.machineActive && this.state.mode=="machine" && 
+                        {this.state.mode == 'inactive' && 
                         <button type="button" className="dialogue-button" onClick={this.activateMachine}>
                             Activate Machine, bring back Mey
                         </button>}
                     </div>
 
-                    { this.state.machineActive &&
+                    { this.state.mode != 'inactive' &&
                     <div ref={this.dialogueWrapperRef} className="dialogue-column-wrapper"
                         style={{ overflowY: this.state.generateState === GENERATE_WAIT_TYPE["dialogue"] &&
-                                (this.state.dialogueRunner.canContinue || this.state.partialSpiritLine !== null) ? "hidden" : "auto"
+                                this.state.partialSpiritLine !== null ? "hidden" : "auto"
                             }}>
                         {this.state.dialogueList.map((item, index) => {
                             if (item[0] == DIALOGUE_TYPE['self-speaking'])
@@ -439,6 +437,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                             }
                         })}
 
+                        {this.state.mode=="machine" && 
                         <div id="button-container"> {
                             !this.state.dialogueRunner.canContinue &&
                             this.state.generateState === GENERATE_WAIT_TYPE['dialogue'] ? (
@@ -490,21 +489,30 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                                 )
                             )
                         }
-                        </div>
+                        </div>}
                         <div ref={this.dialogueEndRef} />
                     </div>}
                 </div>
 
                 {/** MIDDLE TOGGLE: switch between dialogue & image generation */}
-                <div
+                {this.state.mode != 'inactive' && 
+                    <div
                     className={`middle-toggle${blinking ? ' blinking' : ''}`}
                     onClick={this.handleToggleClick}
                     >
                     <SwapHorizIcon className={`toggle-icon${blinking ? ' blinking' : ''}`} />
-                </div>
+                </div>}
 
                 {/** RIGHT PANEL: machine image generation */}
                 <div className="machine-control-display">
+                    {this.state.mode == "control" && 
+                    <div className="imggen-top-display">
+                        <big><center>Memories sorted by Resonance</center></big>
+                        { this.state.dialogueRunner.variablesState["current_stage"] > 1 ? 
+                            <p><center>Reach {(Math.round((HIGH_BOUND) * 10000) / 100).toString() + "%"} to Retrieve Memory</center></p>
+                        : (null)}
+                    </div>}
+                    
                     <ImageGenerator
                         prompts={this.state.promptList}
                         dialogueRunner={this.state.dialogueRunner}
@@ -513,24 +521,25 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                         generateState={this.state.generateState}
                         fillPromptBox={this.fillPromptBox}
                     />
-                    {this.state.machineActive && (
+
+                    {this.state.mode != 'inactive' && this.state.mode!="machine" && (
                     <div className="prompt-control">
                         <div className="prompt-wrapper">
                             <input type="text" id="prompt" autoComplete="off" ref={this.textPromptRef} />
-                            {this.state.generateState === GENERATE_WAIT_TYPE["dialogue"] ? (
-                            <button type="button" id="promptSubmit" disabled>
+                        </div>
+                        {this.state.generateState === GENERATE_WAIT_TYPE["dialogue"] ? (
+                            <div className="promptSubmit disabled">
                                 Mey is away
-                            </button>
+                            </div>
                             ) : (
-                            <button
-                                type="button"
-                                id="promptSubmit"
+                            <div
+                                className="promptSubmit"
                                 onClick={() => this.updatePromptList()}
                             >
                                 Retrieve
-                            </button>
-                            )}
-                        </div>
+                            </div>
+                        )}
+                        
                         {this.state.dialogueRunner.variablesState["current_stage"] > 0 && (
                         <p id="objective">{this.getObjectiveText()}</p>
                         )}

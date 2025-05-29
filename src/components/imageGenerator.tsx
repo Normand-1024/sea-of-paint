@@ -109,7 +109,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				let visit_count = this.props.dialogueRunner.state.VisitCountAtPathString(this.imgData[similarities[0].name]["scene"]);
 				if (visit_count == null || visit_count == undefined)
 					console.log("WARNING: VISIT_COUNT IS NULL OR UNDEFINED");
-				else if (visit_count > 0){
+				else if (visit_count >= 0){
 					if (similarities[0].score > HIGH_BOUND) {
 						similarities[0].score = UNLOCK_SCORE;
 						for (let i=0; i<wordStat.length; i++) 
@@ -265,13 +265,12 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
     render() {
 		return (	
-			<div id="candidateCol" >
+			<div className="candidateCol" >
 				<div  style={{"visibility": "hidden", "position": "absolute", "top": "-9999px"}}>
 					<div ref={this.p5Ref}
 						className="p5Container"></div>
 				</div>
 
-				
 				{this.state.images.map((img,index) => {
 					return (
 						<Candidate 

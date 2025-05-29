@@ -89,7 +89,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                 output = output.concat(" [?] " + prompt_array[i + 1]);
         }
 
-        return <p className = "copiable-prompt" onClick = {() => this.fillPromptBox(output)}>"{output}"</p>
+        return <div className = "copiable-prompt" onClick = {() => this.fillPromptBox(output)}>"{output}"</div>
     }
 
     initiateMemoryScene(if_main : boolean) {
@@ -109,18 +109,22 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
 
     initiateMemoribilumScene() {
         this.props.setDialogueVar("scene_var", "A2_Memorabilia");
-        this.props.setDialogueVar("memora_first", this.props.similarities[0].name);
-        this.props.setDialogueVar("memora_second", this.props.similarities[1].name);
+        this.props.setDialogueVar("mem_1", this.props.similarities[0].name);
+        this.props.setDialogueVar("mem_2", this.props.similarities[1].name);
+        this.props.setDialogueVar("mem_1_descp", this.props.imgData[this.props.similarities[0].name]["memora_descrip"]);
+        this.props.setDialogueVar("mem_2_descp", this.props.imgData[this.props.similarities[1].name]["memora_descrip"]);
         this.props.setDialogueVar("mem_1_line_1", this.props.imgData[this.props.similarities[0].name]["memorabilia"][0]);
         this.props.setDialogueVar("mem_1_line_2", this.props.imgData[this.props.similarities[0].name]["memorabilia"][1]);
-        this.props.setDialogueVar("mem_2_line_1", this.props.imgData[this.props.similarities[1].name]["memorabilia"][0]);
-        this.props.setDialogueVar("mem_2_line_2", this.props.imgData[this.props.similarities[1].name]["memorabilia"][1]);
+        this.props.setDialogueVar("mem_2_line_1", "she" + this.props.imgData[this.props.similarities[1].name]["memorabilia"][0].slice(3));
+        this.props.setDialogueVar("mem_2_line_2", "she" + this.props.imgData[this.props.similarities[1].name]["memorabilia"][1].slice(3));
         
         let sim_diff = this.props.similarities[0].score - this.props.similarities[1].score;
         this.props.setDialogueVar("memora_lean_first", sim_diff > LEANINIG_INTERVAL);
 
         let index = this.props.dialogueRunner.variablesState["memorabilia"];
         let imgURL = this.props.imageurl;
+    
+        console.log(this.props.dialogueRunner);
 
         this.props.initiateScene([index, this.props.similarities[0].name, this.props.similarities[1].name, -1, -1, imgURL]);
     }
@@ -135,7 +139,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
         if (this.props.inprompt[this.props.inprompt.length - 1] == "?") 
             output += "The Sea technically does not answer questions. It surfaces memories that resonate with the prompt."
             
-        return <div className="row-wrapper"><p style={{'marginTop': 0}}>{output}</p></div>
+        return <div className="row-wrapper"><div className="interpret-line"><p>{output}</p></div></div>
     }
 
     interpretMemory(imgName : string, i : number) {
@@ -253,10 +257,10 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
         let imgName = this.props.imgName;
         let matched = this.props.similarities[0].score == UNLOCK_SCORE;
         let if_top_main : boolean = imgName != "noise" && this.props.imgData[imgName]["interpretations"].length > 0;
-        let if_top_two_retrieved = 
+        let if_two_used = 
             this.props.similarities[0].name != "noise" && this.props.similarities[1].name != "noise"
-            && this.props.dialogueRunner.variablesState[this.props.similarities[0].name] >= 0
-            && this.props.dialogueRunner.variablesState[this.props.similarities[1].name] >= 0;
+            && this.props.dialogueRunner.variablesState[this.props.similarities[0].name + "_m"]
+            && this.props.dialogueRunner.variablesState[this.props.similarities[1].name + "_m"];
 
         return (
             <div className = "candidate">
@@ -275,55 +279,46 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                 : !matched ?
                         // Render the top five memories
                         <div className = "row-wrapper">
-                            <p   className = "column left" style={{'marginTop': 0}}> 
-                                <big>Memories sorted by Resonance:</big> 
+                            <div className = {"top-two" + " " +
+                                    (this.props.dialogueRunner.variablesState["current_stage"] < 4 
+                                        || this.props.dialogueRunner.variablesState["memorabilia"] >= 3 ? ""
+                                    : !if_two_used ? "top-two-clickable" : "top-two-locked")}>
+                                
+                                {this.props.dialogueRunner.variablesState["current_stage"] < 4 ? (null)
+                                : this.props.dialogueRunner.variablesState["memorabilia"] >= 3 ?
+                                    <div id="memora-button memora-button-locked"> Memorabilia Count Full </div>
+                                : !if_two_used ?
+                                    (this.props.dialogueRunner.variablesState["scene_var"] == "A2_Memorabilia" ? 
+                                    <div className= "memora-button memora-button-clickable-disabled " > Memorabilium Building in Progress </div>
+                                    :this.props.generateState == GENERATE_WAIT_TYPE['dialogue'] ? 
+                                    <div className= "memora-button memora-button-clickable-disabled " > Submerge Mey to Make this Memorabilium </div>
+                                    :<div className= "memora-button memora-button-clickable" onClick = {() => this.initiateMemoribilumScene()}> Make Memorabilium </div>)
+                                :   <div className="memora-button memora-button-locked"> One or More Memories Already Used </div>}
 
+                                {this.props.similarities.slice(0,2).map(
+                                    (img:any, i:number) => {
+                                        return(
+                                            <div style={{'marginTop': 0, 'marginBottom': 0}} key={i}>
+                                                {this.getTopDistanceString(i, img.name, img.score)}
+                                            </div>
+                                        );
+                                    }
+                                )}
 
-                                { this.props.dialogueRunner.variablesState["current_stage"] > 1 ? 
-                                 <><br></br><br></br><small><center>Reach {this.distanceFunc(HIGH_BOUND)} to Retrieve Memory</center></small></>
-                                : (null)}
-                            </p>
+                            </div>
 
-                            <div className = "column right">
-                                <div className = {"top-two" + " " +
-                                        (this.props.dialogueRunner.variablesState["current_stage"] < 4 
-                                            || this.props.dialogueRunner.variablesState["memorabilia"] >= 3 ? ""
-                                        : if_top_two_retrieved ? "top-two-clickable" : "top-two-locked")}>
-                                    
-                                    {this.props.dialogueRunner.variablesState["current_stage"] < 4 ? (null)
-                                    : this.props.dialogueRunner.variablesState["memorabilia"] >= 3 ?
-                                        <div id="memora-button memora-button-locked"> Memorabilia Count Full </div>
-                                    : if_top_two_retrieved ?
-                                        (this.props.generateState == GENERATE_WAIT_TYPE['dialogue'] ? 
-                                        <div className= "memora-button memora-button-clickable-disabled " > Submerge Mey to Make this Memorabilium </div>
-                                        :<div className= "memora-button memora-button-clickable" onClick = {() => this.initiateMemoribilumScene()}> Make Memorabilium </div>)
-                                    :   <div className="memora-button memora-button-locked"> Both Memories Should be Retrieved (Gold) for Memorabilium </div>}
+                            <p className='threshold-line'>Resonance Threshold</p>
 
-                                    {this.props.similarities.slice(0,2).map(
+                            <div className = "rest">
+                                {this.props.similarities.slice(1,5).map(
                                         (img:any, i:number) => {
                                             return(
-                                                <div style={{'marginTop': 0, 'marginBottom': 0}} key={i}>
-                                                    {this.getTopDistanceString(i, img.name, img.score)}
+                                                <div style={{'marginTop': 0, 'marginBottom': 0}} key={i+1}>
+                                                    {this.getBottomDistanceString(i+1, img.name, img.score)}
                                                 </div>
                                             );
                                         }
-                                    )}
-
-                                </div>
-
-                                <p className='threshold-line'>Resonance Threshold</p>
-
-                                <div className = "rest">
-                                    {this.props.similarities.slice(1,5).map(
-                                            (img:any, i:number) => {
-                                                return(
-                                                    <div style={{'marginTop': 0, 'marginBottom': 0}} key={i+1}>
-                                                        {this.getBottomDistanceString(i+1, img.name, img.score)}
-                                                    </div>
-                                                );
-                                            }
-                                    )}
-                                </div>
+                                )}
                             </div>
                         </div>
                 : this.props.dialogueRunner.variablesState[imgName] > -1  ? 
@@ -347,16 +342,16 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                 :   // The buttons for interpretations
                     <div className = "row-wrapper">
                     <p className = "copiable-prompt-reveal">"{this.props.imgData[imgName]["descp"]}"</p>
-                    <p style={{'marginTop': 0}}>Core memory retrieved. But what is this picture saying? </p>
+                    <p className = "interpret-line" style={{'marginTop': 0}}>Core memory retrieved. But what is this picture saying? </p>
                     {   
                         this.props.imgData[imgName]["interpretations"].map(
                             (op:any,i:number) => {                      
                                 return (
-                                    <div key={i}><div key={i}
+                                    <div key={i}
                                         className="interpret-button"
                                         onClick = {() => this.interpretMemory(imgName, i)}>
                                         {op[0]}
-                                    </div></div>
+                                    </div>
                                 );
                         }) 
                     }

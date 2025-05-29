@@ -5,9 +5,25 @@
   top: 13%;
 }
 
-#candidateCol {
-  height: 90%;
-  width: 80rem;
+.imggen-top-display {
+  min-width: 30vw;
+  width: 50%;
+  float: right;
+  text-align: right;
+  margin-top:1%;
+  margin-bottom:0%;
+  border-bottom:0.5px solid grey;
+
+  color: #4b4b4b;
+
+  p {
+    margin:0;
+  }
+}
+
+.candidateCol {
+  width: 100%;
+  height:82%;
   overflow-y: auto;
   scroll-behavior: smooth;
   box-sizing: border-box;

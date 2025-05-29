@@ -21,6 +21,7 @@
     font-size: 1.1rem;
     letter-spacing: 0.5px;
     padding: 0.2rem 1rem 0.2rem 1rem;
+    cursor: pointer;
 }
 
 .dialogue-button:hover {
@@ -42,6 +43,7 @@
   padding: 0.2rem 1rem 0.2rem 1rem;
   margin-right: auto;
   font-style: oblique;
+  cursor: pointer;
 }
 .continue-button:hover {
     color: var(--intro-text);

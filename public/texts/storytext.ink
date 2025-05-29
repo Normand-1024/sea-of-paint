@@ -14,9 +14,17 @@ VAR push_and_push = false
 
 // For creating the memorabilia
 VAR memorabilia = 0
-VAR memora_first = ""
-VAR memora_second = ""
-VAR memora_lean_first = false
+
+VAR lily_m = false
+VAR lily2_m = false
+VAR stefan_m = false
+VAR ivan_m = false
+VAR emma_m = false
+
+VAR lily_spark_m = false 
+VAR stefan2_m = false
+VAR ivan2_m = false
+VAR emma2_m = false
 
 // Image Unlocked, the variable names match the image names
 // -2: not unlocked, -1: unlocked but waiting for interpretation
@@ -65,12 +73,19 @@ VAR act_1_lie_lily = false
 VAR can_talk_about_emma = false
 
 // A2_Memorabilia
+VAR reminded_unretrieved = false // whether the game has reminded player that they shouldn't use unretrieved memories
 VAR mem_1_line_1 = "123"
 VAR mem_1_line_2 = "234"
 VAR mem_1_interp = -1
 VAR mem_2_line_1 = "345"
 VAR mem_2_line_2 = "456"
 VAR mem_2_interp = -1
+
+VAR mem_1 = ""
+VAR mem_2 = ""
+VAR mem_1_descp = ""
+VAR mem_2_descp = ""
+VAR memora_lean_first = false
 
 
 ...Hello? # anim--
@@ -506,6 +521,8 @@ Well, ask away then.
 + {memorabilia > 0} [\(Conclude Contract\)] 
 
     Am I ready to conclude the contract? Can't say I look forward to what's coming next... # self
+    
+    WARNING: THE ENDING IS STILL UNDER CONSTRUCTION, CONCLUDING THE CONTRACT WILL END THE GAME # self
     
     ++ I have gotten the memorabilia I need, Mey. -> A3_Ending
     
@@ -2019,15 +2036,15 @@ I have found enough core memories. It's time to move on to the next step. # self
 
 * I will create memorabilia from your memories.
 
-** The Sea records memories. But memories are just that: memories. You are more than those bits and pieces of your past.
+** "The Sea records memories. But memories are just that: memories. You are more than those bits and pieces of your past."
 
-*** In order to know how the Sea keeps you together, I need to understand how these memories matter to you. So I have a better idea who you are as a person. This is important for the memoribilia.
+*** "In order to know how the Sea keeps you together, I need to understand how these memories matter to you. So I have a better idea who you are as a person. This is important for the memoribilia."
 
 - Oh...I thought memoribilia are something to remember me by...
 
 * \(Lie\) I agree that it's confusing. It certainly serves that function as well. But remember that I'm also here to conduct maintenance.
 
-** But the Sea remembers you in a particular way. The Machine is here to model how its memory works. We have to consider these factors when building the memorabilia.
+** "But the Sea remembers you in a particular way. The Machine is here to model how its memory works. We have to consider these factors when building the memorabilia."
 
 - But...what about me? Do I get a say in how I will be remembered?
 
@@ -2051,13 +2068,26 @@ But it doesn't feel right. I should have a say in this. It is me, my memories ab
 
 - Okay...thank you. I'm sure it's important for maintenance as well. Memorabilia have to be accurate too.
 
-I'm ready to build memorabilia now. A memorabilium should consist of two *retrieved* memories blended together. # self
+...and you will make it pretty as well, yes?
 
-A blended image is affected by the ratio of resonance between the top two images. If the resonance of the first image is significantly higher than the second, the first image will appear more dominant - I should experiment with this more. # self
+// * Of course, Mey. I will try my best.
+
+//     ** 
+
+// * We'll see about that. The Machine is still very limited.
+
+//     I understand. But if it's 
+
+// - Well, have fun, I guess.
+
+I'm ready to build memorabilia now. A memorabilium should consist of two memories blended together. Each memorabilum will be accomponied by a statement. # self
+
+I can pick any memories for memorabilum, but I should probably talk about them with Mey and retrieve the memories first. # self
+
+I can probably create up to three memorabilia. But it's probably best not to repeat the memories used. # self
 
 I should choose two memories that best illustrate who Mey is as a person. # self
 
-If I do want to create more than one memorabilia, however. It's probably best not to repeat the memories used. # self
 
 It's interesting that Mey's memories are often about her relationships with other people. But it's not that uncommon - we often know ourselves more through others. # self
 
@@ -2069,44 +2099,84 @@ I can also wake up Mey anytime now - but I probably shouldn't do it too often. I
 
 == A2_Memorabilia ==
 
-NOTICE: THIS IS NOT FINISHED YET. First is {memora_first}, Second is {memora_second}, {memora_lean_first: lean first|they are even.}
 
-# write it like orbiturary
+Time to build {memorabilia>0:another|a} memorabilium. # self
 
-* "{mem_1_line_1}...
+{   not reminded_unretrieved && ((mem_1=="lily2" || mem_2=="lily2") && !lily2 || (mem_1=="lily_spark" || mem_2=="lily_spark") && !lily_spark || (mem_1=="stefan" || mem_2=="stefan") && !stefan || (mem_1=="stefan2" || mem_2=="stefan2") && !stefan2 || (mem_1=="ivan" || mem_2=="ivan") && !ivan || (mem_1=="ivan2" || mem_2=="ivan2") && !ivan2): 
+
+    ~ reminded_unretrieved = true
+    
+    I'm using unretrieved memories here. It's...unconventional, because I don't really know what those memories are about yet. And there's a chance that Mey might dislike it. # self
+}
+
+The image is composed of {mem_1_descp}... # self
+
+and then {mem_2_descp}... # self
+
+Let's write a statement memorarizing Mey through these memories... #self
+
++ "{mem_1_line_1}...
     ~mem_1_interp = 0
-* "{mem_1_line_2}...
++ "{mem_1_line_2}...
     ~mem_1_interp = 1
 
-- 123
+-
 
-* , and {mem_1_line_1}."
++ ...and {mem_2_line_1}."
     ~mem_2_interp = 0
-* , and {mem_1_line_2}."
++ ...and {mem_2_line_2}."
     ~mem_2_interp = 1
 
-- Do you want to make this memorabilia?
+- Should I store this memorabilium from the Machine? # self
 
-+ Yes
++ [\(Confirm Memorabilium\)]
 
-    Nice! # make_memora
+    The Machine whirls {memorabilia > 0: once again}, transmiting the data to my hard drive. # self # make_memora
     
     ~memorabilia++
     
+    -- 
+    
     {memorabilia:
         - 1:    One memorabilium created, I can still create two more. Or I could end the session soon. # self
-        - 2:    Two memorabilia created, I can still create one more.
-        - 3:    That was the last memorabilium. I should wrap up and end the session.
+        - 2:    Two memorabilia created, I can still create one more. # self
+        - 3:    That was the last memorabilium. I should wrap up and end the session. # self
+    }
+    
+    {mem_1=="lily" || mem_2=="lily": 
+        ~lily_m = true
+    }
+    {mem_1=="lily2" || mem_2=="lily2": 
+        ~lily2_m = true
+    }
+    {mem_1=="lily_spark" || mem_2=="lily_spark": 
+        ~lily_spark_m = true
+    }
+    {mem_1=="stefan" || mem_2=="stefan": 
+        ~stefan_m = true
+    }
+    {mem_1=="stefan2" || mem_2=="stefan2": 
+        ~stefan2_m = true
+    }
+    {mem_1=="ivan" || mem_2=="ivan": 
+        ~ivan_m = true
+    }
+    {mem_1=="ivan2" || mem_2=="ivan2": 
+        ~ivan2_m = true
     }
     
     ~current_stage = 5
 
 
-+ No
++ [\(Discard Memorabilium and Statements\)]
 
+    Done. I can go back to these two memories if I want. # self
+    
+- 
+    
 ~scene_var="A2_Hub"
 
-- Let's go back to the generator again. # self # generate
+Let's go back to the generator again. # self # generate
 
 -> A2_After_Dive
 
