@@ -12,10 +12,12 @@ import InfoModal from './modals/info';
 import SettingsModal from './modals/settings';
 
 /** App Pages */
+import MainMenuPage from './pages/menu.tsx';
 import IntroPage from './pages/intro';
 import ActivateMachine from './pages/activate';
 import MachinePage from './pages/machine.tsx'
 import PaintingPage from './pages/painting.tsx';
+import EndPage from './pages/end.tsx';
 
 import { PAGE_STATE } from './constants';
 
