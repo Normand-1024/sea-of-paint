@@ -2,6 +2,7 @@ export const IMAGE_DATA : Array<any> = [
     {   
         "name": "lily",
         "memory_name": "Lily smoking while walking...",
+        "memora_descrip": "Lily smoking and walking",
         "descp": "Lily smoking while walking away from Mey after argument about Stefan, Mey feels doubt and envy toward Lily",
         "descp2": ["Lily smoking while walking away from", "after argument about", ", Mey feels", "and", "toward Lily"],
         "keywords": [["Mey", " me ", "[me]"], ["Stefan", "manager", "boss"], ["doubt"], ["envy"]],
@@ -16,14 +17,15 @@ export const IMAGE_DATA : Array<any> = [
                             ]
                             ],
         "memorabilia": [
-                "Mey is often accompanied by self-reliant and independent friends",
-                "Mey is often accompanied by "
+                "Mey was often accompanied by self-reliant and independent friends",
+                "Mey was often accompanied by friends from all walks of life"
         ],
         "scene": "A1_Lily_Q"
     },
     {   
         "name": "lily2",
         "memory_name": "Mey comforting Lily after...",
+        "memora_descrip": "Mey comforting Lily",
         "descp": "Mey comforting Lily after Lily saw a digital postcard at work, Mey feels sympathy and doubt toward Lily",
         "descp2": ["Mey comforting Lily after Lily saw a","","at",", Mey feels", "and", "toward Lily"],
         "keywords": [["digital", "nice", "wholesome"], ["postcard"], ["work"], ["sympathy"], ["doubt"]],
@@ -36,22 +38,23 @@ export const IMAGE_DATA : Array<any> = [
                             ]
                             ],
         "memorabilia": [
-                "Mey was known for her kindness and the willingness to attend to others' feelings",
-                "Mey goes beyond attending to other's feelings — she worries about her close ones' future"
+                "Mey was known for her kindness and willingness to attend to others' feelings",
+                "Mey was known for her kindness and thoughtfulness about others' future"
         ],
         "scene": "A2_Lily"
     },
     {   
         "name": "lily_spark",
         "memory_name": "Lily standing and looking...",
+        "memora_descrip": "Lily standing in splashes of color",
         "descp": "Lily standing and looking afar, her sparks bursting out of her, Mey feels envy and hope toward Lily",
         "descp2": ["Lily standing and looking afar, her","bursting out of her, Mey feels", "and", "toward Lily"],
         "keywords": [["spark"], ["envy"], ["hope"]],
         "info": "Lily is covered in her \"spark\". It seems like a significant thing for Mey. Almost like she's blinded by it.",
         "interpretations": [],
         "memorabilia": [
-                "Mey sees ",
-                "Mey sees "
+                "Mey sees the beauty in other's inner world",
+                "Mey sees the beauty in other's potential"
         ],
         "scene": "A2_Lily_O",
         "d_var": "d_lily_o"
@@ -59,6 +62,7 @@ export const IMAGE_DATA : Array<any> = [
     {   
         "name": "stefan",
         "memory_name": "Stefan told Mey to...",
+        "memora_descrip": "Stefan turning away from Mey at work",
         "descp": "Stefan told Mey to work in textile because she rejected contract, Mey feels sympathy and spite toward Stefan",
         "descp2": ["Stefan told Mey to work in", "because she", "", ", Mey feels", "and", "toward Stefan"],
         "keywords": [["textile"], ["rejected", "refused", "said no"], ["contract"], ["sympathy"], ["spite", "angry"]],
@@ -71,22 +75,23 @@ export const IMAGE_DATA : Array<any> = [
                             ]
                             ],
         "memorabilia": [
-                "line1",
-                "line2"
+                "Mey devoted her life to hard work and her strong ethical code",
+                "Mey devoted her life to the betterment of the Sea and the Machine"
         ],
         "scene": "A2_Stefan"
     },
     {   
         "name": "stefan2",
         "memory_name": "Stefan stands still looking...",
+        "memora_descrip": "Stefan with his face distorted",
         "descp": "Stefan stands still looking away in nervous resentment, just like Fay, Mey feels guilt and pity toward Stefan",
         "descp2": ["Stefan stands still looking away in nervous resentment, just like", ", Mey feels", "and", "toward Stefan"],
         "keywords": [["Fay"], ["guilt"], ["pity"]],
         "info": "Non-core Memories Unlocked. It makes sense now why Stefan is obscured in the memories. Not that it matters now...",
         "interpretations": [],
         "memorabilia": [
-                "line1",
-                "line2"
+                "Mey refused to abandon hopes for people in her life",
+                "Mey is survived by her son Fay, whom she deeply cared for"
         ],
         "scene": "A2_Stefan_O",
         "d_var": "d_stefan_o"
@@ -94,6 +99,7 @@ export const IMAGE_DATA : Array<any> = [
     {   
         "name": "ivan",
         "memory_name": "Ivan and Mey together...",
+        "memora_descrip": "Mey sitting with Ivan",
         "descp": "Ivan and Mey together before Mey suggested divorce due to estrangement, Mey feels detached and spite toward Ivan",
         "descp2": ["Ivan and Mey together before Mey suggested", "due to", ", Mey feels", "and", "toward Ivan"],
         "keywords": [["divorce"], ["estrangement"], ["detached"], ["spite"]],
@@ -109,22 +115,23 @@ export const IMAGE_DATA : Array<any> = [
                     ]
         ],
         "memorabilia": [
-                "line1",
-                "line2"
+                "Mey and her former spouse, Ivan had a child togehter whom they adored",
+                "Mey and her former spouse Ivan remained friends afterwards"
         ],
         "scene": "A2_Ivan"
     },
     {   
         "name": "ivan2",
         "memory_name": "Ivan becomes entangled in...",
+        "memora_descrip": "Ivan painting",
         "descp": "Ivan becomes entangled in the forces in plants and paint, Mey feels alienation and detachment toward Ivan",
         "descp2": ["Ivan becomes entangled in the", "in plants and paint, Mey feels", "and", "toward Ivan"],
         "keywords": [["force", "vitality"], ["alienation"], ["detachment"]],
         "info": "Ivan's own obsession is swallowing him whole. At least that's what Mey sees in him.",
         "interpretations": [],
         "memorabilia": [
-                "line1",
-                "line2"
+                "Mey was immsersed in a life full of creativity",
+                "Mey was drawn to creativity and imaginative wonders in the world"
         ],
         "scene": "A2_Ivan_O",
         "d_var": "d_ivan_o"
