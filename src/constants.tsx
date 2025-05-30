@@ -34,5 +34,6 @@ export const LEANINIG_INTERVAL = 0.15;
 export const IMAGE_DIM = 500;
 
 export const HIGH_BOUND = 0.90;
+export const MID_BOUND = 0.70;
 export const LOW_BOUND = 0.18;
 export const UNLOCK_SCORE = 1.2;

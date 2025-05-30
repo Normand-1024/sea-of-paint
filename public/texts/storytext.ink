@@ -72,21 +72,6 @@ VAR act_1_lie_lily = false
 // A2_Emma
 VAR can_talk_about_emma = false
 
-// A2_Memorabilia
-VAR reminded_unretrieved = false // whether the game has reminded player that they shouldn't use unretrieved memories
-VAR mem_1_line_1 = "123"
-VAR mem_1_line_2 = "234"
-VAR mem_1_interp = -1
-VAR mem_2_line_1 = "345"
-VAR mem_2_line_2 = "456"
-VAR mem_2_interp = -1
-
-VAR mem_1 = ""
-VAR mem_2 = ""
-VAR mem_1_descp = ""
-VAR mem_2_descp = ""
-VAR memora_lean_first = false
-
 
 ...Hello? # anim--
 
@@ -2099,34 +2084,6 @@ I can also wake up Mey anytime now - but I probably shouldn't do it too often. I
 
 == A2_Memorabilia ==
 
-
-Time to build {memorabilia>0:another|a} memorabilium. # self
-
-{   not reminded_unretrieved && ((mem_1=="lily2" || mem_2=="lily2") && !lily2 || (mem_1=="lily_spark" || mem_2=="lily_spark") && !lily_spark || (mem_1=="stefan" || mem_2=="stefan") && !stefan || (mem_1=="stefan2" || mem_2=="stefan2") && !stefan2 || (mem_1=="ivan" || mem_2=="ivan") && !ivan || (mem_1=="ivan2" || mem_2=="ivan2") && !ivan2): 
-
-    ~ reminded_unretrieved = true
-    
-    I'm using unretrieved memories here. It's...unconventional, because I don't really know what those memories are about yet. And there's a chance that Mey might dislike it. # self
-}
-
-The image is composed of {mem_1_descp}... # self
-
-and then {mem_2_descp}... # self
-
-Let's write a statement memorarizing Mey through these memories... #self
-
-+ "{mem_1_line_1}...
-    ~mem_1_interp = 0
-+ "{mem_1_line_2}...
-    ~mem_1_interp = 1
-
--
-
-+ ...and {mem_2_line_1}."
-    ~mem_2_interp = 0
-+ ...and {mem_2_line_2}."
-    ~mem_2_interp = 1
-
 - Should I store this memorabilium from the Machine? # self
 
 + [\(Confirm Memorabilium\)]
@@ -2143,29 +2100,6 @@ Let's write a statement memorarizing Mey through these memories... #self
         - 3:    That was the last memorabilium. I should wrap up and end the session. # self
     }
     
-    {mem_1=="lily" || mem_2=="lily": 
-        ~lily_m = true
-    }
-    {mem_1=="lily2" || mem_2=="lily2": 
-        ~lily2_m = true
-    }
-    {mem_1=="lily_spark" || mem_2=="lily_spark": 
-        ~lily_spark_m = true
-    }
-    {mem_1=="stefan" || mem_2=="stefan": 
-        ~stefan_m = true
-    }
-    {mem_1=="stefan2" || mem_2=="stefan2": 
-        ~stefan2_m = true
-    }
-    {mem_1=="ivan" || mem_2=="ivan": 
-        ~ivan_m = true
-    }
-    {mem_1=="ivan2" || mem_2=="ivan2": 
-        ~ivan2_m = true
-    }
-    
-    ~current_stage = 5
 
 
 + [\(Discard Memorabilium and Statements\)]

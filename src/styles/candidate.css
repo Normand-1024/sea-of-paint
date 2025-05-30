@@ -177,6 +177,16 @@
       text-align: center;
       align-self: center;
     }
+    
+    .interpret-line-gold {
+      color:#8f7f40;
+      margin-top: 0;
+      margin-bottom: 5%;
+      font-size: calc(1vw + 0.4rem);
+      width: 100%;
+      text-align: center;
+      align-self: center;
+    }
 
     .notif {
       text-align: center;
@@ -351,8 +361,13 @@
     }
     
     .meminfo-button-nonmain {
-      background-color: #f7f7f7;
-      color: rgb(94, 94, 94);
+      background-color: #ffffff;
+      color: rgb(78, 78, 78);
+    }
+    
+    .meminfo-button-used {
+      background-color: #dfdfdf;
+      color: rgb(139, 139, 139);
     }
 
     .meminfo-button-retrieved {

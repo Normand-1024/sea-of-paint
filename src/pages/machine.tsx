@@ -68,8 +68,6 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     private animator = new AnimationManager();
 
     private dialogueWrapperRef = React.createRef<HTMLDivElement>();
-    
-	private tempMemData : (string | number)[] = []; // [index, id1, id2, interpt1, interpt2, imageURL]
 
     /********** Load the text into markov chain **********/
     componentDidMount() {
@@ -187,7 +185,8 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         // Check if there's any interpretations left open
         if (this.state.generateState == GENERATE_WAIT_TYPE['wait_for_lily2'] &&
             this.state.dialogueRunner.variablesState["lily"] >= 0){
-            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['generated'] }));     
+            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['generated'] }));  
+            this.setState({ blinking: true });   
             this.dialogueEndRef.current?.scrollIntoView(true);
         } 
 
@@ -195,11 +194,6 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     }
 
     setToDialogue = (memData : (string | number)[] = []) => {
-        if (this.state.dialogueRunner?.variablesState["scene_var"] == "A2_Memorabilia"){
-            this.state.dialogueRunner.ChoosePathString("A2_Memorabilia");
-            this.tempMemData = memData;
-        }
-
         this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['dialogue'] }));
     }
 
@@ -269,7 +263,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['generated'] }));
 
         this.setState((state) => ({
-            promptList: [...state.promptList, inprompt]
+            promptList: [...state.promptList, inprompt.toLowerCase().replaceAll('[', '').replaceAll(']', '')]
         }));
     }
 
@@ -308,24 +302,6 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         // Push the current text
         if (this.state.dialogueRunner.canContinue) {
             this.pushDialogue(this.state.dialogueRunner.Continue());
-        }
-
-        // If make_memora is true, then start inputting memorabilia
-        if (this.state.dialogueRunner.currentTags &&
-            this.state.dialogueRunner.currentTags.indexOf('make_memora') > -1) {
-                this.tempMemData[3] = this.state.dialogueRunner.variablesState["mem_1_interp"];
-                this.tempMemData[4] = this.state.dialogueRunner.variablesState["mem_2_interp"];
-
-                this.props.setMemorabilia(
-                    this.props.memorabilia.map((mem, index) => {
-                        if (index == this.tempMemData[0]){
-                            return this.tempMemData.slice(1);
-                        }
-                        else {
-                            return mem;
-                        }
-                    }
-                ))
         }
 
         // If #generate is true, get into image generation mode
@@ -490,6 +466,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                             )
                         }
                         </div>}
+
                         <div ref={this.dialogueEndRef} />
                     </div>}
                 </div>
@@ -520,6 +497,8 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                         initiateScene={this.setToDialogue}
                         generateState={this.state.generateState}
                         fillPromptBox={this.fillPromptBox}
+                        memorabilia={this.props.memorabilia}
+                        setMemorabilia={this.props.setMemorabilia}
                     />
 
                     {this.state.mode != 'inactive' && this.state.mode!="machine" && (

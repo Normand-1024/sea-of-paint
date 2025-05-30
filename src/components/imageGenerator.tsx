@@ -10,7 +10,7 @@ import { brightness, randomCMYK, randomHue, saturation, copyOver } from '../func
 
 import '../styles/image.css';
 
-import { IMAGE_DIM, HIGH_BOUND, LOW_BOUND, LEANINIG_INTERVAL, UNLOCK_SCORE } from '../constants.tsx';
+import { IMAGE_DIM, HIGH_BOUND, LOW_BOUND, LEANINIG_INTERVAL, UNLOCK_SCORE, MID_BOUND } from '../constants.tsx';
 import { IMAGE_DATA } from '../../public/assets/images/imageData.tsx';
 
 
@@ -21,6 +21,9 @@ type ImageGeneratorProps = {
 	initiateScene: Function;
 	generateState: number;
 	fillPromptBox: Function;
+
+    memorabilia: (string | number)[][]; // [id1, id2, interpt1, interpt2, imageURL] x 3
+	setMemorabilia: Function;
 }
 
 type ImageGeneratorState = {
@@ -79,7 +82,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 				this.state.currentP5Index = this.props.prompts.length-1; //locking
 
-				let prompt = this.props.prompts[this.state.currentP5Index].toLowerCase();
+				let prompt = this.props.prompts[this.state.currentP5Index];
 				let prompt_embed = await this.st.embed(prompt);
 
 				let if_tutorial = this.props.dialogueRunner.currentTags && this.props.dialogueRunner.currentTags.indexOf('generate') == -1
@@ -109,7 +112,7 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				let visit_count = this.props.dialogueRunner.state.VisitCountAtPathString(this.imgData[similarities[0].name]["scene"]);
 				if (visit_count == null || visit_count == undefined)
 					console.log("WARNING: VISIT_COUNT IS NULL OR UNDEFINED");
-				else if (visit_count >= 0){
+				else if (visit_count > 0){
 					if (similarities[0].score > HIGH_BOUND) {
 						similarities[0].score = UNLOCK_SCORE;
 						for (let i=0; i<wordStat.length; i++) 
@@ -189,8 +192,9 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				normalBNWBlend(img, raw2, img, 0.5);
 				// console.log([(similarities[0].score - LOW_BOUND) / (HIGH_BOUND - LOW_BOUND),
 				// 		(similarities[1].score - LOW_BOUND) / (HIGH_BOUND - LOW_BOUND)])
+				let raw2_ratio = similarities[1]["score"] > MID_BOUND ? 1.8 : 2.5;
 				pinLightBlend(img, raw2_mask, img, 
-					(similarities[1]["score"] - LOW_BOUND) / (1.8*(HIGH_BOUND - LOW_BOUND))
+					(similarities[1]["score"] - LOW_BOUND) / (raw2_ratio*(HIGH_BOUND - LOW_BOUND))
 				);
 				pinLightBlend(img, raw1_mask, img,
 					(similarities[0]["score"] - LOW_BOUND) / (HIGH_BOUND - LOW_BOUND)
@@ -287,6 +291,9 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 							setDialogueVar  = {this.props.setDialogueVar}
 							initiateScene = {this.props.initiateScene}
 							fillPromptBox = {this.props.fillPromptBox}
+														
+                        	memorabilia={this.props.memorabilia}
+                        	setMemorabilia={this.props.setMemorabilia}
 
 							key={index}>
 
