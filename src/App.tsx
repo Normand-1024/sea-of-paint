@@ -23,12 +23,15 @@ import { PAGE_STATE } from './constants';
 
 
 function App() {
-  const [pageState, setPageState] = useState(PAGE_STATE.intro);
+  const [pageState, setPageState] = useState(PAGE_STATE.menu);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [memorabilia, setMemorabilia] = useState([["", "", -1, -1, ""], ["", "", -1, -1, ""], ["", "", -1, -1, ""]]);
 
-  if (pageState === PAGE_STATE.intro) {
+  if (pageState === PAGE_STATE.menu) {
+    return <MainMenuPage pageState={pageState} setPageState={setPageState} />;
+  }
+  else if (pageState == PAGE_STATE.intro){
     return <IntroPage pageState={pageState} setPageState={setPageState} />;
   }
   else {
