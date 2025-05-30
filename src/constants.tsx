@@ -1,4 +1,5 @@
 export const PAGE_STATE = {
+    "menu": -1,
     "intro": 0,
     "activate": 1,
     "machine": 2,
