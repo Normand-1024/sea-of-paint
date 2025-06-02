@@ -1,13 +1,13 @@
 /** Intro.css */
 
 #storyPage {
-    height: 100vh;
+    height: 80vh;
     width: 100vw;
-    padding: 2rem;
+    padding: 20vh 2rem 2rem 2rem;
     background-color: var(--menu-background);
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
+    justify-content: center;
     align-items: center;
     color: var(--intro-text);
     text-align: center;
