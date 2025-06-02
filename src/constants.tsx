@@ -5,7 +5,8 @@ export const PAGE_STATE = {
     "machine": 2,
     "info": 3,
     "settings": 4,
-    "painting": 5
+    "painting": 5,
+    "ending": 6,
   };
 
 export const DIALOGUE_TYPE = {'spirit': 0, 'self-speaking': 1, 'self-thinking': 2, 'machine': 3};

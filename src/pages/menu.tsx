@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import '../styles/menu.css';
 import { PAGE_STATE } from '../constants';
 import CreditModal from '../modals/credit';
 import BibliographyModal from '../modals/bibliography';
+import '../styles/menu.css';
 
 type MenuProps = {
   pageState: number;
@@ -12,13 +12,18 @@ type MenuProps = {
 const MainMenuPage: React.FC<MenuProps> = ({ setPageState }) => {
   const [showCreditModal, setShowCreditModal] = useState(false);
   const [showBibliographyModal, setShowBibliographyModal] = useState(false);
+  const [isFading, setIsFading] = useState(false);
 
   const nextPage = () => {
-    setPageState(PAGE_STATE.intro);
+    setIsFading(true);
+
+    setTimeout(() => {
+      setPageState(PAGE_STATE.intro);
+    }, 2000);
   };
 
   return (
-    <div className="menu-wrapper">
+    <div className={`menu-wrapper ${isFading ? 'fade-out' : ''}`}>
       <h1>Sea of Paint</h1>
 
       <button onClick={nextPage} className="button">

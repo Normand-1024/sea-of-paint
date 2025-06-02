@@ -1,8 +1,8 @@
 import React from 'react';
-import '../styles/modals.css';
 import { Modal, Box, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import SettingsPage from '../pages/settings';
+import '../styles/modals.css';
 
 interface SettingsModalProps {
   open: boolean;

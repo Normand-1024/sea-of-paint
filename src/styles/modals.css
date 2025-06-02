@@ -1,5 +1,8 @@
+/** modals.css */
+/** KK: has styling for ALL the modals in the project */
+
 .modal-root {
-  position: absolute !important;
+  position: fixed !important;
   top: 0;
   left: 0;
   width: 100%;
@@ -15,9 +18,29 @@
   border-radius: 5px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   width: 80%;
-  height: 80%;
-  max-height: 90%;
+  height: auto;
+  max-height: 80%;
   overflow: auto;
+}
+
+.content-wrapper {
+  padding: 0rem 2rem 2rem 2rem;
+  color: var(--text);
+  font-family: 'Courier New', Courier, monospace;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.content-wrapper h1 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.content-wrapper p {
+  font-size: 1rem;
+  text-align: center;
 }
 
 .modal-close {
@@ -25,3 +48,43 @@
   padding: 5px;
 }
 
+#credit-modal {
+  width: 50%;
+  height: 50%;
+}
+
+/** KK: styling for the settings modal below */
+.slider-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  margin-bottom: 0.8rem;
+}
+
+/** KK: adjusts slider color */
+/* .slider-wrapper .MuiSlider-root {
+  color: var(--middle-toggle-highlight); 
+} */
+
+.slider-wrapper p {
+  text-align: left;
+}
+
+.button-wrapper {
+  display: flex;
+  flex-direction: row; 
+  gap: 0.2rem;
+  margin-top: 1rem;
+  align-items: center;
+}
+
+.restart-button {
+  background-color: #d69696 !important;
+  font-weight: bold !important;
+  font-size: 1rem !important;
+}
+
+.restart-button:hover {
+  background: #e6adad !important;
+  cursor: pointer;
+}

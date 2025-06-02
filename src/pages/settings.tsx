@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Slider, Button } from '@mui/material';
 import { getMusicVolume, setMusicVolume, getSfxVolume, setSfxVolume, getSpeedMode, setSpeedMode, SpeedMode } from '../globals';
-import '../styles/settings.css';
-import '../styles/colors.css';
+import '../styles/modals.css';
 
 const speedOptions: { value: SpeedMode; label: string }[] = [
   { value: 'very-slow', label: 'Very Slow' },
@@ -51,7 +50,7 @@ const SettingsPage: React.FC = () => {
   };
 
   return (
-    <div className="settings-wrapper">
+    <div className="content-wrapper">
       <h1>Game Settings</h1>
 
       <div className = "slider-wrapper">

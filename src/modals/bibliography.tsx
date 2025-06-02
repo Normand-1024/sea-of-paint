@@ -1,9 +1,8 @@
 import React from 'react';
-import '../styles/modals.css';
-import '../styles/colors.css';
 import { Modal, Box, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import BibliographyPage from '../pages/bibliography';
+import '../styles/modals.css';
 
 interface BibliographyModalProps {
   open: boolean;

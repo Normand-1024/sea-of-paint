@@ -18,12 +18,20 @@ type IntroProps = {
 
 type IntroState = {
   currentLine: number;
+  isVisible: boolean;
 }
 
 class IntroPage extends React.Component<IntroProps, IntroState> {
   state: IntroState = {
-    currentLine: 0
+    currentLine: 0,
+    isVisible: false,
   };
+
+  componentDidMount() {
+    requestAnimationFrame(() => {
+      this.setState({ isVisible: true });
+    });
+  }
 
   advanceIntro = () => {
     this.setState((state) => ({
@@ -32,16 +40,18 @@ class IntroPage extends React.Component<IntroProps, IntroState> {
   }
 
   nextPage = () => {
-    this.props.setPageState(PAGE_STATE['machine']);
+    this.props.setPageState(PAGE_STATE['ending']);
   }
 
   render() {
+    const { currentLine, isVisible } = this.state;
+
     return (
-      <div id="storyPage">
+      <div id="storyPage" className={isVisible ? 'visible' : ''}>
         <h1>Sea of Paint</h1>
 
         {INTRO_TEXT.map((item, index) => (
-          <p key={index} className={index <= this.state.currentLine ? '' : 'inactive-line'}>
+          <p key={index} className={index <= currentLine ? '' : 'inactive-line'}>
             {item}
           </p>
         ))}
@@ -50,7 +60,7 @@ class IntroPage extends React.Component<IntroProps, IntroState> {
         <br></br>
 
         <div className="intro-button-container">
-        {this.state.currentLine < INTRO_TEXT.length - 1 ? (
+        {currentLine < INTRO_TEXT.length - 1 ? (
             <button onClick={this.advanceIntro} className="intro-button">
                 Continue
             </button>

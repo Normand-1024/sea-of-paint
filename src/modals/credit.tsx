@@ -1,9 +1,8 @@
 import React from 'react';
-import '../styles/modals.css';
-import '../styles/colors.css';
 import { Modal, Box, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CreditsPage from '../pages/credits';
+import '../styles/modals.css';
 
 interface CreditModalProps {
   open: boolean;
@@ -18,7 +17,7 @@ const CreditModal: React.FC<CreditModalProps> = ({ open, onClose }) => (
     onClose={onClose}
     slotProps={{ backdrop: { sx: { backgroundColor: "var(--menu-background" }} }}
   >
-    <Box className="modal-content" onClick={e => e.stopPropagation()}>
+    <Box id="credit-modal" className="modal-content" onClick={e => e.stopPropagation()}>
       <IconButton aria-label="close" className="modal-close" onClick={onClose}>
         <CloseIcon />
       </IconButton>

@@ -1,9 +1,9 @@
 import React from 'react';
-import '../styles/info.css';
+import '../styles/modals.css';
 
 const InfoPage: React.FC = () => {
   return (
-    <div className="info-wrapper">
+    <div className="content-wrapper">
       <h1>Info Page</h1>
       <p>How-to page.</p>
     </div>
