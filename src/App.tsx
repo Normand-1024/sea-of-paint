@@ -28,6 +28,7 @@ function App() {
   const [memorabilia, setMemorabilia] = useState([["", "", -1, -1, ""], ["", "", -1, -1, ""], ["", "", -1, -1, ""]]);
 
   const RESET_LIMIT = 30000; // KK: 30 seconds
+  const WARNING_LIMIT = 10000; // KK: 10 seconds before reset
 
   const resetToMenu = useCallback(() => {
     setPageState(PAGE_STATE.menu);
@@ -49,7 +50,7 @@ function App() {
 
       warningTimer = setTimeout(() => {
         setShowWarningModal(true);
-      }, RESET_LIMIT - 10000); // KK: 10 seconds remaining before reset
+      }, RESET_LIMIT - WARNING_LIMIT);
     };
 
     const events = ['click', 'keydown', 'mousemove', 'touchstart'];
