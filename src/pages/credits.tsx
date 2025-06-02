@@ -1,9 +1,9 @@
 import React from 'react';
-import '../styles/credits.css';
+import '../styles/modals.css';
 
 const CreditsPage: React.FC = () => {
   return (
-    <div className="credits-wrapper">
+    <div className="content-wrapper">
       <h1>Credits</h1>
       <p>Game created by Henry Zhou.</p>
     </div>

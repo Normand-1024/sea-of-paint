@@ -1,6 +1,6 @@
 /** App.tsx */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 
 /** Icons */
@@ -15,7 +15,7 @@ import SettingsModal from './modals/settings';
 import MainMenuPage from './pages/menu.tsx';
 import IntroPage from './pages/intro';
 import ActivateMachine from './pages/activate';
-import MachinePage from './pages/machine.tsx'
+import MachinePage from './pages/machine.tsx';
 import PaintingPage from './pages/painting.tsx';
 import EndPage from './pages/end.tsx';
 
@@ -28,11 +28,45 @@ function App() {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [memorabilia, setMemorabilia] = useState([["", "", -1, -1, ""], ["", "", -1, -1, ""], ["", "", -1, -1, ""]]);
 
+  const RESET_LIMIT = 9000000000;
+
+  const resetToMenu = useCallback(() => {
+    setPageState(PAGE_STATE.menu);
+  }, []);
+
+  useEffect(() => {
+    let inactivityTimer: NodeJS.Timeout;
+
+    const resetTimer = () => {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(() => {
+        resetToMenu();
+      }, RESET_LIMIT);
+    };
+
+    const events = ['click', 'keydown', 'mousemove', 'touchstart'];
+    events.forEach(event =>
+      window.addEventListener(event, resetTimer)
+    );
+
+    resetTimer();
+
+    return () => {
+      events.forEach(event =>
+        window.removeEventListener(event, resetTimer)
+      );
+      clearTimeout(inactivityTimer);
+    };
+  }, [resetToMenu]);
+
   if (pageState === PAGE_STATE.menu) {
     return <MainMenuPage pageState={pageState} setPageState={setPageState} />;
   }
   else if (pageState == PAGE_STATE.intro){
     return <IntroPage pageState={pageState} setPageState={setPageState} />;
+  }
+  else if (pageState == PAGE_STATE.end){
+    return <EndPage pageState={pageState} setPageState={setPageState} memorabilia={memorabilia} />;
   }
   else {
       return (
@@ -58,10 +92,6 @@ function App() {
             {pageState == PAGE_STATE['machine'] && 
               <MachinePage pageState={pageState} setPageState={setPageState}
                         memorabilia={memorabilia} setMemorabilia={setMemorabilia}></MachinePage>}
-
-            {pageState == PAGE_STATE['end'] && 
-              <EndPage pageState={pageState} setPageState={setPageState}
-                      memorabilia={memorabilia}></EndPage>}
 
             {/** Modals */}
             <InfoModal open={showInfoModal} onClose={() => setShowInfoModal(false)} />

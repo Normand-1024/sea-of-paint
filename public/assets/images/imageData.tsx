@@ -148,3 +148,11 @@ export const IMAGE_DATA : Array<any> = [
     //     "scene": "A2_Emma_O"
     // }
 ];
+
+export const IMAGE_INDEX : {[id: string] : number;} = {"lily": 0, 
+                            "lily2": 1,
+                            "lily_spark": 2, 
+                            "stefan": 3,
+                            "stefan2": 4,
+                            "ivan": 5, 
+                            "ivan2": 6,}

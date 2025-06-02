@@ -1,9 +1,8 @@
 import React from 'react';
-import '../styles/modals.css';
-import '../styles/colors.css';
 import { Modal, Box, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import InfoPage from '../pages/info';
+import '../styles/modals.css';
 
 interface InfoModalProps {
   open: boolean;
