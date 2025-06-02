@@ -61,17 +61,17 @@
 }
 
 /** KK: styling for the credits modal below */
-#credit-modal {
+#credits-modal {
   width: 50%;
   height: 50%;
 }
 
 /** KK: styling for the info modal below */
 .info-wrapper {
-  width: 80%;
+  width: 90%;
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 2rem;
   margin: 0 auto;
 }
 
@@ -92,10 +92,14 @@
 }
 
 /** KK: styling for the settings modal below */
+#settings-modal {
+  width: 60%;
+}
+
 .slider-wrapper {
   display: flex;
   flex-direction: column;
-  width: 60%;
+  width: 80%;
   margin-bottom: 0.8rem;
 }
 

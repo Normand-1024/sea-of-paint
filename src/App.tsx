@@ -8,9 +8,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 /** Modals */
-import InfoModal from './modals/info';
-import SettingsModal from './modals/settings';
-import WarningModal from './modals/warning';
+import CustomModal from './modals/modal';
 
 /** App Pages */
 import MainMenuPage from './pages/menu.tsx';
@@ -101,9 +99,9 @@ function App() {
               <PaintingPage pageState={pageState} setPageState={setPageState}></PaintingPage>}
 
             {/** Modals */}
-            <InfoModal open={showInfoModal} onClose={() => setShowInfoModal(false)} />
-            <SettingsModal open={showSettingsModal} onClose={() => setShowSettingsModal(false)} />
-            <WarningModal open={showWarningModal} onClose={() => setShowWarningModal(false)} />
+            <CustomModal open={showInfoModal} onClose={() => setShowInfoModal(false)} type="info" />
+            <CustomModal open={showSettingsModal} onClose={() => setShowSettingsModal(false)} type="settings" />
+            <CustomModal open={showWarningModal} onClose={() => setShowWarningModal(false)} type="warning" />
           </div>
 
         </div>
