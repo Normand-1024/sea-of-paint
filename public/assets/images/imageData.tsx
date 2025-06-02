@@ -53,8 +53,8 @@ export const IMAGE_DATA : Array<any> = [
         "info": "Lily is covered in her \"spark\". It seems like a significant thing for Mey. Almost like she's blinded by it.",
         "interpretations": [],
         "memorabilia": [
-                "Mey sees the beauty in other's inner world",
-                "Mey sees the beauty in other's potential"
+                "Mey always sees the beauty in other's inner world",
+                "Mey always sees the beauty in other's striving for the future"
         ],
         "scene": "A2_Lily_O",
         "d_var": "d_lily_o"
@@ -104,7 +104,7 @@ export const IMAGE_DATA : Array<any> = [
         "descp2": ["Ivan and Mey together before Mey suggested", "due to", ", Mey feels", "and", "toward Ivan"],
         "keywords": [["divorce"], ["estrangement"], ["detached"], ["spite"]],
         "interpretations": [
-                    ["Mey is falling into deep thoughts. Perhaps reflecting on her life choices.",
+                    ["Mey is falling into deep thoughts. Perhaps she's reflecting on her life choices.",
                         "Mey's expression is one of deep reflection. What is she thinking about?"
                     ],
                     ["Mey is zoning out at the end of the day. She's resting. What she's thinking is unimportant.",
@@ -130,7 +130,7 @@ export const IMAGE_DATA : Array<any> = [
         "info": "Ivan's own obsession is swallowing him whole. At least that's what Mey sees in him.",
         "interpretations": [],
         "memorabilia": [
-                "Mey was immsersed in a life full of creativity",
+                "Mey was immsersed in a life full of creative endeavors",
                 "Mey was drawn to creativity and imaginative wonders in the world"
         ],
         "scene": "A2_Ivan_O",

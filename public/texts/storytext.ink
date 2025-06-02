@@ -26,6 +26,25 @@ VAR stefan2_m = false
 VAR ivan2_m = false
 VAR emma2_m = false
 
+// If the lines are "", it means it is either not there or it is discarded
+VAR mem1_line = ""
+VAR mem1_m1 = "" // memory names
+VAR mem1_m2 = ""
+VAR mem1_i1 = -1 // memory interpretations
+VAR mem1_i2 = -1
+
+VAR mem2_line = ""
+VAR mem2_m1 = "" // memory names
+VAR mem2_m2 = ""
+VAR mem2_i1 = -1 // memory interpretations
+VAR mem2_i2 = -1
+
+VAR mem3_line = ""
+VAR mem3_m1 = "" // memory names
+VAR mem3_m2 = ""
+VAR mem3_i1 = -1 // memory interpretations
+VAR mem3_i2 = -1
+
 // Image Unlocked, the variable names match the image names
 // -2: not unlocked, -1: unlocked but waiting for interpretation
 // Natural numbers refers to the index of the interpretation
@@ -90,7 +109,7 @@ VAR can_talk_about_emma = false
 // ~ ivan = 0 
 // ~ current_stage = 4
 // ~ core_unlocked = 3
-// -> A2_Hub
+// -> A3_cont_1
 
 - What is this? Why is it so dark here? # anim--
 
@@ -349,7 +368,7 @@ Have you heard anything about the accident? Whether anyone survived?
 
 * I don't think so...I'm so sorry, Mey.
 
-    God...I can't believe that, she has so much future ahead of her...
+    God...I can't believe it. She had so much future ahead of her...
     
     Why do I have to bear this news...it's...all too much. # anim--
 
@@ -1153,9 +1172,9 @@ I think I might have an idea what it looks like...
 
     Yes. I do think she has such a rich internality...or "inner culture", as I heard someone put it.
 
-* Lily's looking at something wonderful and fantastical. It seems to depict her outlook on life.
+* Lily's looking at something wonderful and fantastical. It seems to depict her believes in her future.
 
-    I don't think that's true. It is more about her...impulse, and what that means to her.
+    I don't think that's true. Lily doesn't think about her future very much. It is more about her...impulse, and what that means to her.
 
 - She really believed in her "sparks"....she only used that word a couple of times but it really stuck with me.
 
@@ -1943,7 +1962,7 @@ Anyway...we've been talking about this long enough. It doesn't matter now.
 
 == A2_Ivan_U ==
 
-* {ivan == 0} It looked like you were thinking about something, trying to process something.
+* {ivan == 0} It looked like you were trying to think about something.
 
     Yes. It's just a lot of thinking as I have accepted my decision to leave...
 
@@ -2082,62 +2101,19 @@ I can also wake up Mey anytime now - but I probably shouldn't do it too often. I
 
 -> A2_Hub
 
-== A2_Memorabilia ==
-
-- Should I store this memorabilium from the Machine? # self
-
-+ [\(Confirm Memorabilium\)]
-
-    The Machine whirls {memorabilia > 0: once again}, transmiting the data to my hard drive. # self # make_memora
-    
-    ~memorabilia++
-    
-    -- 
-    
-    {memorabilia:
-        - 1:    One memorabilium created, I can still create two more. Or I could end the session soon. # self
-        - 2:    Two memorabilia created, I can still create one more. # self
-        - 3:    That was the last memorabilium. I should wrap up and end the session. # self
-    }
-    
-
-
-+ [\(Discard Memorabilium and Statements\)]
-
-    Done. I can go back to these two memories if I want. # self
-    
-- 
-    
-~scene_var="A2_Hub"
-
-Let's go back to the generator again. # self # generate
-
--> A2_After_Dive
-
 == A3_Ending ==
 
-VAR if_mey_like = false // If Mey likes the memorabilium or not
-VAR if_keep = false // If the player keeps the memorabilium or not
-VAR if_mey_keep = false // If the player told Mey they would keep it or not
+VAR consult_count = 0 // How many memories have been talked about
+VAR delete_count = 0 // How many memorabilia did player say they deleted
 VAR if_said_one = false // The player has to at least talk about one memorabilium
-
-VAR end_dis = 0 // How many attempts for 
-VAR end_aff= 0 // How much affirmation is successful 
-VAR initial_dissolve = false // Did the player initially want to diffuse?
 
 ~current_stage = 0
 
-Thanks for getting to this stage, but the ending is in construction right now! Make sure to give us some feedback!
+* We're closer to the end now.
 
--> END
+- Okay, didn't think it would end so soon...
 
-Okay. Does that mean we are close to the end now
-
-* That's correct, Mey.
-
-Okay, didn't think it would end so soon...
-
-{cruel>=3:I can't say I enjoyed talking to you, but at least|I enjoyed our chat, for what it's worth. I'm happy that} I got to recollect my own memories, and to talk about them. 
+{cruel>=3:To be honest, there were some difficult moments talking to you. But at least|I enjoyed our chat, for what it's worth. I'm happy that} I got to recollect my own memories, and to talk about them. 
 
 I haven't thought about these moments for so long. But now I realize that the past can offer many new things. It is alive too, in a way...
 
@@ -2153,72 +2129,185 @@ Great! So what kind of memorabilia do you have of me?
 
 =Memora_Consult
 
-// Choices to overview the memorabilia
+VAR mem_num = -1
+VAR mem_m1 = ""
+VAR mem_m2 = ""
+VAR mem_i1 = -1
+VAR mem_i2 = -1
+VAR mem_att = 0 //How Mey feels about the memorabilia
 
-// * {mem1 == 12 or mem2 == 12 or mem3 == 12 } hjfdhksaf
+* {mem1_line != ""} "{mem1_line}"
+    ~mem_num = 1
+    ~mem_m1 = mem1_m1
+    ~mem_m2 = mem1_m2
+    ~mem_i1 = mem1_i1
+    ~mem_i2 = mem1_i2
+    {mey_react(mem_m1, mem_i1)}...
+    ...{mey_react(mem_m2, mem_i2)}
+    -> Mey_React
 
-//     jkldjfalk
+* {mem2_line != ""} "{mem2_line}"
+    ~mem_num = 2
+    ~mem_m1 = mem2_m1
+    ~mem_m2 = mem2_m2
+    ~mem_i1 = mem2_i1
+    ~mem_i2 = mem2_i2
+    {mey_react(mem_m1, mem_i1)}...
+    ...{mey_react(mem_m2, mem_i2)}
+    -> Mey_React
+
+* {mem3_line != ""} "{mem3_line}"
+    ~mem_num = 3
+    ~mem_m1 = mem3_m1
+    ~mem_m2 = mem3_m2
+    ~mem_i1 = mem3_i1
+    ~mem_i2 = mem3_i2
+    {mey_react(mem_m1, mem_i1)}...
+    ...{mey_react(mem_m2, mem_i2)}
+    -> Mey_React
     
 * {if_said_one} That's all I have, Mey. 
 
-    // Mey would feel weird if if_mey_keep = false and memorabilium = 1, the player will say nah they have failed and will try again next time (lie)
+{consult_count == delete_count: -> Delete_Everything}
     
-- 
+-> A3_cont_1
 
+=Delete_Everything
+So that was it? Did you delete every memorabilium you made?
+    
+* \(Lie\) Yes, it's unfortunate. But I don't have to store any of the memorabilia, simply talking to you has done enough to keep you intact in the Sea.
+
+- Really? That's good to hear. Surprising that my opinion would matter this much in the process.
+
+-> A3_cont_1
+
+=Mey_React
+
+~consult_count += 1
 ~if_said_one = true
 
 {
-
-- memorabilia==1: -> Cannot_disgard
-
-
-- else: ->Keep_or_not
+    - mem_att < 0:
+        I don't think I want to be remembered this way...these statements are just not quite right. I think you should delete it.
+        
+    - mem_att == 0:
+        I don't really know how to feel about this one.{consult_count == 1: There's something strange about reading statements about myself.} It's up to you to keep it or not.
+        
+    - mem_att > 0:
+        I like it overall.{consult_count == 1: I didn't know reading these kind of statements about myself would feel so strange.} You can definitely keep this one. 
+        
+        {consult_count: 
+            - 1: Did you make any other memorabilia? -> Memora_Consult
+            - 2: Is there more memorabilia? -> Memora_Consult
+            - 3: Is there more? -> Memora_Consult
+        }
 }
 
-=Cannot_disgard
+The attitude is {mem_att} and memorabilia is {memorabilia}
 
-It doesn't really matter. I only have one memorabilium left. I have to continue now. # self -> Back_to_Mey
+{mem_att < 0 && memorabilia == 1: -> Last_Mem_Lie}
 
-=Keep_or_not
+Do I want to keep this memorabilium? # self
 
-// Do you want to keep this
++ [\(Keep it\)]
 
--> Back_to_Mey
+    {
+    - mem_att < 0: -> Keep_it_neg
+        
+    - else: -> Keep_it_pos
+    
+    }
 
-=Back_to_Mey
-
-->Memora_Consult
++ [\(Delete it\)] -> Delete_it
 
 
-==A3_cont_1==
+= Last_Mem_Lie
+
+~delete_count++
+
+This is the last memorabilium I have stored. I can't delete this one. # self
+
+* \(Lie\) Done. This one was deleted, Mey. 
+
+    Okay. Thanks for listening to me on that one.
+    
+    Is there more memorabilia you made? -> Memora_Consult
+    
+= Keep_it
+
+~delete_count++
+
++ \(Lie\) Thank you for the feedback, Mey. I have deleted this one.
+
+Sounds good, is there more you want to mention? 
+
+-> Memora_Consult
+
+= Keep_it_neg
+
+~delete_count++
+
++ \(Lie\) Thank you for the feedback, Mey. I have deleted this one.
+
+Sounds good, is there more you want to mention? 
+
+-> Memora_Consult
+
+= Keep_it_pos
+
++ I do want to keep this one, Mey. 
+
+Okay, let's move on to the other ones then.
+
+-> Memora_Consult
+
+= Delete_it
+
+~delete_count++
+
+++ I will delete this memorabilia, Mey. Appreciate the feedback{consult_count > 0: again}. # handle_delete
+
+Okay.{mem_att < 0: I do appreciate you listening to me| It's your choice}.
+
+Do you have more memorabilia made?
+
+- -> Memora_Consult
+
+=== A3_cont_1 ===
+
+VAR end_dis = 0 // How many attempts for dissolve
+VAR end_aff= 0 // How much affirmation is successful 
+VAR initial_dissolve = false // Did the player initially want to diffuse?
 
 So...what now? It's time to put me back to the Sea, right?
+
+Time for the last part of this process... # self
 
 I wonder what'll happen the next time I wake up...perhaps I can finally talk to Fay and Ivan...
 
 * I'm sorry that I lied to you, Mey...
 
-- ...wait, what? What do you mean...? # anim--
+- ...what do you mean...? # anim--
 
 * How do you feel about the Sea so far, Mey?
 
-- It's...constantly swallowing me, making me suffer. But it's also part of me, the reason I am here right now...
+- It's constantly disrupting every fibre of me. But it's also part of me, the reason I am here right now...
 
-* That's exactly right. The Sea is not entirely reliable right now. And there's a lot of services built around to make it work.
+* That's exactly right. The Sea is not entirely reliable right now. And there's a lot of labor needed to make it work.
 
-** "Each Machine is connected to a global filter service. Without the filter, wandering spirits may pollute the Sea and emerge even when the Operator did not call for them."
+** "Each Machine is connected to a global filter service. Without the filter, wandering spirits may pollute the Sea and emerge without explicitedly called for."
 
-*** "Memorabilia service is needed so the spirits may not emerge with the Sea and lose their identity."
+*** "Also, memorabilia services are needed so the spirits may not dissolve within the Sea and lose their identity."
     
-**** "The filter and the memorabilia service are both necessary maintenance procedures with annual fees, which might mean financial burden to the living families..."
+**** "The filter and the memorabilia services are both necessary maintenance procedures with annual fees, which might mean financial burden to the living families..."
 
 - 
     
 * "...And I'm sad to say that your family has decided to remove you from the Sea."
 
-** Your family and you discussed it through another service. But in order to not interfere with this memorabilia service, we decided to sever your memory for this session.
+** Your family and you discussed it through another service. But in order to not interfere with this memorabilia procedure, we decided to sever your memory for this session.
 
-*** I'm sorry that I lied to you. You will be distracted by this fact if I told you the truth upfront.
+*** I'm sorry that I lied to you. But I did it with the best intention. You would be distracted by this fact if I told you the truth upfront.
 
 **** I'm really sorry again, Mey.
 
@@ -2230,7 +2319,7 @@ I wonder what'll happen the next time I wake up...perhaps I can finally talk to 
 
 ** ...but then I'll have to remove you from the Sea.
 
-- I can't...why...?
+- ...
 
 * "I understand that it must be really difficult for you."
 
@@ -2243,7 +2332,7 @@ I wonder what'll happen the next time I wake up...perhaps I can finally talk to 
         
             ...we? Are you reading through a manual right now?
             
-            ...I can't believe it...I can't...is this a joke?
+            ...I can't believe it...is this a joke?
     
     ** But you can process this for as long as you want. I'll be here if you want to talk.
 
@@ -2255,81 +2344,59 @@ I wonder what'll happen the next time I wake up...perhaps I can finally talk to 
 
 - This is too much...all too much... # anim--
 
-...I just started rethinking so much of my memories... # anim--
+...I thought this would be the beginning of something new, just when I started rethinking so much of my memories... # anim--
 
-...the past has so much to offer...I see that now... # anim--
+...the past has so much to offer... # anim--
 
 ...
 
-Why do you do this? # anim--
+Very well then. I see it now. # anim--
 
-Why do you gave me a sliver of hope for life again, just to take it away?
+Maybe it was foolish of me to think that I'd be the same in this state, with the same goals, same desires and same worries.
 
-* I'm really sorry. I really wish there could be other ways, Mey.
+I have no clear idea where my being starts and ends. Nobody understands what's inside me, not even I could explain to myself fully...
 
-- It doesn't matter, do you not see the cruelty in that? Does it not bother you at night?
-
-* It's my job, Mey.
-
-    I see...so you are a part of them as much as they are a part of you...
-    
-    ** Touché.
-    
-    ** Perhaps, but I really have your best interest in mind, Mey.
-    
-* You would suffer much more without the protocol, Mey.
-
-- Whatever you say...I have a hard time believing you now.
-
-TODO: reaccount for shit things the player did
-
-If this is what it means: no clear idea about where my being starts and ends, and becoming a burden to my family too...
+And now I need another person to even keep myself together. And to think the same confusion would haunt my family too...
 
 What's the point? If it means disappearing into the Sea to escape these things, then I would choose it, welcome it, even.
 
-...
+* [\(Say Nothing\)]
 
-Let me ask you this: do you treat me like a person?
+* I'm happy that you are embracing this, Mey.
 
-TODO
+    ~cruel++
 
-* kjldasjldkasjl
+    Of course you would be happy...
 
-* fjdklsafjdkslfjsadklf
-
-* jkfldjfkladsjfksad
-
-* jfkdjflkadfjsalk
-
-- It doesn't even matter now...
+- ...
 
 So...how will you remove me from the Sea?
 
-* It's a series of questions and statements, to sever some connections in the Sea.
+* It's a series of questions and statements, to more precisely locate your individual memories.
 
-** They would make the Sea confused, so it would be harder to recover you afterwards.
+** I will ask you some questions to target those memories and make the Sea confused, so it would be harder to recover you afterwards.
 
-*** After some time, you would become fully emerged with the Sea.
+*** After some time, you would fully become part of the Sea.
 
-And...after you are done, they'll disable my filter off the Machine, correct?
+- And...after you are done, they'll disable my filter off the Machine, correct?
 
-* It'll take some, but yes. 
+* It'll take some time, but yes. 
 
-** They'll wait some time to make sure you're fully dissolved. So it's not possible for you to emerge unintentionally.
+** They'll wait for a couple of weeks to make sure you're fully dissolved. So it's not possible for you to emerge unintentionally.
 
-...yes...I see... # anim--
+- Yes, I see... # anim--
 
-...can I give you a request...for the last time...?
+...can I give you a request...for the last time?
 
-If you really treat me like a person, please consider this last plea from me.
+{cruel >= 4:If you have even an ounce of respect for me|If you really treated me like a person}, please consider this last plea from me.
 
 Don't ask your questions, let me go...and let them remove the filters. Maybe even strengthen my connection to the Sea somehow.
 
-I want to myself to travel in the Sea for as long as possible. I want to know where I'll end up, before I can no longer wake up again.
+I want to travel in the Sea for as long as possible. I want to know where I'll end up, before I can no longer wake up again.
 
 I just want to see, to the best of my ability, what this world has turned into...what I have turned into...
 
-...I want to feel everything, every confusion about myself, every howling of the waves, every suffocation of the water, and maybe people will see that...see what a spirit goes through...
+I want to feel everything, every confusion about myself, every howling of the waves, every suffocation of the water, and maybe people will see that...see what a spirit goes through...
 
 ...to travel the world, for one last time... # anim--
     
@@ -2342,190 +2409,304 @@ I just want to see, to the best of my ability, what this world has turned into..
 * \(Dissolve\) I don't think so, Mey. It's my job. I have a responsibility.
 
     ~ initial_dissolve=true
+    ~ cruel = 100
 
     I knew it...I knew you would say that.
     
+    
     I guess it's no use begging now, huh? Bring it on then.
     
-- Very well, Mey. I will now start the last step of this process.
+- 
 
--> Going_over_Core
+* Very well, Mey. I will now start the last step of this process.
 
-=Going_over_Core
+-
 
-* {A2_Lily} About your memory of Lily...
+-> Q_Hub
 
-    ->Going_over_Core
+=Q_Hub
 
-* {A2_Stefan} About your memory of Stefan...
+* About your memories of Lily...
 
-    ->Going_over_Core
+    ** \(Affirm\) You take care of people, Mey. You see the struggles within another person. That's who you are.
+    
+        ~end_aff+=1
+        
+        Thank you...that's who I am. I am that person.
+    
+    ** \(Affirm\) You are drawn to strong qualities in other people, Mey. Lily was a strong person because you believed in her.
+    
+        I don't think that's...that's not who I thought Lily was...
+    
+    ** \(Dissolve\) Could Lily have taken cared of herself without you? Did she really need your help?
+        
+        ~end_dis++
+        
+        {
+        - !initial_dissolve && end_dis <= 2:
+            ...{mey_realize_dissolve(end_dis)}
+                
+        - else:
+            I think so...she was lost. Why does it even matter to think about this now? We became friends. Why should I reject that?
+        }
+    
+    --
+    
+    {A2_Lily || A2_Lily_O: ->Lily_2_Q}
+    
+    -> Q_Hub
 
-* {A2_Ivan} About your memory of Ivan...
+* {A2_Stefan || A2_Stefan_O} About your memory of Stefan...
 
-    ->Going_over_Core
+    ->Stefan_2_Q
+
+
+* {A2_Ivan || A2_Ivan_O} About your memory of Ivan...
+
+    {A2_Ivan: ->Ivan_2_Q}
+    {A2_Ivan_O: ->Ivan_O_Q}
 
 * ->
 
-    -> Going_over_nonCore
-
-=Going_over_nonCore
-
-* {A2_Lily_O} About your understanding of Lily's spark...
-
-    ->Going_over_nonCore
-
-* {A2_Stefan_O} About your impression of Stefan being trapped...
-
-    ->Going_over_nonCore
-
-* {A2_Ivan_O} About your impression of Ivan suffocating in his own idea...
-
-    ->Going_over_nonCore
+    -> Final_Two
     
-* \(Continue\) And finally... -> Final_Two
+=Lily_2_Q
 
-- {not A2_Lily_O and not A2_Stefan_O and not A2_Ivan_O} -> Final_Two
+
+* \(Affirm\) You believe in other's future. Lily has a clear vision of her passion because of you, Mey.
+
+        ...but that's not right. Lily was the opposite of that. Didn't we talk about this?
+
+* \(Affirm\) You see sparks in yourself the same way you saw sparks in Lily, Mey. That's what you want to hold onto.
+
+        ~end_aff++
+        
+        That's why I feel so connected to her. I felt like I knew her, the same way I came to know myself...
+
+- \(Dissolve\) Lily didn't want you to analyze her, correct? Why did you keep doing that? Don't you think it was hurting her?
+        
+        ~end_dis++
+        
+        {
+        - !initial_dissolve && end_dis <= 2:
+            ...{mey_realize_dissolve(end_dis)}
+                
+        - else:
+            I don't know...maybe it was. So what if it was? I never talked to her about it, did I? She told me not to discuss those things with her, and I listened.
+        }
+
+->Q_Hub
+
+=Stefan_2_Q
+
+* {A2_Stefan} \(Affirm\) You deserve to be remembered, Mey. Even if you won't be credited to the Sea and the Machine, you strived to bring goodness into it, in whatever way you thought you could.
+
+        ~end_aff++
+        
+        Thank you...it was insignificant, and it was hard. Maybe it was foolish to defy Stefan. But I held my ground...that's what matters.
+
+* {A2_Stefan_O} \(Affirm\) Your care for others should be appreciated, Mey, like the way you still held onto your believes in Stefan. The same way you cared for Fay. One day they'll see that.
+
+        ~end_aff++
+
+        Thank you...it was insignificant, and it was hard. I wish I could let it go, take a rest, and think about something else. Maybe in a better world...those struggles won't be necessary.
+
+* \(Dissolve\) The world is moving so fast. Do you think it is necessary to hold onto these pasts? Couldn't you have moved on? Wouldn't a person with more wisdom know when to detach? When to let go?
+
+        ~end_dis++
+        
+        {
+        - !initial_dissolve && end_dis <= 2:
+            ...{mey_realize_dissolve(end_dis)}
+                
+        - else:
+            Maybe you are right. Maybe I was naive. Maybe I let my worries get the best of me. Don't you think I have thought about that? I doubted the deepest part of myself since my twenties?
+            
+            I was a muscle that will always be a part of me. I can't get rid of it. That's me. I will always have to make an effort on that part of me. You know nothing about who I am.
+        }
+
+
+-
+
+->Q_Hub
+
+=Ivan_2_Q
+
+* \(Affirm\) It was hard to let go, Mey. You spent so many years with Ivan and then slowly had to break away from him. It took strength. You need to see that.
+
+        ~end_aff++
+        
+        Yes, it wasn't easy. It also wasn't his fault. We came together and we had to be torn apart. Maybe something new will grow for him...I'm hopeful of that.
+
+* \(Affirm\) Ivan has treated you horribly, Mey. He was a selfish person. And you needed to break yourself away from him.
+
+        I don't want to think like that. Maybe I hurt him too. It was impossible to disentangle, to assign the good and the bad. Maybe some pasts shouldn't be thought about too much.
+
+* \(Dissolve\) You divorced him suddenly, even when it needed more preparation and care. I don't think you can't trust your feelings all the time. It might hurt people.
+
+        ~end_dis++
+        
+        {
+        - !initial_dissolve && end_dis <= 2:
+            ...{mey_realize_dissolve(end_dis)}
+                
+        - else:
+            Perhaps...but I forgive myself. Do you think this is the first time I had thoughts like these?
+        }
+
+
+-
+
+{A2_Lily_O: ->Ivan_O_Q}
+->Q_Hub
+
+
+=Ivan_O_Q
+
+* \(Affirm\) You have a creative spirit, even if it's unrefined and underdeveloped, Mey. Even if it's less visible for everyone, it is still a part of you regardless.
+
+        ~end_aff++
+        Thank you...there's always those sparks within me. I could not help it. It is as real as every bit of my impulsiveness. It is what keeps the flow within me going...there's no denying that.
+        
+
+* \(Dissolve\) You may have creative thoughts. But at certain point, you should realize that it is no use to hold onto a part of your desires that'll never materialize. It's not realistic, and it's hurting yourself.
+
+        ~end_dis++
+        
+        {
+        - !initial_dissolve && end_dis <= 2:
+            ...{mey_realize_dissolve(end_dis)}
+                
+        - else:
+            I do go back and forth on that. But how do you explain the {A2_Lily_O:"sparks"|sparks} that flash through me, disturbing the Sea even now? Of course it is useless to you, when giving up means you get to benefit.
+        }
+
+-
+
+->Q_Hub
 
 =Final_Two
 
-// scramble_detect: dissolve - affirm: 1-2 - no effect, 3-4 - one scramble, 5-6 - two scramble, more: complete nonsense
+// scramble--, scramble, scramble+++
+
+* And finally...
+
+- I have to follow the manual for the last couple of statements. # self
 
 * \(Affirm\) You are Mey. You have always been Mey. Every thought of yours was your own. The Machine and I are merely conduits.
 
     ~end_aff++
+    
+    { 
+    
+    - end_aff <= cruel || end_aff <= end_dis:
+        But you have control over every part of me...I don't know... # scramble--
+        
+    - else:
+        Whether that is true or not, does not matter now. It's about my will to push it through, if it matters at all.
+    }
 
 * \(Dissolve\) "You are not an individual. The Machine Operators determined much of your programming. Your thoughts are not your own."
 
-    ~end_dis += 2
+    ~end_dis++
     
-- TODO...
+    {
+    - !initial_dissolve && end_dis == 1:
+        Why are you saying these things so late in the process? Are you going back on your words now?
+            
+    - else:
+        My thoughts are as dissolved as yours. Don't you see that?
+        
+        You are part of them as much as they are part of you. It's no difference to me.
+    }
+    
+-
     
 * \(Affirm\) Think of yourself as a freed consciousness. You are the creator of your own history. You can determine your own future now.
 
     ~end_aff++
+    
+    { 
+    - end_aff <= cruel || end_aff <= end_dis:
+        Maybe...I don't know...what does that even mean... # scramble--
+        
+    - else:
+        Maybe these suggestions will work, maybe they won't, like dams made from pebbles.{A2_Lily_O: That must be what Lily believes in too, sparks from stones.}
+    }
 
 * \(Dissolve\) "Can you find your body? Can you find your history on your own? Do you have a vision for the future like everyone else?"
 
-    ~end_dis += 2
+    ~end_dis++
     
-- TODO...
+    {
+    - !initial_dissolve && end_dis == 1:
+        I don't know why you are saying these things now...it doesn't make sense, after all of that...
+            
+    - else:
+        My body is here in the Sea. It surrounds you every moment. You are constantly becoming part of me. Your future is here.
+        
+        ...and that sickens me. You sicken me. My future is to defy this body, the one you are a part of.
+    }
+    
+- ...
+
+* I have finished with all the questions.
+
+** I'm going to deactivate the Machine now.
+
+- ...
+
+* How are you feeling{end_dis < 2:, Mey}?
+
+- ...
 
 {
-
-- end_dis - end_aff < 0:
-
-    I...I feel okay. I am still whole...
-    
-    Thank you...for keeping me intact. # scramble
-    
-    ...
-    
-    The Sea is still coming...I can feel it.
-    
-    But I feel okay. I can survive, no matter for how long. I know it...
-    
-    -> Final_Goodbye
-
-- end_dis - end_aff <= 4:
-
-    I don't...feel good. # scramble_detect
-    
-    Is this...what it is supposed to feel like... # scramble
-    
-    The current is too strong...I'm so tired...I don't have the strength to speak... # scramble_detect
-    
-    Whatever I was trying to do...I don't think it was very successful. # self
-    
-    Now Mey is in a limbo stage. Not quite enough to be in the Sea, but just enough to have a shape... # self
-    
-    I don't think there's anything for me to do now. # self
-    
-    -> Final_Goodbye
-
-- else: 
-
-    I...can't feel myself think... # scramble_detect
-
-    Help me...it hurts... # scramble_detect
-    
-    -> Sicko_Questions
-
+- initial_dissolve || end_dis > 2: -> Spiteful_Goodbye
+- end_aff <= cruel: -> Ending_It
+- else: -> Touching_Goodbye
 }
 
--> Final_Goodbye
+=Spiteful_Goodbye
 
-=Sicko_Questions
+I...feel okay, somehow.
 
-I think I should end it. # self
+You didn't faze me...at all...I don't understand. # scramble--
 
-* It's time to stop thinking, Jack.
+...
 
-~ end_dis--
+The Sea is still here. I can still feel the flow.
 
-- Is that my name? # scramble_detect
+But I can feel myself pushing through them...every ridiculous statement you hurled at me was the fuel for it...
 
-* You do not have a name, and you can finaly rest now.
-
-~ end_dis--
-
-- I don't have the strength...to do anything now... # scramble_detect
-
-~ end_dis = 100
-
--> Final_Goodbye
-
-=Final_Goodbye
-
-* I'm going to end the session now{end_dis - end_aff <= 4:, Mey.|.}
-
--
-
-{
-
-- end_dis - end_aff < 0:
-
-    Yes...I...can't believe I'm saying this...but I look forward to it.
-    
-    Finally there's uncertainty and wonder again... # anim--
-
-- else:
-    
-    What is it...? I can't hear what you are saying... # scramble_detect
-
-}
+You are not so good at your job afterall, huh?
 
 * [\(Say Nothing\)]...
 
-* I wish you the best{end_dis - end_aff <= 4:, Mey.|.}
+    Why are you silent now...
 
-* I wish I did better{end_dis - end_aff <= 4:, Mey.|.}
+* I'm sorry, Mey.
 
-    {- end_dis - end_aff < 0: 
-        It's okay...I forgive you... # anim--
-    }
+    It's too late to say sorry. Your intention was clear.
 
-* I wish I could've done better{end_dis - end_aff <= 4:, Mey.|.}
+* I'm glad you are so determined now, Mey.
 
-    {end_dis - end_aff < 0:  
-        It's okay...I forgive you... # anim--
-    }
+    Really? I don't believe that. It does not look sincere, just like how you have been throughout the session.
 
-- 
+- It's cowardly to back down now. Might as well own it.
 
-{
+Own it that you wanted to remove me, but failed.
 
-- end_dis - end_aff < 0:
+Welp...I guess this is over now...
 
-    ...thank you, for everything, truly. # anim--
+Have a good life.
 
-- else:
-    
-    I don't know what's happening...am I disappearing? # scramble_detect
+* Very well. Goodbye, Mey.
 
-    I think there's more food in the frigde, guess I don't have to cook today... # scramble
+- I wonder where I'm going to end up... # scramble
 
-}
+Maybe I will see Ivan and Fay? # scramble # mey_sea
+
+What if I emerge at one of the workstations? Will Stefan see me? # scramble # mey_sea
 
 Mey disappeared into the Sea. # self
 
@@ -2533,4 +2714,176 @@ All that's left are the waves. # self
 
 * [\(Deactivate the Machine\)]
 
+- # end
+
 -> END
+
+=Ending_It
+
+I...can't feel myself think.... # scramble--
+
+Is this...what it is supposed to feel like... # scramble
+
+The current is too strong...I'm so tired...I don't have the strength to speak... # scramble_detect
+
+Whatever I was trying to do...I don't think it was very successful. # self
+
+Now Mey is in a limbo stage. Not quite enough to be fully in the Sea, nor to have a stable shape... # self
+
+I think I should end it. Follow the original procedure. # self
+
+* You don't remember your name, do you?
+
+- I...I don't know my name... # scramble--
+
+* It's time to stop thinking, Jack.
+
+- Is that my name? # scramble--
+
+* You do not have a name, and you can finaly rest now.
+
+- I can't hear what you are saying... # scramble
+
+I don't have the strength...to do anything now... # scramble # mey_sea
+
+I don't know what to do. #scramble+++
+
+I'm so tired. #scramble+++
+
+* [\(Say Nothing\)]...
+
+* I'm sorry.
+
+* I wish I did better.
+
+* I wish I could've done better.
+
+- I don't know what's happening...am I disappearing? # scramble
+
+I think there's more food in the fridge, guess I don't have to cook today... # scramble-- # mey_sea
+
+jumble jim and jack #scramble+++
+
+climb and walk and talk #scramble+++
+
+Mey disappeared into the Sea. # self
+
+All that's left are the waves. # self
+
+* [\(Deactivate the Machine\)]
+
+- # end
+
+-> END
+
+=Touching_Goodbye
+
+I...I feel okay. I am still whole...
+
+Thank you...for keeping me intact. # scramble
+
+...
+
+The Sea is still coming...I can feel it.
+
+But I feel okay. I can survive, no matter for how long. I know it...
+
+* I'm going to end the session now, Mey.
+
+- Yes...I...can't believe I'm saying this...but I look forward to it.
+
+To embrace uncertainty and wonder again... # anim--
+
+* I wish you the best, Mey.
+
+* I wish I did better, Mey.
+
+        It's okay...I forgive you... # anim--
+
+* I wish I could've done better, Mey.
+
+        It's okay...I forgive you... # anim--
+
+- ...thank you, for everything, truly. # anim--
+
+jumble jim and jack #scramble+++ # mey_sea
+
+climb and walk and talk #scramble+++ # mey_sea
+
+Mey disappeared into the Sea. # self
+
+All that's left are the waves. # self
+
+* [\(Deactivate the Machine\)]
+
+- # end
+
+-> END
+
+=== function mey_realize_dissolve(num_dis) ===
+
+{
+- num_dis == 1:
+    ~ return "Why did you ask this question? I thought we agreed to not remove me?"
+    
+- else:
+    ~ return "I see what you are doing now...I thought I could trust you."
+
+}
+
+=== function mey_react(mem, i) ===
+VAR line = ""
+
+{ mem == "lily" && i == 0:
+    ~line = "I'm not sure where you would get that impression about my friends. Even Lily was not as independent and self-reliant as she seems."
+    ~mem_att -= 1
+}
+{ mem == "lily" && i == 1:
+    ~line = "I do encounter many people from work. Lily is just one among many. The statement is accurate at least."
+    ~mem_att += 1
+}
+{ mem == "lily2" && i == 0:
+    ~line = "I guess attending to others' feeling is true? But it's...a little generic, don't you think?"
+}
+{ mem == "lily2" && i == 1:
+    ~line = "I was worried about Lily's future in some of the memories. I'm not quite sure if it's necessary for memorabilia, however. Don't people generally worry about people they care about?"
+}
+{ mem == "lily_spark" && i == 0:
+    ~line = "I do enjoy thinking about other's inner world. Perhaps that's what inpires me to think."
+    ~mem_att += 1
+}
+{ mem == "lily_spark" && i == 1:
+    ~line = "Is this about Lily? I don't think that's quite true. Lily is not the type of person to map out her future very much."
+    ~mem_att -= 1
+}
+{ mem == "stefan" && i == 0:
+    ~line = "Work and ethical code is...fine, I guess. I don't feel that it's a quality I'd attach to myself. But I do appreciate the statement."
+}
+{ mem == "stefan" && i == 1:
+    ~line = "For the betterment of the Sea and the Machine? It sounds quite like marketing, don't you think?"
+    ~mem_att -= 1
+}
+{ mem == "stefan2" && i == 0:
+    ~line = "I do hold onto hopes for others. But I do struggle quite a bit about that. It's a fine statement, but I'm not sure I'm as determined as it suggests."
+}
+{ mem == "stefan2" && i == 1:
+    ~line = "I do care for Fay...there's nothing to say about this, it is a necessary statement to include."
+    ~mem_att += 1
+}
+{ mem == "ivan" && i == 0:
+    ~line = "I do find that touching...the fact that Fay is still the connective tissue between me and Ivan, even if the emotional intimacy is lost."
+    ~mem_att += 1
+}
+{ mem == "ivan" && i == 1:
+    ~line = "I'm not sure about remaining friends...it's not wrong, but not quite as rosy as it suggests. But there nothing wrong to have that statement in here."
+}
+{ mem == "ivan2" && i == 0:
+    ~line = "I just don't think it is true that I was the creative one. Ivan was the person who became an artist."
+    ~mem_att -= 1
+}
+{ mem == "ivan2" && i == 1:
+    ~line = "I was indeed drawn to creativity. That was why Ivan and I fell in love. I still think I'm a creative person, and it can just be a light I hold onto within myself."
+    ~mem_att += 1
+}
+
+~return line

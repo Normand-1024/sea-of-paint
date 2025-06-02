@@ -132,6 +132,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
     confirmMemora() {
         let tempMemData = [this.props.similarities[0].name, this.props.similarities[1].name,
                             this.state.mem1_interp, this.state.mem2_interp, this.props.imageurl]
+        // console.log(tempMemData);
 
         this.props.setMemorabilia(
             this.props.memorabilia.map((mem, index) => {
@@ -144,9 +145,18 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
             }
         ));
 
-        this.props.setDialogueVar("memorabilia", this.props.dialogueRunner.variablesState["memorabilia"] + 1);
-        this.props.setDialogueVar(this.props.similarities[0].name + "_m", true);
-        this.props.setDialogueVar(this.props.similarities[1].name + "_m", true);
+        let memoraCount = this.props.dialogueRunner.variablesState["memorabilia"];
+
+        this.props.setDialogueVar("memorabilia", memoraCount + 1);
+        this.props.setDialogueVar("mem" + (memoraCount + 1).toString() + "_line", 
+                                   this.props.imgData[tempMemData[0]]["memorabilia"][tempMemData[2]] + ", and she" +
+                                    this.props.imgData[tempMemData[1]]["memorabilia"][tempMemData[3]].slice(3) );
+        this.props.setDialogueVar("mem" + (memoraCount + 1).toString() + "_m1", tempMemData[0]);
+        this.props.setDialogueVar("mem" + (memoraCount + 1).toString() + "_m2", tempMemData[1]);
+        this.props.setDialogueVar("mem" + (memoraCount + 1).toString() + "_i1", tempMemData[2]);
+        this.props.setDialogueVar("mem" + (memoraCount + 1).toString() + "_i2", tempMemData[3]);
+        this.props.setDialogueVar(tempMemData[0] + "_m", true);
+        this.props.setDialogueVar(tempMemData[1] + "_m", true);
         this.props.setDialogueVar("current_stage", 5);
         this.setState({inMemora: 1});
     }
@@ -327,7 +337,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                                                     className="interpret-button"
                                                     style={{'color':'#8f7f40'}}
                                                     onClick = {() => this.writeMemoraStatement(0, i)}>
-                                                    {op}
+                                                    {op}...
                                                 </div>
                                             );
                                     }) 
@@ -383,9 +393,9 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
 
                         <p className = "copiable-prompt-reveal" style={{'marginTop': 0}}>
                                     {this.props.dialogueRunner.variablesState["memorabilia"] == 1 ? 
-                                        "One memorabilium created, I can still create two more. Or I could end the session."
+                                        "One memorabilium created. I can still create two more, or I could end the session."
                                     : this.props.dialogueRunner.variablesState["memorabilia"] == 2 ?
-                                        "Two memorabilia created, I can still create one more."
+                                        "Two memorabilia created. I can still create one more."
                                     :   "Finished last memorabilium. I should wrap up and end the session."}
                         </p>
                     </div>

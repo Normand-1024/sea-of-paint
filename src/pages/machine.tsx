@@ -22,7 +22,7 @@ import { MarkovScrambler } from '../functions/markovGeneration.tsx';
 import { AudioManager } from '../managers/audio'
 import { AnimationManager } from '../managers/animation'
 
-import {GENERATE_WAIT_TYPE, MEY_PORTRAIT_PATH, DIALOGUE_TYPE, HIGH_BOUND} from '../constants.tsx';
+import {GENERATE_WAIT_TYPE, MEY_PORTRAIT_PATH, DIALOGUE_TYPE, HIGH_BOUND, PAGE_STATE} from '../constants.tsx';
 
 
 type MachineProps = {
@@ -210,16 +210,29 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         }
         else {
             // Check scrambling
-            if (this.state.dialogueRunner.currentTags &&
-                this.state.dialogueRunner.currentTags.indexOf('scramble') > -1){
-
-                try {
-                    line = this.state.markovScrambler.markovScramble(this.state.dialogueRunner.currentText);
-                    line = this.state.markovScrambler.markovScramble(line);
+            if (this.state.dialogueRunner.currentTags){
+                if(this.state.dialogueRunner.currentTags.indexOf('scramble') > -1){
+                    try {
+                        line = this.state.markovScrambler.markovScramble(this.state.dialogueRunner.currentText);
+                        line = this.state.markovScrambler.markovScramble(line);
+                    }
+                    catch (error) {
+                        console.log(error);
+                        line = this.state.markovScrambler.generate();
+                    }
                 }
-                catch (error) {
-                    console.log(error);
-                    line = this.state.markovScrambler.generate();
+                else if(this.state.dialogueRunner.currentTags.indexOf('scramble--') > -1){
+                    try {
+                        line = this.state.markovScrambler.markovScramble(this.state.dialogueRunner.currentText);
+                    }
+                    catch (error) {
+                        console.log(error);
+                        line = this.state.markovScrambler.generate();
+                    }
+                }
+                else if(this.state.dialogueRunner.currentTags.indexOf('scramble+++') > -1){
+                    line = "---" + this.state.markovScrambler.generate() + "---";
+                    line = line.slice(0, line.length/2 + 1) + "---" + line.slice(line.length/2 + 1);
                 }
             }
         }
@@ -334,6 +347,27 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                 this.setState(() => ({ meyPortraitState: mey_tag }));
                 break;
             }
+        }
+
+        // Handle Deleting Memorabilium
+        if (this.state.dialogueRunner.currentTags &&
+                this.state.dialogueRunner.currentTags.indexOf('handle_delete') > -1) {
+            this.props.setMemorabilia(
+                this.props.memorabilia.map((mem, index) => {
+                    if (index == this.state.dialogueRunner?.variablesState["mem_num"] - 1){
+                        return ["", "", -1, -1, ""];
+                    } 
+                    else {
+                        return mem;
+                    }
+                }
+            ));
+        }
+
+        // Switch to Ending
+        if (this.state.dialogueRunner.currentTags &&
+                this.state.dialogueRunner.currentTags.indexOf('end') > -1) {
+            this.props.setPageState(PAGE_STATE['end']);
         }
 
     }
@@ -504,7 +538,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                     {this.state.mode != 'inactive' && this.state.mode!="machine" && (
                     <div className="prompt-control">
                         <div className="prompt-wrapper">
-                            <input type="text" id="prompt" autoComplete="off" ref={this.textPromptRef} />
+                            <input type="text" id="prompt" placeholder="Enter Text Input Here" ref={this.textPromptRef} />
                         </div>
                         {this.state.generateState === GENERATE_WAIT_TYPE["dialogue"] ? (
                             <div className="promptSubmit disabled">

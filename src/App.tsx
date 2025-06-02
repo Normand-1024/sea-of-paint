@@ -59,8 +59,9 @@ function App() {
               <MachinePage pageState={pageState} setPageState={setPageState}
                         memorabilia={memorabilia} setMemorabilia={setMemorabilia}></MachinePage>}
 
-            {pageState == PAGE_STATE['painting'] && 
-              <PaintingPage pageState={pageState} setPageState={setPageState}></PaintingPage>}
+            {pageState == PAGE_STATE['end'] && 
+              <EndPage pageState={pageState} setPageState={setPageState}
+                      memorabilia={memorabilia}></EndPage>}
 
             {/** Modals */}
             <InfoModal open={showInfoModal} onClose={() => setShowInfoModal(false)} />
