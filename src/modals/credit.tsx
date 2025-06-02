@@ -12,7 +12,6 @@ interface CreditModalProps {
 const CreditModal: React.FC<CreditModalProps> = ({ open, onClose }) => (
   <Modal
     className="modal-root"
-    container={() => document.getElementById('main-screen')!}
     open={open}
     onClose={onClose}
     slotProps={{ backdrop: { sx: { backgroundColor: "var(--menu-background" }} }}

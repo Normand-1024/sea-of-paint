@@ -40,7 +40,7 @@ class IntroPage extends React.Component<IntroProps, IntroState> {
   }
 
   nextPage = () => {
-    this.props.setPageState(PAGE_STATE['ending']);
+    this.props.setPageState(PAGE_STATE['machine']);
   }
 
   render() {
