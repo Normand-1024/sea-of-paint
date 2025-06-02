@@ -8,13 +8,11 @@ import InfoIcon from '@mui/icons-material/Info';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 /** Modals */
-import InfoModal from './modals/info';
-import SettingsModal from './modals/settings';
+import CustomModal from './modals/modal';
 
 /** App Pages */
 import MainMenuPage from './pages/menu.tsx';
 import IntroPage from './pages/intro';
-import ActivateMachine from './pages/activate';
 import MachinePage from './pages/machine.tsx';
 import PaintingPage from './pages/painting.tsx';
 import EndPage from './pages/end.tsx';
@@ -26,36 +24,44 @@ function App() {
   const [pageState, setPageState] = useState(PAGE_STATE.menu);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showWarningModal, setShowWarningModal] = useState(false);
   const [memorabilia, setMemorabilia] = useState([["", "", -1, -1, ""], ["", "", -1, -1, ""], ["", "", -1, -1, ""]]);
 
-  const RESET_LIMIT = 9000000000;
+  const RESET_LIMIT = 60000 * 5; // 5 mins
+  const WARNING_LIMIT = 60000 * 4; // 4 mins
 
   const resetToMenu = useCallback(() => {
     setPageState(PAGE_STATE.menu);
   }, []);
 
+  /** KK: reset timer manager */
   useEffect(() => {
     let inactivityTimer: NodeJS.Timeout;
+    let warningTimer: NodeJS.Timeout;
 
     const resetTimer = () => {
       clearTimeout(inactivityTimer);
+      clearTimeout(warningTimer);
+      setShowWarningModal(false);
+
       inactivityTimer = setTimeout(() => {
         resetToMenu();
       }, RESET_LIMIT);
+
+      warningTimer = setTimeout(() => {
+        setShowWarningModal(true);
+      }, RESET_LIMIT - WARNING_LIMIT);
     };
 
     const events = ['click', 'keydown', 'mousemove', 'touchstart'];
-    events.forEach(event =>
-      window.addEventListener(event, resetTimer)
-    );
+    events.forEach(event => window.addEventListener(event, resetTimer));
 
     resetTimer();
 
     return () => {
-      events.forEach(event =>
-        window.removeEventListener(event, resetTimer)
-      );
+      events.forEach(event => window.removeEventListener(event, resetTimer));
       clearTimeout(inactivityTimer);
+      clearTimeout(warningTimer);
     };
   }, [resetToMenu]);
 
@@ -86,16 +92,14 @@ function App() {
 
           {/** Main Screen */}
           <div id="main-screen" className="main-screen">
-            {pageState === PAGE_STATE['activate'] && 
-              <ActivateMachine onActivate={() => { setPageState(PAGE_STATE.machine); }} />}
-
             {pageState == PAGE_STATE['machine'] && 
               <MachinePage pageState={pageState} setPageState={setPageState}
                         memorabilia={memorabilia} setMemorabilia={setMemorabilia}></MachinePage>}
 
             {/** Modals */}
-            <InfoModal open={showInfoModal} onClose={() => setShowInfoModal(false)} />
-            <SettingsModal open={showSettingsModal} onClose={() => setShowSettingsModal(false)} />
+            <CustomModal open={showInfoModal} onClose={() => setShowInfoModal(false)} type="info" />
+            <CustomModal open={showSettingsModal} onClose={() => setShowSettingsModal(false)} type="settings" />
+            <CustomModal open={showWarningModal} onClose={() => setShowWarningModal(false)} type="warning" />
           </div>
 
         </div>

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { PAGE_STATE } from '../constants';
-import CreditModal from '../modals/credit';
-import BibliographyModal from '../modals/bibliography';
+import CustomModal from '../modals/modal';
 import '../styles/menu.css';
 
 type MenuProps = {
@@ -39,14 +38,8 @@ const MainMenuPage: React.FC<MenuProps> = ({ setPageState }) => {
       </button>
 
       {/** Modal */}
-      <CreditModal
-        open={showCreditModal}
-        onClose={() => setShowCreditModal(false)}
-      />
-      <BibliographyModal
-        open={showBibliographyModal}
-        onClose={() => setShowBibliographyModal(false)}
-      />
+      <CustomModal open={showCreditModal} onClose={() => setShowCreditModal(false)} type="credits" />
+      <CustomModal open={showBibliographyModal} onClose={() => setShowBibliographyModal(false)} type="bibliography" />
     </div>
   );
 };

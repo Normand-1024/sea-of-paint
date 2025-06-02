@@ -48,16 +48,58 @@
   padding: 5px;
 }
 
-#credit-modal {
+/** KK: styling for the warning modal below */
+#warning-modal {
+  width: 50%;
+  height: auto;
+}
+
+#warning-modal p {
+  width: 80%;
+  font-size: 1.5rem;
+  padding: 0;
+}
+
+/** KK: styling for the credits modal below */
+#credits-modal {
   width: 50%;
   height: 50%;
 }
 
+/** KK: styling for the info modal below */
+.info-wrapper {
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  margin: 0 auto;
+}
+
+#objective,
+#how-to {
+  flex: 1 1 45%;
+}
+
+#objective h2,
+#how-to h2 {
+  text-align: center;
+  margin-top: 0;
+}
+
+#objective p,
+#how-to p {
+  text-align: left;
+}
+
 /** KK: styling for the settings modal below */
+#settings-modal {
+  width: 60%;
+}
+
 .slider-wrapper {
   display: flex;
   flex-direction: column;
-  width: 60%;
+  width: 80%;
   margin-bottom: 0.8rem;
 }
 
