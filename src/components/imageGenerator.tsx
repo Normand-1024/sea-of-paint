@@ -189,16 +189,21 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 
 				// copyOver(raw1, img);
 				normalBNWBlend(img, raw1, img, 0.5);
-				normalBNWBlend(img, raw2, img, 0.5);
+				normalBNWBlend(img, raw2, img, 0.3 * (similarities[1]["score"] - LOW_BOUND) / ((HIGH_BOUND - LOW_BOUND)));
 				// console.log([(similarities[0].score - LOW_BOUND) / (HIGH_BOUND - LOW_BOUND),
 				// 		(similarities[1].score - LOW_BOUND) / (HIGH_BOUND - LOW_BOUND)])
-				let raw2_ratio = similarities[1]["score"] > MID_BOUND ? 1.8 : 2.5;
+				let raw2_ratio = similarities[1]["score"] > MID_BOUND ? 1 : 2.5;
 				pinLightBlend(img, raw2_mask, img, 
 					(similarities[1]["score"] - LOW_BOUND) / (raw2_ratio*(HIGH_BOUND - LOW_BOUND))
 				);
 				pinLightBlend(img, raw1_mask, img,
 					(similarities[0]["score"] - LOW_BOUND) / (HIGH_BOUND - LOW_BOUND)
 				);
+				if (HIGH_BOUND - similarities[0]["score"] < LEANINIG_INTERVAL) {					
+					pinLightBlend(img, raw1_mask, img,
+						(similarities[0]["score"] - HIGH_BOUND + LEANINIG_INTERVAL) / LEANINIG_INTERVAL
+					);
+				}
 				
 				//	Use first two similarities to determine opacity of the top mask
 				//let score_ratio = similarities[0]["score"] / (similarities[0]["score"] + similarities[1]["score"]);
