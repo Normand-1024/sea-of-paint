@@ -3,6 +3,8 @@ import { Slider, Button } from '@mui/material';
 import { getMusicVolume, setMusicVolume, getSfxVolume, setSfxVolume, getSpeedMode, setSpeedMode, SpeedMode } from '../globals';
 import '../styles/modals.css';
 
+import { PAGE_STATE } from '../constants';
+
 const speedOptions: { value: SpeedMode; label: string }[] = [
   { value: 'very-slow', label: 'Very Slow' },
   { value: 'slow',      label: 'Slow'      },
@@ -11,7 +13,12 @@ const speedOptions: { value: SpeedMode; label: string }[] = [
   { value: 'very-fast', label: 'Very Fast' },
 ];
 
-const SettingsPage: React.FC = () => {
+interface SettingsPageProps {
+  onClose: () => void;
+  setPageState: Function;
+}
+
+const SettingsPage: React.FC<SettingsPageProps> = ({onClose, setPageState}) => {
   const [mVol, setMusicVolState] = useState<number>(getMusicVolume() * 100);
   const [sfxVol, setSfxVolState] = useState<number>(getSfxVolume() * 100);
   const initialSpeedIndex = speedOptions.findIndex(
@@ -49,6 +56,11 @@ const SettingsPage: React.FC = () => {
     setSpeedMode(mode);
   };
 
+  const backToMenu = () => {
+    onClose();
+    setPageState(PAGE_STATE.menu);
+  };
+
   return (
     <div className="content-wrapper">
       <h1>Game Settings</h1>
@@ -62,6 +74,7 @@ const SettingsPage: React.FC = () => {
           min={0}
           max={100}
           valueLabelDisplay="auto"
+          // color="secondary"
         />
       </div>
 
@@ -77,7 +90,7 @@ const SettingsPage: React.FC = () => {
         />
       </div>
 
-      <div className="slider-wrapper">
+      {/* <div className="slider-wrapper">
        <p>Animation Speed: {speedOptions[speedIndex].label}</p>
         <Slider
           value={speedIndex}
@@ -92,10 +105,12 @@ const SettingsPage: React.FC = () => {
           }))}
           valueLabelDisplay="off"
         />
-      </div>
+      </div> */}
 
-      <div className="button-wrapper">
-        <Button className="restart-button" variant="outlined">
+      <div className="restart-button-wrapper">
+        <Button className="restart-button"
+                onClick={backToMenu}
+                variant="outlined">
           Back to Main Menu
         </Button>
       </div>

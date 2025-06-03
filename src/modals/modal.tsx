@@ -14,15 +14,20 @@ interface CustomModalProps {
   open: boolean;
   onClose: () => void;
   type: 'info' | 'settings' | 'bibliography' | 'credits' | 'warning';
+  setPageState: Function;
 }
 
-const CustomModal: React.FC<CustomModalProps> = ({ open, onClose, type }) => {
+const CustomModal: React.FC<CustomModalProps> = ({ 
+    open,
+    onClose,
+    type,
+    setPageState}) => {
   const content = () => {
     switch (type) {
       case 'info':
         return <InfoPage />;
       case 'settings':
-        return <SettingsPage />;
+        return <SettingsPage onClose={onClose} setPageState={setPageState} />;
       case 'bibliography':
         return <BibliographyPage />;
       case 'credits':

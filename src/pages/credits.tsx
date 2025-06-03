@@ -5,7 +5,22 @@ const CreditsPage: React.FC = () => {
   return (
     <div className="content-wrapper">
       <h1>Credits</h1>
-      <p>Game created by Henry Zhou.</p>
+      <p>
+        <b>Story</b><br/>
+        Hongwei Zhou, Fandi Meng
+        <br/>
+        <br/>
+        <b>Writing</b><br/>
+        Hongwei Zhou
+        <br/>
+        <br/>
+        <b>Programming</b><br/>
+        Hongwei Zhou, Katherine Kosolapova
+        <br/>
+        <br/>
+        <b>Music and Sound Effect</b><br/>
+        Kyle Gonzalez
+      </p>
     </div>
   );
 };

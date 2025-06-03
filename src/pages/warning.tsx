@@ -4,8 +4,8 @@ import '../styles/modals.css';
 const WarningPage: React.FC = () => {
   return (
     <div className="content-wrapper">
-      <h1>Session Timeout Warning</h1>
-      <p>You have 1 minute remaining before returning to the main menu! Please interact to continue playing.</p>
+      <h1>Warning</h1>
+      <p>The Session will return to Main Menu in 1 minute due to inactivity</p>
     </div>
   );
 };

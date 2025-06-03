@@ -44,6 +44,7 @@ type MachineState = {
     meyPortraitState: string;
     mode: 'inactive' | 'machine' | 'control';
     blinking: boolean;
+    isFading: boolean;
 }
 
 class MachinePage extends React.Component<MachineProps, MachineState> {
@@ -58,7 +59,8 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         partialSpiritLine: null,
         meyPortraitState: "mey_def",
         mode: 'inactive',
-        blinking: false
+        blinking: false,
+        isFading: false
     };
 
     private dialogueEndRef = createRef<HTMLDivElement>();
@@ -367,7 +369,15 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         // Switch to Ending
         if (this.state.dialogueRunner.currentTags &&
                 this.state.dialogueRunner.currentTags.indexOf('end') > -1) {
-            this.props.setPageState(PAGE_STATE['end']);
+            this.setState({isFading: true});
+
+            this.props.memorabilia[0] = ['lily', 'lily2', 0, 0, "./assets/images/ivan2.png"];
+            this.props.memorabilia[1] = ['lily', 'lily2', 0, 0, "./assets/images/ivan2.png"];
+            this.props.memorabilia[2] = ['lily', 'lily2', 0, 0, "./assets/images/ivan2.png"];
+
+            setTimeout(() => {
+                this.props.setPageState(PAGE_STATE['end']);
+            }, 2000);
         }
 
     }
@@ -395,7 +405,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         const { mode, blinking } = this.state;
 
         return (
-            <div className={`machine-page ${mode}-mode`}>
+            <div className={`machine-page ${mode}-mode ${this.state.isFading ? 'fade-out' : ''}`}>
 
                 {/** LEFT PANEL: machine dialogue */}
                 <div className="machine-dialogue-display">

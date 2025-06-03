@@ -23,23 +23,25 @@ const MainMenuPage: React.FC<MenuProps> = ({ setPageState }) => {
 
   return (
     <div className={`menu-wrapper ${isFading ? 'fade-out' : ''}`}>
-      <h1>Sea of Paint</h1>
+      <img src="./assets/images/title.png" />
 
-      <button onClick={nextPage} className="button">
-        Start Game
-      </button>
+      <div onClick={nextPage} className="butt">
+        - Start Game -
+      </div>
 
-      <button onClick={() => setShowCreditModal(true)} className="button">
-        Credits
-      </button>
+      <div onClick={() => setShowCreditModal(true)} className="butt">
+        - Credits -
+      </div>
 
-      <button onClick={() => setShowBibliographyModal(true)} className="button">
-        Bibliography
-      </button>
+      {/* <div onClick={() => setShowBibliographyModal(true)} className="butt">
+        - Bibliography -
+      </div> */}
 
       {/** Modal */}
-      <CustomModal open={showCreditModal} onClose={() => setShowCreditModal(false)} type="credits" />
-      <CustomModal open={showBibliographyModal} onClose={() => setShowBibliographyModal(false)} type="bibliography" />
+      <CustomModal open={showCreditModal} onClose={() => setShowCreditModal(false)} type="credits"
+        setPageState={setPageState} />
+      <CustomModal open={showBibliographyModal} onClose={() => setShowBibliographyModal(false)} type="bibliography" 
+        setPageState={setPageState}/>
     </div>
   );
 };

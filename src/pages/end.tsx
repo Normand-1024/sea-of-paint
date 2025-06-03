@@ -6,10 +6,10 @@ import { IMAGE_DATA, IMAGE_INDEX } from '../../public/assets/images/imageData.ts
 
 const FINAL_TEXT = [
   "The Sea is everywhere, all around us. Every minute, traces of ourselves dissolve into the man-made Sea. A whole continuously breaks into parts to become the Whole again.",
-  "example line 2",
-  "example line 3",
-  "example line 4"
-];
+  "The Sea is everywhere, all around us. Every minute, traces of ourselves dissolve into the man-made Sea. A whole continuously breaks into parts to become the Whole again.",
+  "The Sea is everywhere, all around us. Every minute, traces of ourselves dissolve into the man-made Sea. A whole continuously breaks into parts to become the Whole again.",
+  "The Sea is everywhere, all around us. Every minute, traces of ourselves dissolve into the man-made Sea. A whole continuously breaks into parts to become the Whole again.",
+  ];
 
 type EndProps = {
     pageState: number;
@@ -21,6 +21,7 @@ type EndState = {
   memCount: number;
   visibleMemories: number;
   currentLine: number;
+  isVisible: boolean;
 }
 
 class EndPage extends React.Component<EndProps, EndState> {
@@ -29,19 +30,16 @@ class EndPage extends React.Component<EndProps, EndState> {
                         return element[0] != "";})).length,
     visibleMemories: 0,
     currentLine: -1,
+    isVisible: false
   };
 
   // private imgData: { [id: string] : any; } = {}; // name : all other data in IMAGE_DATA
 
   componentDidMount() {
-    // for (var imgd of IMAGE_DATA) {
-    //       let name = imgd["name"];
-    //       this.imgData[name] = imgd;
-    // }
-
-    this.props.memorabilia[0] = ['lily', 'lily2', 0, 0, "./assets/images/ivan2.png"];
+    requestAnimationFrame(() => {
+      this.setState({ isVisible: true });
+    });
   }
-
 
   advanceFinal = () => {
     this.setState((state) => ({
@@ -68,9 +66,9 @@ class EndPage extends React.Component<EndProps, EndState> {
     if (this.state.visibleMemories < this.state.memCount) {
       return 'Continue';
     } else if (this.state.currentLine < FINAL_TEXT.length - 1) {
-      return 'Show Next Line';
+      return 'Continue';
     } else {
-      return 'Reset Game';
+      return 'End Game';
     }
   };
 
@@ -78,7 +76,7 @@ class EndPage extends React.Component<EndProps, EndState> {
     const { visibleMemories, currentLine } = this.state;
 
     return (
-      <div className="end-wrapper">
+      <div className={`end-wrapper ${this.state.isVisible ? 'visible' : ''}`}>
         {/* <div className="title-wrapper">
           <h1>Memorabilia</h1>
         </div> */}
@@ -96,20 +94,31 @@ class EndPage extends React.Component<EndProps, EndState> {
                             ${item[0] == '' ? 'noMem'
                               : index < visibleMemories ? 'visible' : ''}`} key={index}>
               {item[0] != '' && <img className="image" src={item[4].toString()}/>}
-              {item[0] != '' && <p className="text">{IMAGE_DATA[IMAGE_INDEX[item[0]]]["memorabilia"][item[2]] + ", and she" +
-                                  IMAGE_DATA[IMAGE_INDEX[item[1]]]["memorabilia"][item[3]].slice(3)}.</p>}
+              {item[0] != '' && <div className="interpret-line-gold">{IMAGE_DATA[IMAGE_INDEX[item[0]]]["memorabilia"][item[2]] + ", and she" +
+                                  IMAGE_DATA[IMAGE_INDEX[item[1]]]["memorabilia"][item[3]].slice(3)}.</div>}
             </div>
+            
           ))}
+
+          <div className={`final-text-wrapper ${this.state.currentLine < 0 ? '' : 'visible'}`}>
+            {FINAL_TEXT.map((item, index) => (
+              <p key={index} className={index <= currentLine ? '' : 'inactive-line'}>
+                {item}
+              </p>
+            ))}
+          </div>
         </div>
 
-        <div className="final-text-wrapper">
-          {currentLine >= 0 && currentLine < FINAL_TEXT.length && (
-            <p>{FINAL_TEXT[currentLine]}</p>
-          )}
-        </div>
+        {/* <div className="final-text-wrapper">
+          {FINAL_TEXT.map((item, index) => (
+            <p key={index} className={index <= currentLine ? '' : 'inactive-line'}>
+              {item}
+            </p>
+          ))}
+        </div> */}
 
-        <div className="button-wrapper">
-          <button onClick={this.handleContinue} className="button">
+        <div className="end-button-wrapper">
+          <button onClick={this.handleContinue} className="end-button">
             {this.getButtonText()}
           </button>
         </div>

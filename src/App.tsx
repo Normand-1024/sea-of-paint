@@ -19,7 +19,6 @@ import EndPage from './pages/end.tsx';
 
 import { PAGE_STATE } from './constants';
 
-
 function App() {
   const [pageState, setPageState] = useState(PAGE_STATE.menu);
   const [showInfoModal, setShowInfoModal] = useState(false);
@@ -46,11 +45,12 @@ function App() {
 
       inactivityTimer = setTimeout(() => {
         resetToMenu();
+        setShowWarningModal(false);
       }, RESET_LIMIT);
 
       warningTimer = setTimeout(() => {
         setShowWarningModal(true);
-      }, RESET_LIMIT - WARNING_LIMIT);
+      }, WARNING_LIMIT);
     };
 
     const events = ['click', 'keydown', 'mousemove', 'touchstart'];
@@ -97,9 +97,12 @@ function App() {
                         memorabilia={memorabilia} setMemorabilia={setMemorabilia}></MachinePage>}
 
             {/** Modals */}
-            <CustomModal open={showInfoModal} onClose={() => setShowInfoModal(false)} type="info" />
-            <CustomModal open={showSettingsModal} onClose={() => setShowSettingsModal(false)} type="settings" />
-            <CustomModal open={showWarningModal} onClose={() => setShowWarningModal(false)} type="warning" />
+            <CustomModal open={showInfoModal} onClose={() => setShowInfoModal(false)} type="info"
+              setPageState={setPageState} />
+            <CustomModal open={showSettingsModal} onClose={() => setShowSettingsModal(false)} type="settings" 
+              setPageState={setPageState} />
+            <CustomModal open={showWarningModal} onClose={() => setShowWarningModal(false)} type="warning" 
+              setPageState={setPageState} />
           </div>
 
         </div>
