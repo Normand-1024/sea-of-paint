@@ -10,6 +10,9 @@ import SettingsIcon from '@mui/icons-material/Settings';
 /** Modals */
 import CustomModal from './modals/modal';
 
+/** Audio */
+import { AudioManager } from './managers/audio';
+
 /** App Pages */
 import MainMenuPage from './pages/menu.tsx';
 import IntroPage from './pages/intro';
@@ -25,12 +28,14 @@ function App() {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showWarningModal, setShowWarningModal] = useState(false);
   const [memorabilia, setMemorabilia] = useState([["", "", -1, -1, ""], ["", "", -1, -1, ""], ["", "", -1, -1, ""]]);
+  const audioManager = new AudioManager();
 
   const RESET_LIMIT = 60000 * 5; // 5 mins
   const WARNING_LIMIT = 60000 * 4; // 4 mins
 
   const resetToMenu = useCallback(() => {
     setPageState(PAGE_STATE.menu);
+    audioManager.play(0, true);
   }, []);
 
   /** KK: reset timer manager */
@@ -65,8 +70,14 @@ function App() {
     };
   }, [resetToMenu]);
 
+  useEffect(() => {
+    if(pageState == PAGE_STATE.menu){
+      audioManager.play(0, true);
+    }
+  }, [pageState]);
+
   if (pageState === PAGE_STATE.menu) {
-    return <MainMenuPage pageState={pageState} setPageState={setPageState} />;
+    return <MainMenuPage pageState={pageState} setPageState={setPageState}/>;
   }
   else if (pageState == PAGE_STATE.intro){
     return <IntroPage pageState={pageState} setPageState={setPageState} />;
@@ -94,7 +105,8 @@ function App() {
           <div id="main-screen" className="main-screen">
             {pageState == PAGE_STATE['machine'] && 
               <MachinePage pageState={pageState} setPageState={setPageState}
-                        memorabilia={memorabilia} setMemorabilia={setMemorabilia}></MachinePage>}
+                        memorabilia={memorabilia} setMemorabilia={setMemorabilia}
+                        audio={audioManager}></MachinePage>}
 
             {/** Modals */}
             <CustomModal open={showInfoModal} onClose={() => setShowInfoModal(false)} type="info"

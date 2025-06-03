@@ -1,7 +1,7 @@
 /** globals.tsx */
 
 let musicVolume = 1.0;
-let sfxVolume = 1.0;
+let sfxVolume = 0.5;
 
 export type SpeedMode = 
   | 'very-slow' 

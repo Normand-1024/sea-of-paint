@@ -30,6 +30,7 @@ type MachineProps = {
     setPageState: Function;
     memorabilia: (string | number)[][]; // [id1, id2, interpt1, interpt2, imageURL] x 3
     setMemorabilia: Function;
+    audio: AudioManager;
 }
 
 type MachineState = {
@@ -66,8 +67,9 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     private dialogueEndRef = createRef<HTMLDivElement>();
     private textPromptRef = createRef<HTMLInputElement>();
 
-    private audio = new AudioManager();
-    private animator = new AnimationManager();
+    private currentStage = 0;
+    
+    private animator = new AnimationManager(this.props.audio);
 
     private dialogueWrapperRef = React.createRef<HTMLDivElement>();
 
@@ -75,7 +77,6 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     componentDidMount() {
         this.state.markovScrambler.initialize("./assets/markovtext.txt");
         window.addEventListener("keydown", this.handleKeyDown);
-
 
         fetch("./texts/storytext.json")
         .then((res) => res.text())
@@ -85,6 +86,8 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             })
         })
         .catch((e) => console.error(e));
+
+        this.props.audio.fadeStop();
     }
 
     componentDidUpdate(prevProps: MachineProps, prevState: MachineState): void {
@@ -97,20 +100,52 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         }   
 
         /** KK: only switch audio when crossing between "dialogue" and "non-dialogue" */
+        /** Or check if the state has changed */
         const wasDialogue = prevState.generateState === GENERATE_WAIT_TYPE['dialogue'];
         const isDialogue  = this.state.generateState === GENERATE_WAIT_TYPE['dialogue'];
         if (wasDialogue !== isDialogue) { 
             if ((this.state.mode == 'control' && isDialogue) || (this.state.mode == 'machine' && !isDialogue)) this.setState({ blinking: true });
-            this.audio.play(isDialogue); 
+            this.changeMusic(isDialogue); 
+        }
+        else if (this.currentStage != this.state.dialogueRunner?.variablesState["current_stage"]){
+            this.currentStage = this.state.dialogueRunner?.variablesState["current_stage"];
+            this.changeMusic(isDialogue);
         }
 
     }
 
     componentWillUnmount() {
         window.removeEventListener("keydown", this.handleKeyDown);
-        this.audio.stop;
+        this.props.audio.stop();
     }
 
+    /** Handle Music Playing */
+    changeMusic(isDialogue: boolean){
+        let dialogIndex = 0;
+        let generIndex = 0;
+        let stage = this.state.dialogueRunner?.variablesState["current_stage"];
+
+        switch(true){
+            case (stage < 1):
+                dialogIndex = 8;
+                generIndex = 8;
+                break;
+            case (stage < 3):
+                dialogIndex = 2;
+                generIndex = 3;
+                break;
+            case (stage < 5):
+                dialogIndex = 4;
+                generIndex = 5;
+                break;
+            case (stage >= 5):
+                dialogIndex = 6;
+                generIndex = 7;
+        }
+
+        if (isDialogue) this.props.audio.play(dialogIndex, false);
+        else this.props.audio.play(generIndex, false);
+    }
 
     /********** handle key/mouse events **********/
     handleKeyDown = (e: KeyboardEvent) => {
@@ -155,7 +190,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         }
 
         this.setState({ mode: 'machine' });
-        this.audio.play(true);
+        this.props.audio.play(1, true); // true means we're in dialogue
 
         this.pushDialogue(this.state.dialogueRunner.Continue());
     }
@@ -280,6 +315,8 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         this.setState((state) => ({
             promptList: [...state.promptList, inprompt.toLowerCase().replaceAll('[', '').replaceAll(']', '')]
         }));
+
+        this.props.audio.playRetrieved();
     }
 
     fillPromptBox = (text : string) => {
@@ -288,8 +325,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     }
 
     handleDialogue = (option : number = -1) => {
-        this.audio.playClick();
-        console.log("played click audio")
+        this.props.audio.playClick();
 
         if(!this.state.dialogueRunner) {
             console.log("dialogueRunner is undefined");

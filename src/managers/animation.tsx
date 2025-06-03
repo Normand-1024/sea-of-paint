@@ -7,12 +7,15 @@ import { DIALOGUE_TYPE } from '../constants';
 import { AudioManager } from './audio.tsx'
 import { getSpeedMode, SpeedMode } from '../globals';
 
-
 export class AnimationManager {
   public isAnimating = false;
   public currentAnimatingText: string = '';
 
-  private audio = new AudioManager();
+  private audio: AudioManager;
+
+  constructor(audioManager : AudioManager){
+    this.audio = audioManager;
+  }
 
   private getTimings(mode: SpeedMode): { waitTime: number, blipEvery: number } {
     return { waitTime: 10,  blipEvery: 6  };
