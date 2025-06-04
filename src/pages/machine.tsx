@@ -107,7 +107,15 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             if ((this.state.mode == 'control' && isDialogue) || (this.state.mode == 'machine' && !isDialogue)) this.setState({ blinking: true });
             this.changeMusic(isDialogue); 
         }
-        else if (this.currentStage != this.state.dialogueRunner?.variablesState["current_stage"]){
+        else if (this.currentStage != this.state.dialogueRunner?.variablesState["current_stage"] || 
+                    prevState.dialogueRunner?.variablesState["core_unlocked"] != this.state.dialogueRunner?.variablesState["core_unlocked"]
+                    || ( //very ugly I know
+                        prevProps.memorabilia[0][0] != this.props.memorabilia[0][0] ||
+                        prevProps.memorabilia[1][0] != this.props.memorabilia[1][0] ||
+                        prevProps.memorabilia[2][0] != this.props.memorabilia[2][0]
+
+                    )
+        ){
             this.currentStage = this.state.dialogueRunner?.variablesState["current_stage"];
             this.changeMusic(isDialogue);
         }
@@ -593,9 +601,9 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                 <div className="machine-control-display">
                     {this.state.mode == "control" && 
                     <div className="imggen-top-display">
-                        <big><center>Memories sorted by Resonance</center></big>
+                        <center><big>Memories sorted by Resonance</big></center>
                         { this.state.dialogueRunner.variablesState["current_stage"] > 1 ? 
-                            <p><center>Reach {(Math.round((HIGH_BOUND) * 10000) / 100).toString() + "%"} to Retrieve Memory</center></p>
+                            <center><p>Reach {(Math.round((HIGH_BOUND) * 10000) / 100).toString() + "%"} to Retrieve Memory</p></center>
                         : (null)}
                     </div>}
                     

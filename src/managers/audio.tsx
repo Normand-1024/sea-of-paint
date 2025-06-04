@@ -102,6 +102,11 @@ export class AudioManager {
   // restart: whether the music transitions with the same play time or not
   public play(index: number, restart: boolean) {
     console.log("playing " + index.toString());
+
+    if (index == this.currentIndex) {
+      return;
+    }
+
     const FADE_DURATION = 2000; // KK: these are in miliseconds
     const FAST_FADE_DURATION = 1000; // KK: these are in miliseconds
     const STEP_TIME = 100;  

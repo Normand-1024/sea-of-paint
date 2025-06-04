@@ -137,7 +137,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
         this.props.setMemorabilia(
             this.props.memorabilia.map((mem, index) => {
                 if (index == this.props.dialogueRunner.variablesState["memorabilia"]){
-                    return tempMemData.slice(1);
+                    return tempMemData;
                 }
                 else {
                     return mem;
