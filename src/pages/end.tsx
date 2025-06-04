@@ -74,6 +74,7 @@ class EndPage extends React.Component<EndProps, EndState> {
 
   render() {
     const { visibleMemories, currentLine } = this.state;
+    console.log(this.props.memorabilia);
 
     return (
       <div className={`end-wrapper ${this.state.isVisible ? 'visible' : ''}`}>

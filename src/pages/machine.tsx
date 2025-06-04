@@ -157,6 +157,11 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             e.preventDefault(); 
             this.handleSkipAnimation();
         }
+        if (e.code === "Backquote" && this.state.dialogueRunner?.currentTags &&
+            this.state.dialogueRunner.currentTags.indexOf('can_jump_to_gen') > -1) {
+            e.preventDefault(); 
+            this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['wait_for_first'] }));
+        }
     }; 
 
     handleMouseEnter = (index: number) => {
@@ -234,8 +239,31 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         this.forceUpdate();
     }
 
-    setToDialogue = (memData : (string | number)[] = []) => {
+    setToDialogue = () => {
         this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['dialogue'] }));
+    }
+
+    handleCheat = (prompt : string) => {
+        if (['CHEAT_after_intro', 'CHEAT_memorabilia',
+            'CHEAT_before_act3', 'CHEAT_before_ending', 'CHEAT_end'
+                ].includes(prompt)) {
+
+            if (prompt == "CHEAT_before_ending" || prompt == "CHEAT_end")  {
+                this.props.setMemorabilia([["lily_spark", "lily", 0, 1, "./assets/images/lily_spark.png"],
+                        ["ivan2", "stefan2", 0, 0, "./assets/images/ivan2.png"],
+                        ["", "", -1, -1, ""]]);
+            } 
+
+            this.state.dialogueRunner?.ChoosePathString(prompt);
+            this.setToDialogue();
+
+            return true;
+        }
+        else {
+            console.log("Invalid Cheat");
+            return false;
+        }
+        
     }
 
     pushDialogue = (line: string | null, dialogueType : number = DIALOGUE_TYPE['spirit']) => {
@@ -312,6 +340,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         else inprompt = "SOMETHING WENT WRONG";
 
         if (inprompt == "") return;
+        if (inprompt.slice(0,5) === "CHEAT" && this.handleCheat(inprompt)) return;
         
         if (this.state.generateState == GENERATE_WAIT_TYPE['wait_for_first'])
             this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['generated'] }));
@@ -410,10 +439,6 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         if (this.state.dialogueRunner.currentTags &&
                 this.state.dialogueRunner.currentTags.indexOf('end') > -1) {
             this.setState({isFading: true});
-
-            this.props.memorabilia[0] = ['lily', 'lily2', 0, 0, "./assets/images/ivan2.png"];
-            this.props.memorabilia[1] = ['lily', 'lily2', 0, 0, "./assets/images/ivan2.png"];
-            this.props.memorabilia[2] = ['lily', 'lily2', 0, 0, "./assets/images/ivan2.png"];
 
             setTimeout(() => {
                 this.props.setPageState(PAGE_STATE['end']);
