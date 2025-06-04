@@ -399,7 +399,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                                         "One memorabilium created. I can still create two more, or I could end the session."
                                     : this.props.dialogueRunner.variablesState["memorabilia"] == 2 ?
                                         "Two memorabilia created. I can still create one more."
-                                    :   "Finished last memorabilium. I should wrap up and end the session."}
+                                    :   "Finished the last memorabilium. I should wrap up and end the session."}
                         </p>
                     </div>
                 : !matched ?

@@ -14,7 +14,7 @@ const CreditsPage: React.FC = () => {
         Hongwei Zhou
         <br/>
         <br/>
-        <b>Programming</b><br/>
+        <b>Art and Programming</b><br/>
         Hongwei Zhou, Katherine Kosolapova
         <br/>
         <br/>

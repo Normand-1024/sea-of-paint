@@ -459,7 +459,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         if (this.state.dialogueRunner?.variablesState["current_stage"] == 1)
             return "Find a Core Memory";
         else if (this.state.dialogueRunner?.variablesState["current_stage"] == 2)
-            return "Unlock the Memory of Lily";
+            return "Fill in [?] to retrieve the Memory of Lily";
         else if (this.state.dialogueRunner?.variablesState["current_stage"] == 3)
             return this.state.dialogueRunner?.variablesState["core_unlocked"] + " out of 3 Core Memories Retrieved";
         else if (this.state.dialogueRunner?.variablesState["current_stage"] == 4)
@@ -560,7 +560,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                                 </button>
                             ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_lily2'] ? (
                                 <button type="button" className="continue-button" disabled>
-                                    Unlock Memory of Lily to Continue
+                                    Fill in [?] to retrieve the Memory of Lily
                                 </button>
                             ) : this.state.generateState === GENERATE_WAIT_TYPE['wait_for_lily1'] ? (
                                 <button type="button" className="continue-button" disabled>
