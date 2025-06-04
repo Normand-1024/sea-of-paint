@@ -2103,6 +2103,13 @@ I can also wake up Mey anytime now - but I probably shouldn't do it too often. I
 
 == A3_Ending ==
 
+VAR mem_num = -1
+VAR mem_m1 = ""
+VAR mem_m2 = ""
+VAR mem_i1 = -1
+VAR mem_i2 = -1
+VAR mem_att = 0 //How Mey feels about the memorabilia
+
 VAR consult_count = 0 // How many memories have been talked about
 VAR delete_count = 0 // How many memorabilia did player say they deleted
 VAR if_said_one = false // The player has to at least talk about one memorabilium
@@ -2129,12 +2136,12 @@ Great! So what kind of memorabilia do you have of me?
 
 =Memora_Consult
 
-VAR mem_num = -1
-VAR mem_m1 = ""
-VAR mem_m2 = ""
-VAR mem_i1 = -1
-VAR mem_i2 = -1
-VAR mem_att = 0 //How Mey feels about the memorabilia
+~ mem_num = -1
+~ mem_m1 = ""
+~ mem_m2 = ""
+~ mem_i1 = -1
+~ mem_i2 = -1
+~ mem_att = 0 //How Mey feels about the memorabilia
 
 * {mem1_line != ""} "{mem1_line}"
     ~mem_num = 1
@@ -2194,7 +2201,7 @@ So that was it? Did you delete every memorabilium you made?
         I don't really know how to feel about this one.{consult_count == 1: There's something strange about reading statements about myself.} It's up to you to keep it or not.
         
     - mem_att > 0:
-        I like it overall.{consult_count == 1: I didn't know reading these kind of statements about myself would feel so strange.} You can definitely keep this one. 
+        I like it overall.{consult_count == 1: I didn't know that reading these kind of statements about myself would feel so strange.} You can definitely keep this one. 
         
         {consult_count: 
             - 1: Did you make any other memorabilia? -> Memora_Consult
@@ -2203,7 +2210,7 @@ So that was it? Did you delete every memorabilium you made?
         }
 }
 
-The attitude is {mem_att} and memorabilia is {memorabilia}
+// The attitude is {mem_att} and memorabilia is {memorabilia}
 
 {mem_att < 0 && memorabilia == 1: -> Last_Mem_Lie}
 
@@ -2922,7 +2929,7 @@ VAR line = ""
     ~line = "I was worried about Lily's future in some of the memories. I'm not quite sure if it's necessary for memorabilia, however. Don't people generally worry about people they care about?"
 }
 { mem == "lily_spark" && i == 0:
-    ~line = "I do enjoy thinking about other's inner world. Perhaps that's what inpires me to think."
+    ~line = "I do enjoy thinking about other's inner world. Perhaps that's what inspires me to think."
     ~mem_att += 1
 }
 { mem == "lily_spark" && i == 1:

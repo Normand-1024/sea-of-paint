@@ -115,7 +115,7 @@ export const IMAGE_DATA : Array<any> = [
                     ]
         ],
         "memorabilia": [
-                "Mey and her former spouse, Ivan had a child togehter whom they adored",
+                "Mey and her former spouse, Ivan had a child together whom they adored",
                 "Mey and her former spouse Ivan remained friends afterwards"
         ],
         "scene": "A2_Ivan"
