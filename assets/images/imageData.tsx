@@ -111,7 +111,7 @@ export const IMAGE_DATA : Array<any> = [
                         "Mey has a lot of responsibilities. It is not surprising that she needs a little bit of space to zone out for herself."
                     ],
                     ["Mey is turning away from Ivan, trying to tune him out.",
-                        "Ivan almost looks like he's intruding on Mey's space. Consciously or unconsciously, Mey is turnign away from him to find some sense of peace."
+                        "Ivan almost looks like he's intruding on Mey's space. Consciously or unconsciously, Mey is turning away from him to find some sense of peace."
                     ]
         ],
         "memorabilia": [

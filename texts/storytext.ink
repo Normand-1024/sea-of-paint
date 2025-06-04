@@ -988,9 +988,9 @@ Do you know if she's okay? Have you heard anything from her?
 
 She wasn't a perfect mother. But she was all I had...and I was all she had too. She's a part of me as much as I'm part of her.
 
-...Even after she fell and passed out, after she lost her senses and wits, and could no longer mutter a coherent sentence. I still felt like I knew her...
+...even after she passed out and lost her senses and wits, and could no longer mutter a coherent sentence. I still felt like I knew her...
 
-...like every emtion that went through her, what she wanted, what she was thinking... # anim--
+...every emotion that went through her, what she wanted, what she was thinking... # anim--
 
 When Fay and Ivan visited her. I could see the turmoil in her stillness. She stared at them while searching inside for something resembling a fact about them, while shame would overcome her because of her deteriorating mind. -> Emma_Q
 
@@ -1502,7 +1502,7 @@ It's spite...a lot of spite for me. To think about him now. I could go on. #anim
 
 But it's good that I remember this. Lily's anger makes more sense to me now.
 
-* Maybe this is a healthy point to stop, Mey. Thank you for sharing these with me, Mey. I should have enough to access the memory now.
+* Maybe this is a healthy point to stop, Mey. Thank you for sharing these with me. I should have enough to access the memory now.
 
 - Makes sense. I'll just get angrier and angrier. Let's move on.
 
@@ -1635,11 +1635,11 @@ When he wanted older folks to quit, he would measure our performances by groups.
 
 * I have heard about some of these practices.
 
-- Yes, they were obvious solutions. He promised to change the place when he was promoted. Guess he wasn't as committed than he said he is. It came down on us older folks especially hard, mothers and grandmothers. 
+- Yes, they were obvious solutions. He promised to change the place when he was promoted. Guess he wasn't as committed as he said he is. It came down on us older folks especially hard, mothers and grandmothers. 
 
 But there's something underneath that he couldn't hide...the mask is still a mask. It's not part of him yet.
 
-The Stefan I knew was still there. He hesitated to lashing out, even the things he said to me, I knew he wasn't committed to it.
+The Stefan I knew was still there. He hesitated to lash out, even the things he said to me, I knew he wasn't committed to it.
 
 I wonder a lot...is he worth the effort for me to still remember the good part in him?
 
@@ -1722,7 +1722,7 @@ I asked for a divorce at that dinner.
 
 The thought had been in my mind for months. Even so, it felt impulsive. And I don't know if I will be able to do it again. 
 
-I was simply being idle after dinner, with many thoughts going in and out of my mind. Then, Ivan said, "remember to finish the statement for me tomorrow." It was for one of his paintings. . 
+I was simply being idle after dinner, with many thoughts going in and out of my mind. Then, Ivan said, "remember to finish the statement for me tomorrow." It was for one of his paintings.
 
 And then that was it. Something came to me. And I said it.
 
@@ -2508,7 +2508,7 @@ I want to feel everything, every confusion about myself, every howling of the wa
 
 =Stefan_2_Q
 
-* {A2_Stefan} \(Affirm\) You deserve to be remembered, Mey. Even if you won't be credited to the Sea and the Machine, you strived to bring goodness into it, in whatever way you thought you could.
+* {A2_Stefan} \(Affirm\) You deserve to be remembered, Mey. Even if you won't be credited for the Sea and the Machine, you strived to bring goodness into it, in whatever way you thought you could.
 
         ~end_aff++
         
@@ -2721,7 +2721,7 @@ Mey disappeared into the Sea. # self
 
 All that's left are the waves. # self
 
-* [\(Deactivate the Machine\)]
+* [\(Deactivate Machine\)]
 
 - # end
 
@@ -2779,7 +2779,7 @@ Mey disappeared into the Sea. # self
 
 All that's left are the waves. # self
 
-* [\(Deactivate the Machine\)]
+* [\(Deactivate Machine\)]
 
 - # end
 
