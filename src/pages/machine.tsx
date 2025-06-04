@@ -93,9 +93,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
     componentDidUpdate(prevProps: MachineProps, prevState: MachineState): void {
 
         /** KK: scroll dialogue into view when animating */
-        if (prevState.dialogueList.length === 0 && this.state.dialogueList.length === 1){
-            this.dialogueEndRef.current?.parentElement!.scrollTo({ top: 0, behavior: 'auto' });
-        } else if (prevState.dialogueList !== this.state.dialogueList || prevState.partialSpiritLine !== this.state.partialSpiritLine) {
+        if (prevState.dialogueList !== this.state.dialogueList || prevState.partialSpiritLine !== this.state.partialSpiritLine) {
             this.dialogueEndRef.current?.scrollIntoView({ behavior: 'auto'});
         }   
 
@@ -221,7 +219,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             () => {
                 const dialogue_position = this.dialogueWrapperRef.current;
                 if (dialogue_position) {
-                dialogue_position.scrollTop = dialogue_position.scrollHeight;
+                    dialogue_position.scrollTop = dialogue_position.scrollHeight;
                 }
             }
         );
@@ -241,7 +239,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             this.state.dialogueRunner.variablesState["lily"] >= 0){
             this.setState(() => ({ generateState: GENERATE_WAIT_TYPE['generated'] }));  
             this.setState({ blinking: true });   
-            this.dialogueEndRef.current?.scrollIntoView(true);
+            // this.dialogueEndRef.current?.scrollIntoView(true);   // KK: this line caused the scrolling bug
         } 
 
         this.forceUpdate();
