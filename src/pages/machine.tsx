@@ -134,7 +134,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                 dialogIndex = 8;
                 generIndex = 8;
                 break;
-            case (stage < 3 && if_less_than_2_core):
+            case (stage <= 3 && if_less_than_2_core):
                 dialogIndex = 2;
                 generIndex = 3;
                 break;
