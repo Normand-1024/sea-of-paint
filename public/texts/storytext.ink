@@ -616,7 +616,7 @@ By the way...what do you mean by core memories? I was wondering how you knew wha
     
 - I never thought about it like that...
 
-...but I'm a bit confused, they are all parts of someone, correct?
+...but they are all parts of someone, correct? Maybe we should talk about them too.
 
 * Perhaps, but one is better for memorabilia than the other.
 
@@ -2678,7 +2678,7 @@ You didn't faze me...at all...I don't understand. # scramble--
 
 The Sea is still here. I can still feel the flow.
 
-But I can feel myself pushing through them...every ridiculous statement you hurled at me was the fuel for it...
+But I can feel myself pushing through them...because of all the things you said to try to bring me down.
 
 You are not so good at your job afterall, huh?
 

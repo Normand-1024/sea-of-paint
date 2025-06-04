@@ -5,10 +5,12 @@ import '../styles/end.css';
 import { IMAGE_DATA, IMAGE_INDEX } from '../../public/assets/images/imageData.tsx';
 
 const FINAL_TEXT = [
-  "The Sea is everywhere, all around us. Every minute, traces of ourselves dissolve into the man-made Sea. A whole continuously breaks into parts to become the Whole again.",
-  "The Sea is everywhere, all around us. Every minute, traces of ourselves dissolve into the man-made Sea. A whole continuously breaks into parts to become the Whole again.",
-  "The Sea is everywhere, all around us. Every minute, traces of ourselves dissolve into the man-made Sea. A whole continuously breaks into parts to become the Whole again.",
-  "The Sea is everywhere, all around us. Every minute, traces of ourselves dissolve into the man-made Sea. A whole continuously breaks into parts to become the Whole again.",
+  "\"Thank you...this is beautiful.\"",
+  "\"Maybe this will convince dad...that the Sea is not as twisted as he thinks.\"",
+  "\"I don't know if I'll ever forgive him for pushing to do this...\"",
+  "\"...she's really gone now...\"",
+  "\"...anyway, thanks again.\"",
+  "\"Goodbye.\"",
   ];
 
 type EndProps = {

@@ -102,7 +102,7 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                 output = output.concat(" [?] " + prompt_array[i + 1]);
         }
 
-        return <div className = "copiable-prompt" onClick = {() => this.fillPromptBox(output)}>"{output}"</div>
+        return <div className = "copiable-prompt" onClick = {() => this.fillPromptBox(output)}><mark>"{output}"</mark></div>
     }
 
     initiateMemoryScene(if_main : boolean) {
@@ -226,7 +226,10 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
             //  Core Memory - Retrieved
             //  Non-core Memory
 
-        let memoryType = if_retrieved ? "Retrieved" : if_main ? "Core Memory" : "Non-core Memory";
+        let memTypeImage =  if_used ? "./assets/images/mem_used.png" :
+                            if_retrieved ? "./assets/images/mem_retrieved.png" :
+                            if_main ? "./assets/images/mem_core.png" :
+                            "./assets/images/mem_noncore.png";
         let XWordsMissing = this.props.imgData[imgName]["keywords"].length.toString() + " Words Missing";
         let NXWordsFound = this.props.wordStat.filter(x => x).length.toString() + 
                             "/" + this.props.imgData[imgName]["keywords"].length.toString() +
@@ -237,11 +240,11 @@ export class Candidate extends React.Component<CandidateProps, CandidateState> {
                 : !if_visited ? XWordsMissing + " - Inquiry Needed"
                     : NXWordsFound;
 
-        return (<div className="mem-entry top-display">
+        return (<div className="mem-entry top-display" style={{backgroundImage: "url(" + memTypeImage + ")"}}>
             {this.getMemInfo(imgName, score, if_main, if_retrieved, if_tutorial, if_used, i)}
 
             <div className="top-main-info">
-                <p className = "notif"> {memoryType} </p>
+                {/* <img src={memTypeImage} /> */}
                 {/* {if_tutorial && !if_main ? 
                     (null)
                     : <p className = "notif"> {secondString} </p>
