@@ -124,21 +124,25 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         let dialogIndex = 0;
         let generIndex = 0;
         let stage = this.state.dialogueRunner?.variablesState["current_stage"];
+        let if_less_than_2_core = this.state.dialogueRunner?.variablesState["core_unlocked"] < 2;
+        let if_less_than_2_mem = this.state.dialogueRunner?.variablesState["memorabilia"] < 2;
+
+        console.log([stage, if_less_than_2_core, if_less_than_2_mem])
 
         switch(true){
             case (stage < 1):
                 dialogIndex = 8;
                 generIndex = 8;
                 break;
-            case (stage < 3):
+            case (stage < 3 && if_less_than_2_core):
                 dialogIndex = 2;
                 generIndex = 3;
                 break;
-            case (stage < 5):
+            case (stage <= 5 && if_less_than_2_mem):
                 dialogIndex = 4;
                 generIndex = 5;
                 break;
-            case (stage >= 5):
+            case (stage == 5):
                 dialogIndex = 6;
                 generIndex = 7;
         }

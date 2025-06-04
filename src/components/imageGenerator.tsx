@@ -193,9 +193,16 @@ class ImageGenerator extends React.Component<ImageGeneratorProps, ImageGenerator
 				// console.log([(similarities[0].score - LOW_BOUND) / (HIGH_BOUND - LOW_BOUND),
 				// 		(similarities[1].score - LOW_BOUND) / (HIGH_BOUND - LOW_BOUND)])
 				let raw2_ratio = similarities[1]["score"] > MID_BOUND ? 1 : 2.5;
-				pinLightBlend(img, raw2_mask, img, 
-					(similarities[1]["score"] - LOW_BOUND) / (raw2_ratio*(HIGH_BOUND - LOW_BOUND))
-				);
+				if (second != "noise" && this.props.dialogueRunner.variablesState[second] >= 0){
+					cmykBlend(img, raw2_mask, img, 
+						(similarities[1]["score"] - LOW_BOUND) / (raw2_ratio*(HIGH_BOUND - LOW_BOUND))
+					);
+				}
+				else {
+					pinLightBlend(img, raw2_mask, img, 
+						(similarities[1]["score"] - LOW_BOUND) / (raw2_ratio*(HIGH_BOUND - LOW_BOUND))
+					);
+				}
 				pinLightBlend(img, raw1_mask, img,
 					(similarities[0]["score"] - LOW_BOUND) / (HIGH_BOUND - LOW_BOUND)
 				);

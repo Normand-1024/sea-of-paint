@@ -100,10 +100,10 @@ VAR can_talk_about_emma = false
 
 // -> A3_cont_1
 
-// ~ lily = 0
-// ~ current_stage = 3
-// ~ core_unlocked = 1
-// -> A2_Hub
+~ lily = 0
+~ current_stage = 3
+~ core_unlocked = 1
+-> A2_Hub
 
 // ~ lily = 0
 // ~ lily2 = 0

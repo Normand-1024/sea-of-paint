@@ -103,10 +103,10 @@ export class AudioManager {
   public play(index: number, restart: boolean) {
     console.log("playing " + index.toString());
     const FADE_DURATION = 2000; // KK: these are in miliseconds
-    const FAST_FADE_DURATION = 200; // KK: these are in miliseconds
+    const FAST_FADE_DURATION = 1000; // KK: these are in miliseconds
     const STEP_TIME = 100;  
     const STEPS = FADE_DURATION / STEP_TIME;
-    const FAST_STEPS = FADE_DURATION / STEP_TIME;
+    const FAST_STEPS = FAST_FADE_DURATION / STEP_TIME;
     const targetVol = getMusicVolume();
 
     const fadeOut = (audio: HTMLAudioElement, steps: number, callback: () => void) => {
@@ -142,10 +142,9 @@ export class AudioManager {
           fadeIn(this.all_music[index], FAST_STEPS);
       });
     } else {
-      fadeOut(this.all_music[this.currentIndex], STEPS, () => {
-          this.all_music[index].currentTime = this.all_music[this.currentIndex].currentTime;
-          fadeIn(this.all_music[index], STEPS);
-      });
+      this.all_music[index].currentTime = this.all_music[this.currentIndex].currentTime;
+      fadeOut(this.all_music[this.currentIndex], STEPS, () => {});
+      fadeIn(this.all_music[index], STEPS);
     }
 
     this.currentIndex = index;
@@ -160,7 +159,7 @@ export class AudioManager {
 
   fadeStop() {
     console.log("fading out");
-    const FAST_FADE_DURATION = 50; // KK: these are in miliseconds
+    const FAST_FADE_DURATION = 1000; // KK: these are in miliseconds
     const STEP_TIME = 100;  
     const STEPS = FAST_FADE_DURATION / STEP_TIME;
 

@@ -1,6 +1,6 @@
 /** App.tsx */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef, MutableRefObject } from 'react';
 import './App.css';
 
 /** Icons */
@@ -28,10 +28,17 @@ function App() {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showWarningModal, setShowWarningModal] = useState(false);
   const [memorabilia, setMemorabilia] = useState([["", "", -1, -1, ""], ["", "", -1, -1, ""], ["", "", -1, -1, ""]]);
-  const audioManager = new AudioManager();
+  const [audioManager, setAM] = useState(new AudioManager());
+  // const audioManager:React.MutableRefObject<AudioManager|null> = useRef<AudioManager|null>(null);
 
   const RESET_LIMIT = 60000 * 5; // 5 mins
   const WARNING_LIMIT = 60000 * 4; // 4 mins
+
+  useEffect(() => {
+    return () => {
+      audioManager.dispose();
+    };
+  }, []);
 
   const resetToMenu = useCallback(() => {
     setPageState(PAGE_STATE.menu);
