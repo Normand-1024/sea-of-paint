@@ -528,8 +528,6 @@ Well, ask away then.
 
     Am I ready to conclude the contract? Can't say I look forward to what's coming next... # self
     
-    WARNING: THE ENDING IS STILL UNDER CONSTRUCTION, CONCLUDING THE CONTRACT WILL END THE GAME # self
-    
     ++ I have gotten the memorabilia I need, Mey. -> A3_Ending
     
     ++ [\(Go Back\)] -> A2_Hub
@@ -1629,7 +1627,7 @@ Like what's up with that? It didn't feel hostile to me...
 
 * But he's still a bad manager, yes?
 
-- Yes...the way he put pressure on us with a patronizing smile, like a gross concotion of charisma and power.
+- Yes...the way he put pressure on us with a patronizing smile, like a gross concoction of charisma and power.
 
 He made a lot of changes to meet the rising quota: limited bathroom breaks, cameras to prevent us from chatting, employee rankings and all that.
 
@@ -1978,7 +1976,7 @@ Anyway...we've been talking about this long enough. It doesn't matter now.
   
 - I did remember thinking about where my life had been and would be after the divorce. 
 
-I'd been thinking about disvorce for a long time. Keeping that decision without taking the action felt safe...but also disquieting. I knew what I had to do, but I just couldn't do it...until Ivan pushed me.
+I'd been thinking about divorce for a long time. Keeping that decision without taking the action felt safe...but also disquieting. I knew what I had to do, but I just couldn't do it...until Ivan pushed me.
 
 Come to think of it. Perhaps he felt that I was very cruel, because I was so certain about the divorce. He didn't know that I'd struggled with the thoughts for a long time...
 
@@ -2440,7 +2438,7 @@ I want to feel everything, every confusion about myself, every howling of the wa
     
         I don't think that's...that's not who I thought Lily was...
     
-    ** \(Dissolve\) Could Lily have taken cared of herself without you? Did she really need your help?
+    ** \(Dissolve\) Could Lily have taken care of herself without you? Did she really need your help?
         
         ~end_dis++
         
@@ -2485,7 +2483,7 @@ I want to feel everything, every confusion about myself, every howling of the wa
         
         That's why I feel so connected to her. I felt like I knew her, the same way I came to know myself...
 
-- \(Dissolve\) Lily didn't want you to analyze her, correct? Why did you keep doing that? Don't you think it was hurting her?
+* \(Dissolve\) Lily didn't want you to analyze her, correct? Why did you keep doing that? Don't you think it was hurting her?
         
         ~end_dis++
         
@@ -2496,6 +2494,8 @@ I want to feel everything, every confusion about myself, every howling of the wa
         - else:
             I don't know...maybe it was. So what if it was? I never talked to her about it, did I? She told me not to discuss those things with her, and I listened.
         }
+        
+-
 
 ->Q_Hub
 
