@@ -113,7 +113,7 @@ VAR can_talk_about_emma = false
 // ~ core_unlocked = 3
 // -> A3_cont_1
 
-- What is this? Why is it so dark here? # anim--
+- What is this? Why is it so dark here? # anim-- # can_jump_to_gen
 
 * I'm sorry to say that you passed, Mey. I'm talking to you through the Machine.
 
@@ -2821,6 +2821,77 @@ All that's left are the waves. # self
 - # end
 
 -> END
+
+
+=== CHEAT_after_intro ===
+~ lily = 0
+~ current_stage = 3
+~ core_unlocked = 1
+-> A2_Hub
+
+=== CHEAT_memorabilia ===
+~ lily = 0
+~ lily2 = 1
+~ ivan = 0
+~ current_stage = 4
+~ core_unlocked = 3
+-> A2_Hub
+
+=== CHEAT_before_act3 ===
+~ lily = 0
+~ lily2 = 1
+~ ivan = 0
+~ current_stage = 4
+~ core_unlocked = 3
+-> A2_Hub
+
+=== CHEAT_before_ending ===
+~ lily = 0
+~ lily2 = 1
+~ lily_spark = 0
+~ ivan = 0 
+~ current_stage = 0
+~ core_unlocked = 3
+~ memorabilia = 2
+
+~ mem1_line = "Sorry but I cheated so I don't know what this is"
+~ mem1_m1 = "lily_spark" // memory names
+~ mem1_m2 = "lily"
+~ mem1_i1 = 0 // memory interpretations
+~ mem1_i2 = 1
+
+~ mem2_line = "Again I cheated I'm ashamed of myself"
+~ mem2_m1 = "ivan2" // memory names
+~ mem2_m2 = "stefan2"
+~ mem2_i1 = 0 // memory interpretations
+~ mem2_i2 = 0
+-> A3_cont_1
+
+=== CHEAT_end ===
+~ lily = 0
+~ lily2 = 1
+~ lily_spark = 0
+~ ivan = 0 
+~ current_stage = 0
+~ core_unlocked = 3
+~ memorabilia = 2
+
+~ mem1_line = "Sorry but I cheated so I don't know what this is"
+~ mem1_m1 = "lily_spark" // memory names
+~ mem1_m2 = "lily"
+~ mem1_i1 = 0 // memory interpretations
+~ mem1_i2 = 1
+
+~ mem2_line = "Again I cheated I'm ashamed of myself"
+~ mem2_m1 = "ivan2" // memory names
+~ mem2_m2 = "stefan2"
+~ mem2_i1 = 0 // memory interpretations
+~ mem2_i2 = 0
+
+noooooooo # end
+
+-> END
+
 
 === function mey_realize_dissolve(num_dis) ===
 
