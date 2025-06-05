@@ -130,28 +130,41 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         let dialogIndex = 0;
         let generIndex = 0;
         let stage = this.state.dialogueRunner?.variablesState["current_stage"];
-        let if_less_than_2_core = this.state.dialogueRunner?.variablesState["core_unlocked"] < 2;
-        let if_less_than_2_mem = this.state.dialogueRunner?.variablesState["memorabilia"] < 2;
-
-        console.log([stage, if_less_than_2_core, if_less_than_2_mem])
+        let core_num = this.state.dialogueRunner?.variablesState["core_unlocked"];
+        let mem_num = this.state.dialogueRunner?.variablesState["memorabilia"];
 
         switch(true){
             case (stage < 1):
-                dialogIndex = 8;
-                generIndex = 8;
+                dialogIndex = 9;
+                generIndex = 9;
                 break;
-            case (stage <= 3 && if_less_than_2_core):
-                dialogIndex = 2;
+            case (stage == 1):
+                dialogIndex = 4; // playing core1, should start when talking to Mey about Lily during tutorial
+                generIndex = 1;
+                break;
+            case (stage <= 3 && core_num < 2):
+                dialogIndex = 4; // playing core1, should start when talking to Mey about Lily during tutorial
+                generIndex = 2;
+                break;
+            case (stage == 3 && core_num == 2):
+                dialogIndex = 5;
+                generIndex = 2;
+                break;
+            case (stage <= 4 && mem_num == 0):
+                dialogIndex = 6;
+                generIndex = 2;
+                break;
+            case (stage == 5 && mem_num == 1):
+                dialogIndex = 7;
                 generIndex = 3;
                 break;
-            case (stage <= 5 && if_less_than_2_mem):
-                dialogIndex = 4;
-                generIndex = 5;
+            case (stage == 5 && mem_num >= 2):
+                dialogIndex = 8;
+                generIndex = 3;
                 break;
-            case (stage == 5):
-                dialogIndex = 6;
-                generIndex = 7;
         }
+
+        console.log([stage, core_num, mem_num, dialogIndex, generIndex]);
 
         if (isDialogue) this.props.audio.play(dialogIndex, false);
         else this.props.audio.play(generIndex, false);
@@ -205,7 +218,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         }
 
         this.setState({ mode: 'machine' });
-        this.props.audio.play(1, true); // true means we're in dialogue
+        this.props.audio.play(1, true); // true means fast switch
 
         this.pushDialogue(this.state.dialogueRunner.Continue());
     }
@@ -445,6 +458,8 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         if (this.state.dialogueRunner.currentTags &&
                 this.state.dialogueRunner.currentTags.indexOf('end') > -1) {
             this.setState({isFading: true});
+            
+            this.props.audio.play(0, false);
 
             setTimeout(() => {
                 this.props.setPageState(PAGE_STATE['end']);

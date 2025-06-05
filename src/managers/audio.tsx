@@ -5,48 +5,48 @@
 
 import { getMusicVolume, subscribeMusicVolume, getSfxVolume, subscribeSfxVolume } from '../globals';
 export class AudioManager {
-  private menu = new Audio("./assets/audio/MainMenu.mp3");
+  private menu = new Audio("./assets/audio/MainMenu.ogg");
 
-  private tutorial = new Audio("./assets/audio/Tutorial.mp3");
-  private dialog1 = new Audio("./assets/audio/1_Dialogue.mp3");
-  private gener1 = new Audio("./assets/audio/1_Generation.mp3");
-  private dialog2 = new Audio("./assets/audio/2_Dialogue.mp3");
-  private gener2 = new Audio("./assets/audio/2_Generation.mp3");
-  private dialog3 = new Audio("./assets/audio/3_Dialogue.mp3");
-  private gener3 = new Audio("./assets/audio/3_Generation.mp3");
-  private dialogEnd = new Audio("./assets/audio/End_Dialogue.mp3");
+  private tutorial = new Audio("./assets/audio/Tutorial.ogg");
+  private gener = new Audio("./assets/audio/CoreGeneration.ogg");
+  private memGener = new Audio("./assets/audio/MemorabiliaGeneration.ogg");
+  private dialog1 = new Audio("./assets/audio/Core1.ogg");
+  private dialog2 = new Audio("./assets/audio/Core2.ogg");
+  private dialog3 = new Audio("./assets/audio/Core3.ogg");
+  private dialog4 = new Audio("./assets/audio/Memorabilia1.ogg");
+  private dialog5 = new Audio("./assets/audio/Memorabilia2.ogg");
+  private dialogEnd = new Audio("./assets/audio/Ending.ogg");
 
-  private meyClick1 = new Audio("./assets/audio/MeyDialogue.mp3");
-  private meyClick2 = new Audio("./assets/audio/MeyDialogue3.mp3");
-  private meyClick3 = new Audio("./assets/audio/MeyDialogue4.mp3");
-  private meyClick4 = new Audio("./assets/audio/MeyDialogue5.mp3");
+  private dialogueClick = new Audio("./assets/audio/Click.ogg");
   
-  private retrieveClick1 = new Audio("./assets/audio/GenerationRetrieve.mp3");
-  private retrieveClick2 = new Audio("./assets/audio/GenerationRetrieve2.mp3");
-  private retrieveClick3 = new Audio("./assets/audio/GenerationRetrieve3.mp3");
+  private retrieveClick1 = new Audio("./assets/audio/Retrieve1.wav");
+  private retrieveClick2 = new Audio("./assets/audio/Retrieve2.wav");
+  private retrieveClick3 = new Audio("./assets/audio/Retrieve3.wav");
   
-  private dialogueSound = new Audio("./assets/audio/dialogue.ogg");
-  private clickSound = new Audio("./assets/audio/click.ogg");
+  private dialogueSoundReady = 0;
+  private dialogueSound0 = new Audio("./assets/audio/Dialogue.wav");
+  private dialogueSound1 = new Audio("./assets/audio/Dialogue.wav");
+  private dialogueSound2 = new Audio("./assets/audio/Dialogue.wav");
 
   private all_music =     
     [this.menu, this.tutorial,
-    this.dialog1, this.gener1,
-    this.dialog2, this.gener2,
-    this.dialog3, this.gener3,
-    this.dialogEnd
+    this.gener, this.memGener,
+    this.dialog1, this.dialog2,
+    this.dialog3, this.dialog4,
+    this.dialog5,this.dialogEnd
     ]
 
   private all_sfx =     
-    [this.meyClick1, this.meyClick2, this.meyClick3, this.meyClick4,
+    [this.dialogueClick,
     this.retrieveClick1, this.retrieveClick2, this.retrieveClick3,
-    this.dialogueSound, this.clickSound
+    this.dialogueSound0, this.dialogueSound1, this.dialogueSound2,
     ]
-
-  private click =
-    [this.meyClick1, this.meyClick2, this.meyClick3, this.meyClick4]
 
   private retrieve =
     [this.retrieveClick1, this.retrieveClick2, this.retrieveClick3]
+    
+  private dialogueSound =
+    [this.dialogueSound0, this.dialogueSound1, this.dialogueSound2]
 
   private a1Prev = 0;
   private a2Prev = 0;
@@ -61,24 +61,35 @@ export class AudioManager {
     this.menu.preload = "auto";
 
     this.tutorial.preload = "auto";
+    this.gener.preload = "auto";
+    this.memGener.preload = "auto";
     this.dialog1.preload = "auto";
-    this.gener1.preload = "auto";
     this.dialog2.preload = "auto";
-    this.gener2.preload = "auto";
     this.dialog3.preload = "auto";
-    this.gener3.preload = "auto";
+    this.dialog4.preload = "auto";
+    this.dialog5.preload = "auto";
     this.dialogEnd.preload = "auto";
     
-    this.meyClick1.preload = "auto";
-    this.meyClick2.preload = "auto";
-    this.meyClick3.preload = "auto";
-    this.meyClick4.preload = "auto";
+    this.dialogueClick.preload = "auto";
     
     this.retrieveClick1.preload = "auto";
     this.retrieveClick2.preload = "auto";
     this.retrieveClick3.preload = "auto";
 
-    this.dialogueSound.preload = "auto";
+    this.dialogueSound0.preload = "auto";
+    this.dialogueSound1.preload = "auto";
+    this.dialogueSound2.preload = "auto";
+
+    // Set up callback function so that tracks can be interweaved, to prevent clipping    
+    this.dialogueSound0.addEventListener("ended", () => {
+      this.dialogueSoundReady = 0;
+    });
+    this.dialogueSound1.addEventListener("ended", () => {
+      this.dialogueSoundReady = 1;
+    });
+    this.dialogueSound2.addEventListener("ended", () => {
+      this.dialogueSoundReady = 2;
+    });
 
     /** KK: set up music volume */
     const initialMusicVol = getMusicVolume();
@@ -181,23 +192,23 @@ export class AudioManager {
 
   public playClick() {
     // console.log("playing click");
-    // let i = Math.floor(Math.random() * this.click.length);
-    // this.click[i].currentTime = 0;
-    // this.click[i].play().catch(() => {});
-    this.clickSound.currentTime = 0;
-    this.clickSound.play().catch(() => {});
+    // let i = Math.floor(Math.random() * this.dialogueClick.length);
+    // this.dialogueClick[i].currentTime = 0;
+    // this.dialogueClick[i].play().catch(() => {});
+    this.dialogueClick.currentTime = 0;
+    this.dialogueClick.play().catch(() => {});
   }
 
   public playRetrieved() {
     // console.log("playing retrieved");
-    // let i = Math.floor(Math.random() * this.click.length);
-    // this.retrieve[i].currentTime = 0;
-    // this.retrieve[i].play().catch(() => {});
+    let i = Math.floor(Math.random() * this.retrieve.length);
+    this.retrieve[i].currentTime = 0;
+    this.retrieve[i].play().catch(() => {});
   }
 
   public playDialogueBlip() {
-    this.dialogueSound.currentTime = 0;
-    this.dialogueSound.play().catch(() => {});
+    this.dialogueSound[this.dialogueSoundReady].currentTime = 0;
+    this.dialogueSound[this.dialogueSoundReady].play().catch(() => {});
   }
 
   public dispose() {

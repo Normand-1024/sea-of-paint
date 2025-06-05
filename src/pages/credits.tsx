@@ -18,7 +18,7 @@ const CreditsPage: React.FC = () => {
         Hongwei Zhou, Katherine Kosolapova
         <br/>
         <br/>
-        <b>Music and Sound Effect</b><br/>
+        <b>Music and Sound Design</b><br/>
         Kyle Gonzalez
       </p>
     </div>
