@@ -217,10 +217,10 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                 blinking: false,
             }),
             () => {
-                const dialogue_position = this.dialogueWrapperRef.current;
-                if (dialogue_position) {
-                    dialogue_position.scrollTop = dialogue_position.scrollHeight;
-                }
+                // const dialogue_position = this.dialogueWrapperRef.current;
+                // if (dialogue_position) {
+                //     dialogue_position.scrollTop = dialogue_position.scrollHeight;
+                // }
             }
         );
     }
