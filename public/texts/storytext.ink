@@ -2272,13 +2272,13 @@ Okay, let's move on to the other ones then.
 
 ~delete_count++
 
-++ I will delete this memorabilia, Mey. Appreciate the feedback{consult_count > 0: again}. # handle_delete
+++ I will delete this memorabilia, Mey. Appreciate the feedback{consult_count > 1: again}. # handle_delete
 
 Okay.{mem_att < 0: I do appreciate you listening to me| It's your choice}.
 
 Do you have more memorabilia made?
 
-- -> Memora_Consult
+ -> Memora_Consult
 
 === A3_cont_1 ===
 
@@ -2286,7 +2286,7 @@ VAR end_dis = 0 // How many attempts for dissolve
 VAR end_aff= 0 // How much affirmation is successful 
 VAR initial_dissolve = false // Did the player initially want to diffuse?
 
-So...what now? It's time to put me back to the Sea, right?
+So...what now? It's time to put me back to the Sea, right? # end_music
 
 Time for the last part of this process... # self
 
@@ -2847,10 +2847,25 @@ All that's left are the waves. # self
 === CHEAT_before_act3 ===
 ~ lily = 0
 ~ lily2 = 1
-~ ivan = 0
-~ current_stage = 4
+~ lily_spark = 0
+~ ivan = 0 
+~ current_stage = 5
 ~ core_unlocked = 3
+~ memorabilia = 2
+
+~ mem1_line = "Sorry but I cheated so I don't know what this is"
+~ mem1_m1 = "lily_spark" // memory names
+~ mem1_m2 = "lily"
+~ mem1_i1 = 0 // memory interpretations
+~ mem1_i2 = 1
+
+~ mem2_line = "Again I cheated I'm ashamed of myself"
+~ mem2_m1 = "ivan2" // memory names
+~ mem2_m2 = "stefan2"
+~ mem2_i1 = 0 // memory interpretations
+~ mem2_i2 = 0
 -> A2_Hub
+
 
 === CHEAT_before_ending ===
 ~ lily = 0

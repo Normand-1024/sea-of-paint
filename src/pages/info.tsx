@@ -6,11 +6,12 @@ const InfoPage: React.FC = () => {
   return (
     <div className="content-wrapper">
       <h1>Machine Operation Help</h1>
+      <small><p>You can press Spacebar to skip the dialogue animation.</p></small>
       <div className="info-wrapper">
         <div id="objective">
           <h2>Searching the Sea</h2>
           <p>
-            Each memory is a pair of image and its text description.
+            The Machine has two modes: talking to the spirit and searching the Sea. A vertical bar would flash when switching is needed. Click on the bar to switch modes.
           </p>
           <p>
             The Machine Operator searches the Sea by entering a text prompt and clicking the "Retrieve" button.
@@ -22,7 +23,7 @@ const InfoPage: React.FC = () => {
             Only the top memory will be fully displayed with its text prompt, but the image can surface the top two memories. 
           </p>
           <p>
-            The Machine Operator can click on the memory titles to copy its partial descrition to the prompt box.
+            The Machine Operator can click on the memory titles to copy its partial description to the prompt box.
           </p>
           {/* <p>
             In this world, the spirits of the deceased are stored in a digital "Sea." 
@@ -45,7 +46,7 @@ const InfoPage: React.FC = () => {
             An unretrieved memory's text description is incomplete, marked with "[?]"s in its description. A Machine Operator's job is to fill in the question marks. As a shortcut, the text description for the top memory can be copied to the text prompt box by clicking.
           </p>
           <p>
-            Once a memory's similarity is above 90%. The memory will be successfully retrieved. And it will turn gold.
+            Once a memory's similarity is above 85%. The memory will be successfully retrieved. And it will turn gold.
           </p>
           {/* <p>
             The Machine has two screens: the spirit dialogue and the image generator.

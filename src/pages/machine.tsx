@@ -46,6 +46,7 @@ type MachineState = {
     mode: 'inactive' | 'machine' | 'control';
     blinking: boolean;
     isFading: boolean;
+    playEnding: boolean;
 }
 
 class MachinePage extends React.Component<MachineProps, MachineState> {
@@ -61,7 +62,8 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         meyPortraitState: "mey_def",
         mode: 'inactive',
         blinking: false,
-        isFading: false
+        isFading: false,
+        playEnding: false
     };
 
     private dialogueEndRef = createRef<HTMLDivElement>();
@@ -113,6 +115,8 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                         prevProps.memorabilia[2][0] != this.props.memorabilia[2][0]
 
                     )
+                    ||
+                    prevState.playEnding != this.state.playEnding
         ){
             this.currentStage = this.state.dialogueRunner?.variablesState["current_stage"];
             this.changeMusic(isDialogue);
@@ -134,7 +138,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
         let mem_num = this.state.dialogueRunner?.variablesState["memorabilia"];
 
         switch(true){
-            case (stage < 1):
+            case (this.state.playEnding):
                 dialogIndex = 9;
                 generIndex = 9;
                 break;
@@ -162,9 +166,13 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                 dialogIndex = 8;
                 generIndex = 3;
                 break;
+            case (stage == 0 && mem_num > 0):
+                dialogIndex = 8;
+                generIndex = 3;
+                break;
         }
 
-        console.log([stage, core_num, mem_num, dialogIndex, generIndex]);
+        console.log([stage, core_num, mem_num, dialogIndex, generIndex, this.state.playEnding]);
 
         if (isDialogue) this.props.audio.play(dialogIndex, false);
         else this.props.audio.play(generIndex, false);
@@ -230,10 +238,10 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
                 blinking: false,
             }),
             () => {
-                // const dialogue_position = this.dialogueWrapperRef.current;
-                // if (dialogue_position) {
-                //     dialogue_position.scrollTop = dialogue_position.scrollHeight;
-                // }
+                const dialogue_position = this.dialogueEndRef.current;
+                if (dialogue_position) {
+                    dialogue_position.scrollTop = dialogue_position.scrollHeight;
+                }
             }
         );
     }
@@ -267,7 +275,7 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             'CHEAT_before_act3', 'CHEAT_before_ending', 'CHEAT_end'
                 ].includes(prompt)) {
 
-            if (prompt == "CHEAT_before_ending" || prompt == "CHEAT_end")  {
+            if (prompt == "CHEAT_before_act3" || prompt == "CHEAT_before_ending" || prompt == "CHEAT_end")  {
                 this.props.setMemorabilia([["lily_spark", "lily", 0, 1, "./assets/images/lily_spark.png"],
                         ["ivan2", "stefan2", 0, 0, "./assets/images/ivan2.png"],
                         ["", "", -1, -1, ""]]);
@@ -454,12 +462,19 @@ class MachinePage extends React.Component<MachineProps, MachineState> {
             ));
         }
 
+        // Play Ending Music
+        if (this.state.dialogueRunner.currentTags &&
+                this.state.dialogueRunner.currentTags.indexOf('end_music') > -1) {
+            
+            this.setState({playEnding: true});
+        }
+
         // Switch to Ending
         if (this.state.dialogueRunner.currentTags &&
                 this.state.dialogueRunner.currentTags.indexOf('end') > -1) {
             this.setState({isFading: true});
             
-            this.props.audio.play(0, false);
+            this.props.audio.fadeStop();
 
             setTimeout(() => {
                 this.props.setPageState(PAGE_STATE['end']);

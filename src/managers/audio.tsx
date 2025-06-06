@@ -112,7 +112,7 @@ export class AudioManager {
   // index: the index of the music
   // restart: whether the music transitions with the same play time or not
   public play(index: number, restart: boolean) {
-    console.log("playing " + index.toString());
+    console.log("playing " + this.all_music[index].src.toString().slice(42));
 
     if (index == this.currentIndex) {
       return;

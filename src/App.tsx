@@ -90,7 +90,7 @@ function App() {
     return <IntroPage pageState={pageState} setPageState={setPageState} />;
   }
   else if (pageState == PAGE_STATE.end){
-    return <EndPage pageState={pageState} setPageState={setPageState} memorabilia={memorabilia} />;
+    return <EndPage pageState={pageState} setPageState={setPageState} memorabilia={memorabilia} audio={audioManager}/>;
   }
   else {
       return (

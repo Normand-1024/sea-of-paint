@@ -2,6 +2,7 @@ import React from 'react';
 import { PAGE_STATE } from '../constants.tsx';
 import '../styles/end.css';
 
+import { AudioManager } from '../managers/audio'
 import { IMAGE_DATA, IMAGE_INDEX } from '../../public/assets/images/imageData.tsx';
 
 const FINAL_TEXT = [
@@ -16,6 +17,7 @@ const FINAL_TEXT = [
 type EndProps = {
     pageState: number;
     setPageState: Function;
+    audio: AudioManager;
     memorabilia: (string | number)[][]; // [id1, id2, interpt1, interpt2, imageURL] x 3
 }
 
@@ -41,6 +43,8 @@ class EndPage extends React.Component<EndProps, EndState> {
     requestAnimationFrame(() => {
       this.setState({ isVisible: true });
     });
+
+    this.props.audio.play(0, true);
   }
 
   advanceFinal = () => {
