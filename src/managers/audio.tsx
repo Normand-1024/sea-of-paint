@@ -17,7 +17,7 @@ export class AudioManager {
   private dialog5 = new Audio("./assets/audio/Memorabilia2.ogg");
   private dialogEnd = new Audio("./assets/audio/Ending.ogg");
 
-  private dialogueClick = new Audio("./assets/audio/Click.ogg");
+  private dialogueClick = new Audio("./assets/audio/ClickSound.ogg");
   
   private retrieveClick1 = new Audio("./assets/audio/Retrieve1.wav");
   private retrieveClick2 = new Audio("./assets/audio/Retrieve2.wav");
