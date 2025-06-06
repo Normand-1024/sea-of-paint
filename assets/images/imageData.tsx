@@ -5,7 +5,7 @@ export const IMAGE_DATA : Array<any> = [
         "memora_descrip": "Lily smoking and walking",
         "descp": "Lily smoking while walking away from Mey after argument about Stefan, Mey feels doubt and envy toward Lily",
         "descp2": ["Lily smoking while walking away from", "after argument about", ", Mey feels", "and", "toward Lily"],
-        "keywords": [["Mey", " me ", "[me]"], ["Stefan", "manager", "boss"], ["doubt"], ["envy"]],
+        "keywords": [["Mey", " me ", "[me]"], ["Stefan", "manager", "boss", "piglet"], ["doubt"], ["envy"]],
         "interpretations": [["This image shows Lily's self-reliance and determination.",
                                 "Lily's pace looks determined. There's a sense of speed in the movement. They show Lily's readiness to face anything."
                             ],
