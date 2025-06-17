@@ -46,36 +46,36 @@ function App() {
   }, []);
 
   /** KK: reset timer manager */
-  useEffect(() => {
-    let inactivityTimer: NodeJS.Timeout;
-    let warningTimer: NodeJS.Timeout;
+  // useEffect(() => {
+  //   let inactivityTimer: NodeJS.Timeout;
+  //   let warningTimer: NodeJS.Timeout;
 
-    const resetTimer = () => {
-      clearTimeout(inactivityTimer);
-      clearTimeout(warningTimer);
-      setShowWarningModal(false);
+  //   const resetTimer = () => {
+  //     clearTimeout(inactivityTimer);
+  //     clearTimeout(warningTimer);
+  //     setShowWarningModal(false);
 
-      inactivityTimer = setTimeout(() => {
-        resetToMenu();
-        setShowWarningModal(false);
-      }, RESET_LIMIT);
+  //     inactivityTimer = setTimeout(() => {
+  //       resetToMenu();
+  //       setShowWarningModal(false);
+  //     }, RESET_LIMIT);
 
-      warningTimer = setTimeout(() => {
-        setShowWarningModal(true);
-      }, WARNING_LIMIT);
-    };
+  //     warningTimer = setTimeout(() => {
+  //       setShowWarningModal(true);
+  //     }, WARNING_LIMIT);
+  //   };
 
-    const events = ['click', 'keydown', 'mousemove', 'touchstart'];
-    events.forEach(event => window.addEventListener(event, resetTimer));
+  //   const events = ['click', 'keydown', 'mousemove', 'touchstart'];
+  //   events.forEach(event => window.addEventListener(event, resetTimer));
 
-    resetTimer();
+  //   resetTimer();
 
-    return () => {
-      events.forEach(event => window.removeEventListener(event, resetTimer));
-      clearTimeout(inactivityTimer);
-      clearTimeout(warningTimer);
-    };
-  }, [resetToMenu]);
+  //   return () => {
+  //     events.forEach(event => window.removeEventListener(event, resetTimer));
+  //     clearTimeout(inactivityTimer);
+  //     clearTimeout(warningTimer);
+  //   };
+  // }, [resetToMenu]);
 
   useEffect(() => {
     if(pageState == PAGE_STATE.menu){
