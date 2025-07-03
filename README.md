@@ -35,7 +35,11 @@ add gifs here
 - Asset paths changed to `./` to support GitHub Pages
 
 ### Tech Stack  
-> React, Typescript, p5.js, HTML & CSS, GitHub
+- React
+- Typescript
+- p5.js
+- HTML & CSS
+- Git & GitHub
 
 ---
 
