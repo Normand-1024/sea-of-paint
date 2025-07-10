@@ -50,6 +50,10 @@
   /* margin-bottom: 2rem; */
 }
 
+.content-wrapper a {
+  color: var(--text);
+}
+
 .modal-close {
   align-items: left;
   padding: 5px;

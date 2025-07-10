@@ -33,9 +33,9 @@ const MainMenuPage: React.FC<MenuProps> = ({ setPageState }) => {
         - Credits -
       </div>
 
-      {/* <div onClick={() => setShowBibliographyModal(true)} className="butt">
-        - Bibliography -
-      </div> */}
+      <div onClick={() => setShowBibliographyModal(true)} className="butt">
+        - References -
+      </div>
 
       {/** Modal */}
       <CustomModal open={showCreditModal} onClose={() => setShowCreditModal(false)} type="credits"

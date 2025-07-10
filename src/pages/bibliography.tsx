@@ -4,8 +4,43 @@ import '../styles/modals.css';
 const BibliographyPage: React.FC = () => {
   return (
     <div className="content-wrapper">
-      <h1>Bibliography</h1>
-      <p>Lorem ipsum dolor sit amet. Aut rerum tenetur cum error illo est nesciunt voluptate et dolorem tenetur est quia magni. Aut autem inventore et velit dolorum eum inventore aliquid. Non error repellat sit sint dolorem qui autem dolorem ut exercitationem obcaecati est nemo fugit ab perspiciatis quidem eum tempora voluptate. Et dolores commodi et voluptas repellat non blanditiis porro et illo cupiditate eos molestias galisum. Sit corporis commodi quo debitis quia quo eius dignissimos hic temporibus sunt aut iure assumenda At cupiditate veritatis. Qui voluptates voluptatem et dicta voluptates qui necessitatibus iste est temporibus numquam. Ab quidem voluptatem ut voluptate minima eum esse internos. Ut nisi rerum qui dolores fuga sed laborum eveniet. </p><p>Aut quia aliquid id galisum voluptas ut minus maiores sit esse corporis sit minus voluptatem in recusandae totam et sunt soluta. Ut ipsa consectetur sed quia esse qui perferendis quam qui vero saepe ut dolores magnam. Eum Quis sapiente hic voluptas dolorum eum sunt rerum ea pariatur placeat eum laborum recusandae et expedita dolorem. Aut velit sint sit sequi quibusdam aut dolore voluptatum non libero ducimus. Et similique deleniti in fugiat reprehenderit est dolores quam cum mollitia enim. Rem nemo autem cum Quis aliquid ad eaque internos vel dolores repellat vel eligendi repellat eos debitis exercitationem qui saepe assumenda. Est illum ducimus vel impedit porro et nemo nisi ea eveniet omnis est nobis nostrum. Et fugiat labore nam similique rerum ad dicta exercitationem sit repellat aspernatur eos accusamus pariatur et rerum error? </p><p>Ut temporibus eaque eos harum modi ea neque perspiciatis non optio reprehenderit aut officiis labore? Aut exercitationem explicabo id tempore quaerat ut porro velit At aperiam repellendus ut quibusdam sunt sed consequuntur blanditiis. Vel exercitationem doloremque ut nisi maxime rem neque dolores. Aut rerum aliquam et quia accusantium et minus illo vel harum repellat est laboriosam dolorem? Rem laudantium fuga hic laboriosam repudiandae vel amet eaque ut eaque porro aut veritatis quasi. Eum repellendus ipsam ea dolor molestiae ut voluptates laboriosam et fugit ipsam quo omnis reprehenderit qui similique vero. Ex nemo doloribus in totam temporibus aut earum galisum ex quia rerum qui ipsum debitis cum voluptatibus molestiae. Ut accusantium numquam ut animi odit 33 officia quibusdam. Aut voluptatum libero ab adipisci expedita quo incidunt reprehenderit a suscipit sapiente. Eum minus fugiat est cupiditate nihil est nihil similique ut asperiores perspiciatis? Est quaerat galisum sit amet minima est velit quibusdam aut nisi consequatur vel reiciendis quia? Ut molestiae vero ut quis suscipit At provident asperiores? Ut debitis cumque aut consequuntur odit aut reprehenderit nemo ut eveniet quas aut obcaecati similique et voluptatem sint aut reiciendis blanditiis. Eos natus quaerat et tempore culpa qui totam laboriosam est quas vitae ut deleniti rerum in aspernatur omnis non commodi odit. </p>
+      <h1>References</h1>
+      <p>Read our Paper on the Game <a href="https://www.mdpi.com/2076-0787/14/4/88" target="_blank">Here</a>.</p>  
+
+      <h3>AI and Data Work</h3>
+
+      <div style={{textAlign: "left", display: "inline-block"}}>
+        Birhane, A., van Dijk, J., and Pasquale, F. 2024. <a href="https://arxiv.org/abs/2404.10072">Debunking robot rights metaphysically, ethically, and legally</a>.<br></br>
+
+        Crawford, K. 2023. <a href="https://yalebooks.yale.edu/book/9780300264630/atlas-of-ai/" target="_blank">The Atlas of AI</a>.<br></br>
+
+        <a href="https://data-workers.org/" target="_blank">Data Worker's Inquiry</a>。 <br></br>
+
+        Gray, M.L., and Siddharth S. 2019.  <a href="https://ghostwork.info/" target="_blank">Ghost Work</a>. <br></br>
+
+        Li, X. 2023. <a href="https://www.sixthtone.com/news/1014142" target="_blank">Across China, an Unseen Rural Workforce Is Shaping the Future of AI</a>. <br></br>
+
+        徐爽, 杜雯雯. <a  href="https://mp.weixin.qq.com/s/Ipk1fJWrhdXmoewaqBaYxA" target="_blank">AI标注流水线上，被抛弃的“妈妈工人”</a>. <br></br>
+
+        Reilly, L. 2024. <a href="https://www.cnn.com/2024/08/21/media/google-california-pay-newsrooms-journalists-content-deal/index.html" target="_blank">California AI Newsroom Deal</a>. <br></br>
+
+        VICE News. 2019. <a href="https://www.youtube.com/watch?v=mXLeBs0fGa4&t=338s" target="_blank">Grandkids On Demand & China AI Workers</a>. <br></br>
+      </div>
+        {/* Birhane, Abeba, Jelle van Dijk, and Frank Pasquale. 2024. <a href="https://arxiv.org/abs/2404.10072">Debunking robot rights metaphysically, ethically, and legally</a>.<br></br>
+        Crawford, Kate. 2023. <a href="https://yalebooks.yale.edu/book/9780300264630/atlas-of-ai/" target="_blank">The Atlas of AI</a>.<br></br>
+        <a href="https://data-workers.org/" target="_blank">Data Worker's Inquiry</a> <br></br>
+        Gray, Mary L., and Siddharth Suri. 2019.  <a href="https://ghostwork.info/" target="_blank">Ghost Work</a>. <br></br>
+        Li, Xin. 2023. <a href="https://www.sixthtone.com/news/1014142" target="_blank">Across China, an Unseen Rural Workforce Is Shaping the Future of AI</a>. <br></br>
+        徐爽, 杜雯雯. <a  href="https://mp.weixin.qq.com/s/Ipk1fJWrhdXmoewaqBaYxA" target="_blank">AI标注流水线上，被抛弃的“妈妈工人”</a>. <br></br>
+      </p> */}
+
+      <h3>Other Inspirations</h3>
+      <p  style={{textAlign: "left"}}> 
+        Caravà, Marta. 2023. <a href="https://link.springer.com/rwe/10.1007/978-3-030-93789-8_53-1">Enactive Memory</a>. <br></br>
+        My Brilliant Friend <br></br>
+        Her Story
+      </p>
+
     </div>
   );
 };

@@ -2413,7 +2413,13 @@ I want to feel everything, every confusion about myself, every howling of the wa
     
     Well, I'm ready when you are.
 
-* \(Dissolve\) I don't think so, Mey. It's my job. I have a responsibility.
+* \(Dissolve\) I don't think so, Mey. It's better for us to end this quickly.
+
+    ** It's my job and my responsibility. I'm sorry.
+    
+    ** You are part of the Sea. You are not Mey. It just...doesn't make sense to delay this.
+    
+    --
 
     ~ initial_dissolve=true
     ~ cruel = 100

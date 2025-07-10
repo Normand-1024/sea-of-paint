@@ -1,16 +1,13 @@
 # Sea of Paint
 
-*Owner: Hongwei Zhou*  
+*Owner: [Hongwei Zhou](https://normand-1024.github.io/)*  
 *Collaborators: [Katherine Kosolapova](https://github.com/kkosolap), Fandi Meng, & Kyle Gonzalez*
 
 ---
 
 ### Project Description
-something i wrote:
-> Sea of Paint is an experimental, narrative-driven video game where art, code, and critical inquiry intersect. Built using React, Typescript, and p5.js, the game explores issues around contemporary machine learning-based AI technology, putting into question how our ideas of memory, labor and care are brought into tension with the prevalence of data-driven AI.
 
-the museum description:
-> Sea of Paint is a narrative-driven video game that explores the issues around contemporary machine learning-based AI technology. The player engages in dialogue with a “spirit” conjured from the Sea — an ever-recording flow of data. The game asks how our ideas of memory, labor and care are brought into tension with the prevalence of data-driven AI.
+Sea of Paint is an experimental, narrative-driven video game where art, code, and critical inquiry intersect. Built with React, Typescript, and p5.js, as well as a small transformer model to enable its text interaction, the game is a genre blend of visual novels and data archive game such as Her Story. It explores the issues around contemporary machine learning-based AI technology and asks how our ideas of memory, labor and care are brought into tension with the prevalence of data-driven AI.
 
 Play [Sea of Paint](normand-1024.github.io/sea-of-paint/) here!
 
@@ -50,4 +47,4 @@ add gifs here
 - **Music & Sound Design** – Kyle Gonzalez
 
 ### Contact
-For questions or feedback, please contact [Hongwei Zhou]().
+For questions or feedback, please contact [Hongwei Zhou](https://normand-1024.github.io/).
