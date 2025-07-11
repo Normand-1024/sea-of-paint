@@ -9,7 +9,7 @@
 
 Sea of Paint is an experimental, narrative-driven video game where art, code, and critical inquiry intersect. Built with React, Typescript, and p5.js, as well as a small transformer model to enable its text interaction, the game is a genre blend of visual novels and data archive game such as Her Story. It explores the issues around contemporary machine learning-based AI technology and asks how our ideas of memory, labor and care are brought into tension with the prevalence of data-driven AI.
 
-Play [Sea of Paint](normand-1024.github.io/sea-of-paint/) here!
+Play [Sea of Paint](https://normand-1024.github.io/sea-of-paint/) here!
 
 ### Demo
 
