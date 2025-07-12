@@ -13,10 +13,12 @@ Play [Sea of Paint](https://normand-1024.github.io/sea-of-paint/) here!
 
 ### Demo
 
-add gifs here
-<!--  <p align="center">
-  <img src="gif link" alt="gif" width="90%">
-</p>  -->
+<p align="center">
+  <img src="https://github.com/Normand-1024/sea-of-paint/blob/main/gifs/talking_to_mey.gif" alt="talking to mey" width="95%">
+</p>
+<p align="center">
+  <img src="https://github.com/Normand-1024/sea-of-paint/blob/main/gifs/generating_images.gif" alt="generating images" width="95%">
+</p>
 
 ---
 
